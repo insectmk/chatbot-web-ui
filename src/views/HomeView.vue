@@ -5,7 +5,7 @@
       <el-dropdown trigger="click">
           <span class="el-dropdown-link">
             <img :src="userInfo.head" class="user-avatar">
-            {{ userInfo.realName }}<i class="el-icon-arrow-down el-icon--right"></i>
+            {{ userInfo.username }}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="dialogVisibleEdit = true">修改密码</el-dropdown-item>
@@ -32,6 +32,38 @@
     <el-container>
       <!-- 菜单栏 -->
       <el-aside style="background-color: rgb(238, 241, 246)">
+
+        <el-menu
+            default-active="2"
+            class="el-menu-vertical-demo"
+            @open="handleOpen"
+            @close="handleClose">
+          <el-menu-item index="1">
+            <i class="el-icon-setting"></i>
+            <span slot="title">对话1</span>
+          </el-menu-item>
+          <el-menu-item index="2">
+            <i class="el-icon-setting"></i>
+            <span slot="title">对话2</span>
+          </el-menu-item>
+          <el-menu-item index="3">
+            <i class="el-icon-setting"></i>
+            <span slot="title">对话3</span>
+          </el-menu-item>
+          <el-menu-item index="4">
+            <i class="el-icon-setting"></i>
+            <span slot="title">对话4</span>
+          </el-menu-item>
+          <el-menu-item index="5">
+            <i class="el-icon-setting"></i>
+            <span slot="title">对话5</span>
+          </el-menu-item>
+          <el-menu-item index="6">
+            <i class="el-icon-setting"></i>
+            <span slot="title">对话6</span>
+          </el-menu-item>
+        </el-menu>
+
 
       </el-aside>
 
