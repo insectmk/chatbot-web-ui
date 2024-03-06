@@ -32,39 +32,19 @@
     <el-container>
       <!-- 菜单栏 -->
       <el-aside style="background-color: rgb(238, 241, 246)">
-
+      <!-- 对话列表 -->
         <el-menu
             default-active="2"
-            class="el-menu-vertical-demo"
-            @open="handleOpen"
-            @close="handleClose">
-          <el-menu-item index="1">
+            class="el-menu-vertical-demo">
+          <el-menu-item
+              @click="clickSession(session)"
+              v-for="(session, index) in sessions"
+              :key="session.id"
+              :index="String(index)">
             <i class="el-icon-setting"></i>
-            <span slot="title">对话1</span>
-          </el-menu-item>
-          <el-menu-item index="2">
-            <i class="el-icon-setting"></i>
-            <span slot="title">对话2</span>
-          </el-menu-item>
-          <el-menu-item index="3">
-            <i class="el-icon-setting"></i>
-            <span slot="title">对话3</span>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <span slot="title">对话4</span>
-          </el-menu-item>
-          <el-menu-item index="5">
-            <i class="el-icon-setting"></i>
-            <span slot="title">对话5</span>
-          </el-menu-item>
-          <el-menu-item index="6">
-            <i class="el-icon-setting"></i>
-            <span slot="title">对话6</span>
+            <span slot="title">{{ session.remark }}</span>
           </el-menu-item>
         </el-menu>
-
-
       </el-aside>
 
       <!--  密码编辑框    -->
@@ -95,7 +75,7 @@
 </template>
 
 <script>
-import {getUserInfo, editPassword} from "@/api"
+import {getSessionAll, getUserInfo, editPassword} from "@/api"
 
 export default {
   data() {
@@ -105,6 +85,8 @@ export default {
       dialogVisibleEdit: false, // 编辑框的显示
       // 登出按钮的显示控制
       logoutVisible: false,
+      // 用户会话列表
+      sessions: [],
       // 用户信息
       userInfo: {},
       // 菜单数据
@@ -112,6 +94,10 @@ export default {
     };
   },
   methods: {
+    // 会话被点击
+    clickSession(session) {
+      console.log(session)
+    },
     // 修改密码
     editPassword() {
       // 判断密码是否一致
@@ -138,23 +124,15 @@ export default {
       this.logoutVisible = false
       this.$router.replace({path: '/login'})
     },
-    // 菜单展开
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    // 菜单收起
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
   },
   created() {
     // 获取登录用户信息
     getUserInfo().then((res) => {
       this.userInfo = res.data.data
     })
-    // 获取用户菜单
-    getUserMenus().then((res) => {
-      this.menus = res.data.data;
+    // 获取用户对话列表
+    getSessionAll().then((res) => {
+      this.sessions = res.data.data
     })
   },
 };

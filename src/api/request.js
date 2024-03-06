@@ -17,6 +17,7 @@ else if (process.env.VUE_APP_ENV === 'pro') {
 
 // 后端接口
 const apis = {
+    getSessionAll: '/chatSession/all',                      // 获取用户所有的会话
     getUserInfo: '/user',                   // 获取用户信息
     captcha: '/login/captcha',             // 获取验证码
     isToken: '/login/isToken',             // 判断Token是否有效
