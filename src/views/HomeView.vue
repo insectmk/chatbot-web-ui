@@ -30,9 +30,9 @@
     </el-header>
 
     <el-container>
-      <!-- 菜单栏 -->
+      <!-- 侧边栏 -->
       <el-aside style="background-color: rgb(238, 241, 246)">
-      <!-- 对话列表 -->
+        <!-- 对话列表 -->
         <el-menu
             default-active="2"
             class="el-menu-vertical-demo">
@@ -47,37 +47,55 @@
         </el-menu>
       </el-aside>
 
-      <!--  密码编辑框    -->
-      <el-dialog
-          title="修改密码"
-          :visible.sync="dialogVisibleEdit"
-          width="30%">
+      <!-- 主内容 -->
+      <el-main>
+        <Dialog :dialogs="historyMessages"></Dialog>
+        <!-- 输入框 -->
+        <el-row style="padding: 10px;">
+          <el-col :span="24">
+            <el-input
+                type="textarea"
+                :rows="3"
+                v-model="messageToSend"
+                placeholder="请输入内容">
+            </el-input>
+            <el-button type="primary" style="float: right;">发送</el-button>
+          </el-col>
+        </el-row>
+      </el-main>
+    </el-container>
 
-        <el-form>
-          <el-form-item>
-            <el-input v-model="password" show-password placeholder="请输入新密码"/>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="passwordRepeat" show-password placeholder="请重复密码"/>
-          </el-form-item>
-        </el-form>
+    <!--  密码编辑框    -->
+    <el-dialog
+        title="修改密码"
+        :visible.sync="dialogVisibleEdit"
+        width="30%">
 
-        <span slot="footer" class="dialog-footer">
+      <el-form>
+        <el-form-item>
+          <el-input v-model="password" show-password placeholder="请输入新密码"/>
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="passwordRepeat" show-password placeholder="请重复密码"/>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisibleEdit = false">取 消</el-button>
           <el-button type="primary" @click="editPassword">确 定</el-button>
         </span>
-      </el-dialog>
-
-      <!-- 主内容 -->
-      <router-view/>
-    </el-container>
+    </el-dialog>
   </el-container>
 </template>
 
 <script>
-import {getSessionAll, getUserInfo, editPassword} from "@/api"
+import {getSessionAll, getUserInfo, editPassword, getHistoryMsg} from "@/api"
+import Dialog from "@/components/Dialog.vue"
 
 export default {
+  components: {
+    Dialog
+  },
   data() {
     return {
       password: '', // 密码
@@ -89,14 +107,21 @@ export default {
       sessions: [],
       // 用户信息
       userInfo: {},
-      // 菜单数据
-      menus: [],
+      // 用户将要发送的消息
+      messageToSend: '',
+      // 会话的历史消息
+      historyMessages: [],
     };
   },
   methods: {
     // 会话被点击
     clickSession(session) {
       console.log(session)
+      getHistoryMsg({
+        sessionId: session.id
+      }).then((res) => {
+        this.historyMessages = res.data.data
+      })
     },
     // 修改密码
     editPassword() {
