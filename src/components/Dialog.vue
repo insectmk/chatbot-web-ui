@@ -7,20 +7,34 @@
     <el-col v-else :span="24"
             v-for="dialog in dialogs"
             :class="dialog.role">
-      {{ dialog.content }}
+      <vue-markdown>
+        {{ dialog.content }}
+      </vue-markdown>
     </el-col>
   </el-row>
 </template>
 
 <script>
+import VueMarkdown from 'vue-markdown'
+
 export default {
   data() {
     return {
-
     }
   },
+  components: {
+    VueMarkdown
+  },
   props: {
-    dialogs: []
+    dialogs: [],
+  },
+  mounted() {
+
+  },
+  watch: {
+    dialogs: function(newVal, oldVal) {
+      this.$forceUpdate()
+    }
   }
 }
 </script>

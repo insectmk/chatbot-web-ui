@@ -50,6 +50,7 @@
       <!-- 主内容 -->
       <el-main>
         <Dialog :dialogs="historyMessages"></Dialog>
+
         <!-- 输入框 -->
         <el-row style="padding: 10px;">
           <el-col :span="24">
@@ -59,7 +60,7 @@
                 v-model="messageToSend"
                 placeholder="请输入内容">
             </el-input>
-            <el-button type="primary" style="float: right;">发送</el-button>
+            <el-button type="primary" style="float: right;" @click="send">发送</el-button>
           </el-col>
         </el-row>
       </el-main>
@@ -91,9 +92,11 @@
 <script>
 import {getSessionAll, getUserInfo, editPassword, getHistoryMsg} from "@/api"
 import Dialog from "@/components/Dialog.vue"
+import VueMarkdown from "vue-markdown";
 
 export default {
   components: {
+    VueMarkdown,
     Dialog
   },
   data() {
@@ -116,11 +119,12 @@ export default {
   methods: {
     // 会话被点击
     clickSession(session) {
-      console.log(session)
       getHistoryMsg({
         sessionId: session.id
       }).then((res) => {
-        this.historyMessages = res.data.data
+        for (let i = 0; i < res.data.data.length; i++) {
+          this.historyMessages = res.data.data
+        }
       })
     },
     // 修改密码
@@ -149,6 +153,10 @@ export default {
       this.logoutVisible = false
       this.$router.replace({path: '/login'})
     },
+    // 发送消息
+    send() {
+
+    }
   },
   created() {
     // 获取登录用户信息
@@ -164,6 +172,19 @@ export default {
 </script>
 
 <style lang="less">
+/**修改全局的滚动条*/
+/**滚动条的宽度*/
+::-webkit-scrollbar {
+  width: 8px;
+
+}
+//滚动条的滑块
+::-webkit-scrollbar-thumb {
+  background-color: #eaecf1;
+  border-radius: 3px;
+}
+
+
 // 解决无法占满高度的问题
 body, html {
   padding: 0;
