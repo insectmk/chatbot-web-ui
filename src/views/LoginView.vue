@@ -1,20 +1,18 @@
 <template>
   <div class="father-box">
-    <el-row>
-      <el-col :xs="20" :sm="20" :md="20" :lg="20" :xl="20">
-        <el-form>
-          <el-row>
-            <el-col span="24">
-              <el-input placeholder="请输入邮箱" v-model="formData.email"/>
-            </el-col>
-            <el-col span="24">
-              <el-input placeholder="请输入密码" v-model="formData.password" show-password/>
-            </el-col>
-          </el-row>
+    <el-form>
+      <el-row style="width: 300px">
+        <el-col :span="24" class="interval">
+          <el-input placeholder="请输入邮箱" v-model="formData.email"/>
+        </el-col>
+        <el-col :span="24" class="interval">
+          <el-input placeholder="请输入密码" v-model="formData.password" show-password/>
+        </el-col>
+        <el-col :span="24" class="interval">
           <el-button style="width: 100%" type="primary" @click="onSubmit">登录</el-button>
-        </el-form>
-      </el-col>
-    </el-row>
+        </el-col>
+      </el-row>
+    </el-form>
   </div>
 </template>
 
@@ -52,6 +50,10 @@ export default {
 </script>
 
 <style lang="less">
+.interval {
+  padding: 10px;
+}
+
 .father-box {
   height: 80vh;
   display: flex;

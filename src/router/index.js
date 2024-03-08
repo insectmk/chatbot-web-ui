@@ -17,6 +17,15 @@ const routes = [
     },
     children: [
       {
+        // 对话页面
+        path: '/dialog/:sessionId',
+        name: '对话',
+        component: () => import('@/views/session/Dialog.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
         // 工作台页面
         path: '/studio',
         name: '工作台',
@@ -53,7 +62,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'hash',
+  mode: 'history',
   base: process.env.BASE_URL,
   routes
 })

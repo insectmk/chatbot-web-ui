@@ -36,68 +36,52 @@
         <el-menu
             default-active="2"
             class="el-menu-vertical-demo">
-          <el-menu-item
-              @click="clickSession(session)"
+          <router-link
               v-for="(session, index) in sessions"
               :key="session.id"
-              :index="String(index)">
-            <i class="el-icon-setting"></i>
-            <span slot="title">{{ session.remark }}</span>
-          </el-menu-item>
+              :to="`/dialog/${session.id}`">
+            <el-menu-item
+                :index="String(index)">
+              <i class="el-icon-setting"></i>
+              <span slot="title">{{ session.remark }}</span>
+            </el-menu-item>
+          </router-link>
         </el-menu>
       </el-aside>
 
       <!-- 主内容 -->
-      <el-main>
-        <Dialog :dialogs="historyMessages"></Dialog>
+      <router-view :key="$route.fullPath" />
+      <!--  密码编辑框    -->
+      <el-dialog
+          title="修改密码"
+          :visible.sync="dialogVisibleEdit"
+          width="30%">
 
-        <!-- 输入框 -->
-        <el-row style="padding: 10px;">
-          <el-col :span="24">
-            <el-input
-                type="textarea"
-                :rows="3"
-                v-model="messageToSend"
-                placeholder="请输入内容">
-            </el-input>
-            <el-button type="primary" style="float: right;" @click="send">发送</el-button>
-          </el-col>
-        </el-row>
-      </el-main>
-    </el-container>
+        <el-form>
+          <el-form-item>
+            <el-input v-model="password" show-password placeholder="请输入新密码"/>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="passwordRepeat" show-password placeholder="请重复密码"/>
+          </el-form-item>
+        </el-form>
 
-    <!--  密码编辑框    -->
-    <el-dialog
-        title="修改密码"
-        :visible.sync="dialogVisibleEdit"
-        width="30%">
-
-      <el-form>
-        <el-form-item>
-          <el-input v-model="password" show-password placeholder="请输入新密码"/>
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="passwordRepeat" show-password placeholder="请重复密码"/>
-        </el-form-item>
-      </el-form>
-
-      <span slot="footer" class="dialog-footer">
+        <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisibleEdit = false">取 消</el-button>
           <el-button type="primary" @click="editPassword">确 定</el-button>
         </span>
-    </el-dialog>
+      </el-dialog>
+    </el-container>
   </el-container>
 </template>
 
 <script>
 import {getSessionAll, getUserInfo, editPassword, getHistoryMsg} from "@/api"
-import Dialog from "@/components/Dialog.vue"
 import VueMarkdown from "vue-markdown";
 
 export default {
   components: {
     VueMarkdown,
-    Dialog
   },
   data() {
     return {
@@ -110,23 +94,9 @@ export default {
       sessions: [],
       // 用户信息
       userInfo: {},
-      // 用户将要发送的消息
-      messageToSend: '',
-      // 会话的历史消息
-      historyMessages: [],
     };
   },
   methods: {
-    // 会话被点击
-    clickSession(session) {
-      getHistoryMsg({
-        sessionId: session.id
-      }).then((res) => {
-        for (let i = 0; i < res.data.data.length; i++) {
-          this.historyMessages = res.data.data
-        }
-      })
-    },
     // 修改密码
     editPassword() {
       // 判断密码是否一致
@@ -172,12 +142,20 @@ export default {
 </script>
 
 <style lang="less">
+a {
+  //去掉下换线
+  text-decoration: none;
+  //文字颜色更改
+  color: black;
+}
+
 /**修改全局的滚动条*/
 /**滚动条的宽度*/
 ::-webkit-scrollbar {
   width: 8px;
 
 }
+
 //滚动条的滑块
 ::-webkit-scrollbar-thumb {
   background-color: #eaecf1;
