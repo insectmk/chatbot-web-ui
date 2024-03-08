@@ -1,8 +1,10 @@
 <template>
   <el-container>
     <!-- 头部 -->
-    <el-header style="text-align: right; font-size: 12px">
-      <el-dropdown trigger="click">
+    <el-header style="display: flex; font-size: 12px">
+      <span style="margin-right: auto; font-size: 18px;">智能聊天机器人</span>
+
+      <el-dropdown style="margin-left: auto;" trigger="click">
           <span class="el-dropdown-link">
             <img :src="userInfo.head" class="user-avatar">
             {{ userInfo.username }}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -31,10 +33,12 @@
 
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside style="background-color: rgb(238, 241, 246)">
+      <el-aside style="width: auto; background-color: rgb(238, 241, 246)">
+        <el-button style="width: 100%" size="small" @click="isCollapse = !isCollapse">展/收</el-button>
         <!-- 对话列表 -->
         <el-menu
             default-active="2"
+            :collapse="isCollapse"
             class="el-menu-vertical-demo">
           <router-link
               v-for="(session, index) in sessions"
@@ -85,6 +89,7 @@ export default {
   },
   data() {
     return {
+      isCollapse: true,
       password: '', // 密码
       passwordRepeat: '', // 重复密码
       dialogVisibleEdit: false, // 编辑框的显示
