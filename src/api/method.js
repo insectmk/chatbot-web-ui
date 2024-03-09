@@ -1,15 +1,11 @@
 // 发送请求
 import axios from 'axios'
-//axios.defaults.withCredentials = true
+// 设置请求带cookie
+axios.defaults.withCredentials = true
+// 设置请求带token请求头
+axios.defaults.headers.common['token'] = localStorage.getItem("token");
 
 export function getActionBinary(url, parameter, headers) {
-  let token = localStorage.getItem("token")
-  if (headers) {
-    headers.token = token
-  } else {
-    headers = {token:token}
-  }
-
   return axios({
     url: url,
     method: 'get',
@@ -21,13 +17,6 @@ export function getActionBinary(url, parameter, headers) {
 
 //post
 export function postAction(url, parameter, headers) {
-  let token = localStorage.getItem("token")
-  if (headers) {
-    headers.token = token
-  } else {
-    headers = {token:token}
-  }
-
   return axios({
     url: url,
     method: 'post',
@@ -38,14 +27,6 @@ export function postAction(url, parameter, headers) {
 
 //post method= {post | put}
 export function httpAction(url, parameter, method, headers) {
-  let token = localStorage.getItem("token")
-
-  if (headers) {
-    headers.token = token
-  } else {
-    headers = {token:token}
-  }
-
   console.log("dddd")
   return axios({
     url: url,
@@ -57,14 +38,6 @@ export function httpAction(url, parameter, method, headers) {
 
 //put
 export function putAction(url, parameter, headers) {
-  let token = localStorage.getItem("token")
-
-  if (headers) {
-    headers.token = token
-  } else {
-    headers = {token:token}
-  }
-
   return axios({
     url: url,
     method: 'put',
@@ -75,14 +48,6 @@ export function putAction(url, parameter, headers) {
 
 //get
 export function getAction(url, parameter, headers) {
-  let token = localStorage.getItem("token")
-
-  if (headers) {
-    headers.token = token
-  } else {
-    headers = {token:token}
-  }
-
   let geturl = toGetUrl(url, parameter)
   return axios({
     url: geturl,
@@ -93,14 +58,6 @@ export function getAction(url, parameter, headers) {
 
 //deleteAction
 export function deleteAction(url, parameter, headers) {
-  let token = localStorage.getItem("token")
-
-  if (headers) {
-    headers.token = token
-  } else {
-    headers = {token:token}
-  }
-
   return axios({
     url: url,
     method: 'delete',

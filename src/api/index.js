@@ -2,6 +2,7 @@ import { apis } from './request'
 import {getAction, deleteAction, putAction, postAction, getActionBinary} from './method'
 
 // **请求
+const sendMsgSteam = (params) => postAction(apis.sendMsgSteam, params, {responseType: 'text/event-stream'})
 const getHistoryMsg = (params) => getAction(apis.getHistoryMsg, params)
 const editPassword = (params) => putAction(apis.editPassword, params)
 const getSessionAll = () => getAction(apis.getSessionAll)
@@ -12,6 +13,7 @@ const login = (params) => postAction(apis.login, params)
 
 // **暴露
 export {
+    sendMsgSteam,
     getHistoryMsg,
     editPassword,
     getSessionAll,

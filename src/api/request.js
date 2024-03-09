@@ -1,22 +1,11 @@
 let host, port;
-if (process.env.VUE_APP_ENV === 'dev') {
-    host = 'http://127.0.0.1'
-    port = '9001'
-}
-else if (process.env.VUE_APP_ENV === 'gitee') {
-    host = 'http://150.158.46.188'
-    port = '9001'
-}
-else if (process.env.VUE_APP_ENV === 'pro') {
-    host = 'http://150.158.46.188'
-    port = '9001'
-} else {
-    host = 'http://127.0.0.1'
-    port = '9001'
-}
+
+host = 'http://localhost'
+port = '9001'
 
 // 后端接口
 const apis = {
+    sendMsgSteam: '/chatMessage/stream',    // 发送消息（流式接收）
     getHistoryMsg: '/chatSession',      // 查询会话的历史消息
     editPassword: '/user',               // 修改密码
     getSessionAll: '/chatSession/all',                      // 获取用户所有的会话
