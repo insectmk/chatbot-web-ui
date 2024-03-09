@@ -15,10 +15,12 @@
     "echarts": "^5.4.3",
     "element-ui": "^2.15.14",
     "font-awesome": "^4.7.0",
+    "highlight.js": "^11.9.0",
     "html-loader": "^0.5.5",
     "lodash": "^4.17.21",
+    "marked": "^12.0.1",
+    "marked-highlight": "^2.1.1",
     "vue": "^2.6.14",
-    "vue-markdown": "^2.2.4",
     "vue-router": "^3.5.1"
   },
   "devDependencies": {

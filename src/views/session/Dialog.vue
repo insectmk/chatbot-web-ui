@@ -10,10 +10,8 @@
             label="聊天消息"
             style="width: 100%">
           <template slot-scope="scope">
-            <div :class="scope.row.role">
-              <vue-markdown>
-                {{ scope.row.content }}
-              </vue-markdown>
+            <div :class="scope.row.role" v-html="marked(scope.row.content)">
+
             </div>
           </template>
         </el-table-column>
@@ -38,18 +36,32 @@
 
 <script>
 import {getHistoryMsg, sendMsg} from '@/api'
-import VueMarkdown from 'vue-markdown'
+import {marked} from 'marked'
+import { markedHighlight } from "marked-highlight"
+import hljs from 'highlight.js'
+// 注意引入样式，你可以前往 node_module 下查看更多的样式主题
+import 'highlight.js/styles/base16/darcula.css'
+
+// 高亮拓展
+marked.use(markedHighlight({
+  langPrefix: 'hljs language-',
+  highlight(code, lang) {
+    const language = hljs.getLanguage(lang) ? lang : 'shell'
+    return hljs.highlight(code, { language }).value
+  }
+}))
 
 export default {
   data() {
     return {
+      marked: marked,
       dialogs: [],
       sessionId: '',
       messageToSend: '',
     }
   },
   components: {
-    VueMarkdown
+
   },
   mounted() {
 
