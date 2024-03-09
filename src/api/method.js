@@ -1,9 +1,11 @@
-// 发送请求
 import axios from 'axios'
-// 设置请求带cookie
+
+// 全局设置请求带cookie
 axios.defaults.withCredentials = true
-// 设置请求带token请求头
+// 全局设置请求带token请求头
 axios.defaults.headers.common['token'] = localStorage.getItem("token");
+// 全局设置API地址
+axios.defaults.baseURL = 'http://127.0.0.1:9001'
 
 export function getActionBinary(url, parameter, headers) {
   return axios({
