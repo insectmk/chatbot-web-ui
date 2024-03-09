@@ -8,6 +8,16 @@
         <el-col :span="24" class="interval">
           <el-input placeholder="请输入密码" v-model="formData.password" show-password/>
         </el-col>
+        <el-col :span="17" class="interval">
+          <el-input placeholder="请输入验证码" v-model="formData.captcha"/>
+        </el-col>
+        <el-col :span="7" style="padding: 10px 10px 0 0;">
+          <el-image
+              style="width: 100%;height: 100%;object-fit:cover;"
+              @click="flushCaptcha"
+              :src="captchaSrc"
+              fit="fill"></el-image>
+        </el-col>
         <el-col :span="24" class="interval">
           <el-button style="width: 100%" type="primary" @click="onSubmit">登录</el-button>
         </el-col>
@@ -18,6 +28,7 @@
 
 <script>
 import {login,getCaptcha} from '@/api'
+import axios from "axios"
 
 export default {
   data() {
@@ -26,11 +37,24 @@ export default {
         email: '',
         password: '',
       },
+      captchaSrc: '',
     }
   },
   created() {
+    this.flushCaptcha()
   },
   methods: {
+    // 刷新图片
+    flushCaptcha() {
+      getCaptcha().then((res) => {
+        return (
+            'data:image/png;base64,' +
+            btoa(new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), ''))
+        )
+      }).then((data) => {
+        this.captchaSrc = data //data可以直接放到img标签的src中
+      })
+    },
     // 提交登录
     onSubmit() {
       login(this.formData).then((res) => {
@@ -38,6 +62,8 @@ export default {
           this.$message.success(res.data.message)
           // 将令牌转到localStorage中
           localStorage.setItem('token', res.data.data)
+          // 设置全局请求头
+          axios.defaults.headers.common['token'] = res.data.data;
           // 跳转到主页
           this.$router.push({path: '/'})
         } else {
