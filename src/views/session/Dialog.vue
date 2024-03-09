@@ -37,8 +37,8 @@
 </template>
 
 <script>
-import VueMarkdown from 'vue-markdown'
 import {getHistoryMsg, sendMsg} from '@/api'
+import VueMarkdown from 'vue-markdown'
 
 export default {
   data() {
@@ -51,7 +51,9 @@ export default {
   components: {
     VueMarkdown
   },
+  mounted() {
 
+  },
   created() {
     // 赋值会话ID
     this.sessionId = this.$route.params.sessionId
@@ -99,12 +101,9 @@ export default {
         sessionId: this.sessionId,
         messageContent: this.messageToSend
       }).then((res) => {
-        const data = res.data.replaceAll('\n', '').replaceAll('data:', '')
-        // 处理解析后的数据
-        console.log(data)
         this.dialogs.push({
           role: 'assistant',
-          content: data
+          content: res.data.data
         })
       }).then(() => {
         // 关闭加载框

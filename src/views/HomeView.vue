@@ -81,11 +81,10 @@
 
 <script>
 import {getSessionAll, getUserInfo, editPassword, getHistoryMsg} from "@/api"
-import VueMarkdown from "vue-markdown";
 
 export default {
   components: {
-    VueMarkdown,
+
   },
   data() {
     return {
