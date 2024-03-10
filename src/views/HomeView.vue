@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import {getSessionAll, getUserInfo, editPassword, getHistoryMsg} from "@/api"
+import {getSessionAll, getUserInfo, editPassword, delSession} from "@/api"
 import Dialog from "@/components/Dialog.vue"
 
 export default {
@@ -131,10 +131,31 @@ export default {
     delSessionAct() {
       // 关闭删除会话确认框
       this.delSessionVisible = false
-      // 清除会话数组中对应的数据
-      this.sessions = this.sessions.filter(session => session.id !== this.sessionId)
-      // 重新设置当前会话
-      this.sessionId = this.sessions[0].id
+      // 发送删除请求
+      delSession({
+        sessionId: this.sessionId
+      }).then(res => {
+          if (res.data.flag) {
+            // 成功提示
+            this.$notify.success({
+              title: '成功',
+              message: res.data.message,
+            });
+          } else {
+            this.$notify.error({
+              title: '错误',
+              message: res.data.message,
+            });
+          }
+          return res.data.flag
+      }).then(flag => {
+        if (flag) {
+          // 清除会话数组中对应的数据
+          this.sessions = this.sessions.filter(session => session.id !== this.sessionId)
+          // 重新设置当前会话
+          this.sessionId = this.sessions[0].id
+        }
+      })
     },
     // 修改密码
     editPassword() {
@@ -147,10 +168,16 @@ export default {
           password: this.password
         }).then((res) => {
           if (res.data.flag) {
-            this.$message.success(res.data.message)
+            this.$notify.success({
+              title: '成功',
+              message: res.data.message
+            })
             this.dialogVisibleEdit = false
           } else {
-            this.$message.error(res.data.message)
+            this.$notify.error({
+              title: '错误',
+              message: res.data.message
+            })
           }
         })
       }
@@ -160,14 +187,14 @@ export default {
       // 删除令牌
       localStorage.removeItem('token')
       this.logoutVisible = false
+      this.$notify.success({
+        title: '成功',
+        message: '已安全退出',
+      });
       this.$router.replace({path: '/login'})
     },
-    // 发送消息
-    send() {
-
-    }
   },
-  mounted() {
+  created() {
     // 获取登录用户信息
     getUserInfo().then((res) => {
       this.userInfo = res.data.data

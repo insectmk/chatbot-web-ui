@@ -1,7 +1,8 @@
 // 后端接口
 const apis = {
+    delSession: '/chatSession', // 删除会话
     sendMsg: '/chatMessage',    // 发送消息
-    sendMsgSteam: '/chatMessage/stream',    // 发送消息（流式接收）
+    sendMsgStream: '/chatMessage/stream',    // 发送消息（流式接收）
     getHistoryMsg: '/chatSession',      // 查询会话的历史消息
     editPassword: '/user',               // 修改密码
     getSessionAll: '/chatSession/all',                      // 获取用户所有的会话

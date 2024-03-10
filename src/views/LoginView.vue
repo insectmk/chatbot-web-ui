@@ -41,6 +41,7 @@ export default {
     }
   },
   created() {
+    // 获取验证码
     this.flushCaptcha()
   },
   methods: {
@@ -59,7 +60,11 @@ export default {
     onSubmit() {
       login(this.formData).then((res) => {
         if (res.data.flag) {
-          this.$message.success(res.data.message)
+          // 成功提示
+          this.$notify.success({
+            title: '成功',
+            message: res.data.message,
+          });
           // 将令牌转到localStorage中
           localStorage.setItem('token', res.data.data)
           // 设置全局请求头
@@ -67,7 +72,13 @@ export default {
           // 跳转到主页
           this.$router.push({path: '/'})
         } else {
-          this.$message.error(res.data.message)
+          // 错误提示
+          this.$notify.error({
+            title: '错误',
+            message: res.data.message
+          })
+          // 刷新验证码
+          this.flushCaptcha()
         }
       })
     }
