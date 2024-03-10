@@ -11,25 +11,16 @@ const routes = [
     path: '/',
     name: '主页面',
     component: HomeView,
-    redirect: '/studio', // 默认子页面
+    //redirect: '/studio', // 默认子页面
     meta: {
       requiresAuth: true
     },
-    children: [
+    /*children: [
       {
         // 对话页面
         path: '/dialog/:sessionId',
         name: '对话',
         component: () => import('@/views/session/Dialog.vue'),
-        meta: {
-          requiresAuth: true
-        }
-      },
-      {
-        // 工作台页面
-        path: '/studio',
-        name: '工作台',
-        component: () => import('@/views/Studio.vue'),
         meta: {
           requiresAuth: true
         }
@@ -39,7 +30,7 @@ const routes = [
         name: '未找到',
         component: () => import('@/views/404.vue')
       },
-    ],
+    ],*/
   },{
     // 登录页面
     path: '/login',

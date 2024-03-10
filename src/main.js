@@ -1,12 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import Navbar from "@/components/Navbar.vue"
 import { isTokenEffective } from '@/api'
-import axios from 'axios'
-
-//意思是携带cookie信息,保持session的一致性
-//axios.defaults.withCredentials =true
 
 // 引入Element-UI
 import ElementUI from 'element-ui'
@@ -36,8 +31,6 @@ router.beforeEach((to, from, next) => {
   })
 })
 
-// 注册导航
-Vue.component('Navbar', Navbar)
 
 new Vue({
   router,

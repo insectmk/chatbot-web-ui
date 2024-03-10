@@ -11,7 +11,6 @@
             style="width: 100%">
           <template slot-scope="scope">
             <div :class="scope.row.role" v-html="marked(scope.row.content)">
-
             </div>
           </template>
         </el-table-column>
@@ -56,39 +55,21 @@ export default {
     return {
       marked: marked,
       dialogs: [],
-      sessionId: '',
       messageToSend: '',
     }
   },
-  components: {
-
-  },
-  mounted() {
-
+  props: {
+    sessionId: ''
   },
   created() {
-    // 赋值会话ID
-    this.sessionId = this.$route.params.sessionId
-    // 弹出加载框
-    const loading = this.$loading({
-      lock: true,
-      text: '加载中...',
-      spinner: 'el-icon-loading',
-      background: 'rgba(0, 0, 0, 0.7)'
-    });
     // 获取历史消息
-    getHistoryMsg({
-      sessionId: this.sessionId
-    }).then(res => {
-      this.dialogs = res.data.data
-    }).then(() => {
-      // 关闭加载框
-      loading.close()
-    })
+    this.getHistoryMessages()
   },
   watch: {
-    $route: function (newVal, oldVal) {
-
+    // 会话变化刷新历史消息
+    sessionId: function (newVal, oldVal) {
+      // 获取历史消息
+      this.getHistoryMessages()
     }
   },
   methods: {
@@ -118,6 +99,8 @@ export default {
           content: res.data.data
         })
       }).then(() => {
+        // 用户清除输入的消息
+        this.messageToSend = ''
         // 关闭加载框
         loading.close();
       })
@@ -149,6 +132,25 @@ export default {
           return reader.read().then(process);
         });
       })*/
+    },
+    // 获取历史消息
+    getHistoryMessages() {
+      // 弹出加载框
+      const loading = this.$loading({
+        lock: true,
+        text: '加载中...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+      // 获取历史消息
+      getHistoryMsg({
+        sessionId: this.sessionId
+      }).then(res => {
+        this.dialogs = res.data.data
+      }).then(() => {
+        // 关闭加载框
+        loading.close()
+      })
     }
   }
 }

@@ -34,28 +34,45 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside style="width: auto; background-color: rgb(238, 241, 246)">
-        <el-button style="width: 100%" size="small" @click="isCollapse = !isCollapse">展/收</el-button>
+        <el-button plain style="width: 100%" size="small" @click="isCollapse = !isCollapse">展/收</el-button>
+        <br/>
+        <el-button plain type="primary" style="width: 100%" size="small" @click="addSessionAct">新建</el-button>
+        <br/>
+        <el-popover
+            placement="top-start"
+            width="160"
+            v-model="delSessionVisible">
+          <p>确定删除当前会话吗？</p>
+          <div style="text-align: right; margin: 0">
+            <el-button size="mini" type="text" @click="delSessionVisible = false">取消</el-button>
+            <el-button type="primary" size="mini" @click="delSessionAct">确定</el-button>
+          </div>
+          <span slot="reference">
+            <el-button plain type="danger"
+                       style="width: 100%"
+                       size="small">删除</el-button>
+          </span>
+        </el-popover>
+
         <!-- 对话列表 -->
         <el-menu
-            default-active="2"
+            :default-active="sessionId"
             :collapse="isCollapse"
             class="el-menu-vertical-demo">
-          <router-link
-              v-for="(session, index) in sessions"
-              :key="session.id"
-              :to="`/dialog/${session.id}`">
             <el-menu-item
-                :index="String(index)">
-              <i class="el-icon-setting"></i>
+                v-for="(session) in sessions"
+                @click="sessionId = session.id"
+                :key="session.id"
+                :index="session.id">
               <span slot="title">{{ session.remark }}</span>
+              <i class="el-icon-service"></i>
             </el-menu-item>
-          </router-link>
         </el-menu>
       </el-aside>
 
       <!-- 主内容 -->
-      <router-view :key="$route.fullPath" />
-      <!--  密码编辑框    -->
+      <Dialog :sessionId="sessionId"></Dialog>
+      <!--  密码编辑框  -->
       <el-dialog
           title="修改密码"
           :visible.sync="dialogVisibleEdit"
@@ -81,10 +98,11 @@
 
 <script>
 import {getSessionAll, getUserInfo, editPassword, getHistoryMsg} from "@/api"
+import Dialog from "@/components/Dialog.vue"
 
 export default {
   components: {
-
+    Dialog
   },
   data() {
     return {
@@ -94,13 +112,30 @@ export default {
       dialogVisibleEdit: false, // 编辑框的显示
       // 登出按钮的显示控制
       logoutVisible: false,
+      // 删除会话
+      delSessionVisible: false,
       // 用户会话列表
       sessions: [],
+      // 当前会话的ID
+      sessionId: '',
       // 用户信息
       userInfo: {},
     };
   },
   methods: {
+    // 添加会话
+    addSessionAct() {
+      console.log(this.sessionId)
+    },
+    // 删除会话
+    delSessionAct() {
+      // 关闭删除会话确认框
+      this.delSessionVisible = false
+      // 清除会话数组中对应的数据
+      this.sessions = this.sessions.filter(session => session.id !== this.sessionId)
+      // 重新设置当前会话
+      this.sessionId = this.sessions[0].id
+    },
     // 修改密码
     editPassword() {
       // 判断密码是否一致
@@ -132,7 +167,7 @@ export default {
 
     }
   },
-  created() {
+  mounted() {
     // 获取登录用户信息
     getUserInfo().then((res) => {
       this.userInfo = res.data.data
@@ -140,6 +175,9 @@ export default {
     // 获取用户对话列表
     getSessionAll().then((res) => {
       this.sessions = res.data.data
+      return res.data.data
+    }).then((sessions) => {
+      this.sessionId = sessions[0].id
     })
   },
 };
