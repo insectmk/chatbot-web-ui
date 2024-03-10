@@ -36,7 +36,7 @@
       <el-aside style="width: auto; background-color: rgb(238, 241, 246)">
         <el-button plain style="width: 100%" size="small" @click="isCollapse = !isCollapse">展/收</el-button>
         <br/>
-        <el-button plain type="primary" style="width: 100%" size="small" @click="addSessionAct">新建</el-button>
+        <el-button plain type="primary" style="width: 100%" size="small" @click="dialogVisibleAddSession = true">新建</el-button>
         <br/>
         <el-popover
             placement="top-start"
@@ -92,6 +92,27 @@
           <el-button type="primary" @click="editPassword">确 定</el-button>
         </span>
       </el-dialog>
+
+      <!--  新建会话框  -->
+      <el-dialog
+          title="新建会话"
+          :visible.sync="dialogVisibleAddSession"
+          width="30%">
+
+        <el-form>
+          <el-form-item>
+            <el-input v-model="formDataSession.modelVersionId" placeholder="选择模型"/>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="formDataSession.remark" placeholder="对话备注"/>
+          </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisibleEdit = false">取 消</el-button>
+          <el-button type="primary" @click="addSessionAct">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-container>
   </el-container>
 </template>
@@ -106,6 +127,15 @@ export default {
   },
   data() {
     return {
+      // 新建对话框显示控制
+      dialogVisibleAddSession: false,
+      // 新建对话的表单内容
+      formDataSession: {
+        // 模型ID
+        modelVersionId: '',
+        // 对话备注
+        remark: '',
+      },
       isCollapse: true,
       password: '', // 密码
       passwordRepeat: '', // 重复密码
@@ -125,7 +155,8 @@ export default {
   methods: {
     // 添加会话
     addSessionAct() {
-      console.log(this.sessionId)
+      console.log(this.formDataSession)
+      this.dialogVisibleAddSession = false
     },
     // 删除会话
     delSessionAct() {
