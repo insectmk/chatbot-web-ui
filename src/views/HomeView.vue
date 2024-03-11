@@ -256,7 +256,10 @@ export default {
     editPassword() {
       // 判断密码是否一致
       if (this.password !== this.passwordRepeat) {
-        this.$message.error('两次密码不一致')
+        this.$notify.error({
+          title: '错误',
+          message: '两次密码不一致',
+        })
       } else {
         // 发送修改请求
         editPassword({
@@ -265,9 +268,12 @@ export default {
           if (res.data.flag) {
             this.$notify.success({
               title: '成功',
-              message: res.data.message
+              message: '密码修改成功,请重新登录！'
             })
             this.dialogVisibleEdit = false
+            // 重新登录
+            localStorage.removeItem('token')
+            this.$router.replace({path: '/login'})
           } else {
             this.$notify.error({
               title: '错误',
