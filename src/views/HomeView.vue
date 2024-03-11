@@ -35,7 +35,7 @@
       <!-- 侧边栏 -->
       <el-aside style="width: auto; background-color: rgb(238, 241, 246)">
         <el-popover
-            placement="top-start"
+            placement="right"
             width="130"
             trigger="hover"
             content="展开/收起侧边栏">
@@ -43,7 +43,7 @@
         </el-popover>
         <br/>
         <el-popover
-            placement="top-start"
+            placement="right"
             width="130"
             trigger="hover"
             content="创建一个新的会话">
@@ -117,7 +117,7 @@
               <el-popover
                   v-for="modelVersion in modelVersions"
                   :key="modelVersion.id"
-                  placement="top-start"
+                  placement="right"
                   :title="modelVersion.name"
                   width="200"
                   trigger="hover"
