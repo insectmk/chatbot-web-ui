@@ -2,16 +2,20 @@
   <el-container>
     <!-- 头部 -->
     <el-header style="display: flex; font-size: 12px">
+      <!-- 头部左侧系统名 -->
       <span style="margin-right: auto; font-size: 18px;">智能聊天机器人</span>
-
+      <!-- 头部右侧用户功能下拉菜单 -->
       <el-dropdown style="margin-left: auto;" trigger="click">
           <span class="el-dropdown-link">
             <img :src="userInfo.head" class="user-avatar">
             {{ userInfo.username }}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="dialogVisibleEdit = true">修改密码</el-dropdown-item>
-
+          <!-- 个人信息 -->
+          <el-dropdown-item @click.native="dialogVisibleUserInfo = true">个人信息</el-dropdown-item>
+          <!-- 修改密码 -->
+          <el-dropdown-item divided @click.native="dialogVisibleEdit = true">修改密码</el-dropdown-item>
+          <!-- 退出登录 -->
           <el-popover
               placement="top-start"
               width="160"
@@ -82,8 +86,9 @@
         </el-menu>
       </el-aside>
 
-      <!-- 主内容 -->
+      <!-- 主内容（会话消息） -->
       <Dialog :sessionId="sessionId"></Dialog>
+
       <!--  密码编辑框  -->
       <el-dialog
           title="修改密码"
@@ -138,6 +143,43 @@
           <el-button type="primary" @click="addSessionAct">确 定</el-button>
         </span>
       </el-dialog>
+
+      <!--  个人信息框  -->
+      <el-dialog
+          title="个人信息"
+          :visible.sync="dialogVisibleUserInfo"
+          width="30%">
+
+        <el-form label-width="auto"
+                 label-position="left">
+          <el-form-item label="用户名">
+            <el-input v-model="userInfo.username" readonly placeholder="用户名"/>
+          </el-form-item>
+          <el-form-item label="邮箱">
+            <el-input v-model="userInfo.email" readonly placeholder="邮箱"/>
+          </el-form-item>
+          <el-form-item label="头像">
+            <el-input v-model="userInfo.head" readonly placeholder="头像"/>
+          </el-form-item>
+          <el-form-item label="API密钥">
+            <el-input v-model="userInfo.apiKey" readonly placeholder="API密钥">
+              <el-button slot="prepend" @click="copyApiKey">复制</el-button>
+              <el-button slot="append" @click="getApiKeyClick">重新生成</el-button>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="注册时间">
+            <el-input v-model="userInfo.registrationTime" readonly placeholder="注册时间"/>
+          </el-form-item>
+          <el-form-item label="最后登录时间">
+            <el-input v-model="userInfo.lastLoginTime" readonly placeholder="最后登录时间"/>
+          </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisibleUserInfo = false">关 闭</el-button>
+<!--          <el-button type="primary" @click="editPassword">确 定</el-button>-->
+        </span>
+      </el-dialog>
     </el-container>
   </el-container>
 </template>
@@ -180,12 +222,32 @@ export default {
       // 当前会话的ID
       sessionId: '',
       // 用户信息
-      userInfo: {},
+      userInfo: {
+        username: '',
+        email: '',
+        head: '',
+        apiKey: '',
+        registrationTime: '',
+        lastLoginTime: ''
+      },
       // 模型列表
-      modelVersions: []
+      modelVersions: [],
+      // 个人信息编辑框显示
+      dialogVisibleUserInfo: false,
     };
   },
   methods: {
+    // 复制APIKEY
+    copyApiKey() {
+      this.$notify.success({
+        title: '成功',
+        message: '复制成功！',
+      });
+    },
+    // 获取API密钥
+    getApiKeyClick() {
+      this.userInfo.apiKey = '新获取的APIKEY' + Math.random()
+    },
     // 添加会话
     addSessionAct() {
       // 发送添加请求
