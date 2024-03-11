@@ -15,22 +15,6 @@ const routes = [
     meta: {
       requiresAuth: true
     },
-    /*children: [
-      {
-        // 对话页面
-        path: '/dialog/:sessionId',
-        name: '对话',
-        component: () => import('@/views/session/Dialog.vue'),
-        meta: {
-          requiresAuth: true
-        }
-      },{
-        // 登录页面
-        path: '/404',
-        name: '未找到',
-        component: () => import('@/views/404.vue')
-      },
-    ],*/
   },{
     // 登录页面
     path: '/login',
@@ -39,17 +23,13 @@ const routes = [
   },{
     // 跳转到404页面
     path: '*',
-    redirect: '/404'
-  }
-
-  // {
-  //   path: '/about',
-  //   name: 'about',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/MainView.vue')
-  // }
+    redirect: '/notFound'
+  },{
+    // 未找到页面
+    path: '/notFound',
+    name: '未找到',
+    component: () => import('@/views/NotFound.vue')
+  },
 ]
 
 const router = new VueRouter({

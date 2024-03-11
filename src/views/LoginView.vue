@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import {login,getCaptcha} from '@/api'
+import {login,getCaptcha,isTokenEffective} from '@/api'
 import axios from "axios"
 
 export default {
@@ -41,6 +41,16 @@ export default {
     }
   },
   created() {
+    // 如果已经登录，则跳转到主页面
+    const token = localStorage.getItem("token");
+    isTokenEffective({ token: token }).then((res) => {
+      //根据token是否有效，判断是否需要调到登录⻚⾯
+      if (res.data.flag) {
+        this.$router.replace({
+          path: '/'
+        })
+      }
+    })
     // 获取验证码
     this.flushCaptcha()
   },
