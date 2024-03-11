@@ -143,7 +143,13 @@
 </template>
 
 <script>
-import {getSessionAll, getUserInfo, editPassword, delSession, getModelVersionAll} from "@/api"
+import {
+  getSessionAll,
+  getUserInfo,
+  editPassword,
+  delSession,
+  getModelVersionAll,
+  addSession} from "@/api"
 import Dialog from "@/components/Dialog.vue"
 
 export default {
@@ -182,8 +188,29 @@ export default {
   methods: {
     // 添加会话
     addSessionAct() {
-      console.log(this.formDataSession)
-      this.dialogVisibleAddSession = false
+      // 发送添加请求
+      addSession(this.formDataSession).then(res => {
+        if (res.data.flag) {
+          // 成功提示
+          this.$notify.success({
+            title: '成功',
+            message: res.data.message,
+          });
+          // 获取用户对话列表
+          this.getSessions()
+          // 清除历史信息
+          this.formDataSession.modelVersionId = ''
+          this.formDataSession.remark = ''
+          // 关闭添加框
+          this.dialogVisibleAddSession = false
+        } else {
+          // 成功提示
+          this.$notify.error({
+            title: '错误',
+            message: res.data.message,
+          });
+        }
+      })
     },
     // 点击新建会话按钮
     addSessionClick() {
@@ -261,19 +288,28 @@ export default {
       });
       this.$router.replace({path: '/login'})
     },
-  },
-  mounted() {
-    // 获取登录用户信息
-    getUserInfo().then((res) => {
-      this.userInfo = res.data.data
-    })
+    // 获取用户信息
+    getUser() {
+      // 获取登录用户信息
+      getUserInfo().then((res) => {
+        this.userInfo = res.data.data
+      })
+    },
     // 获取用户对话列表
-    getSessionAll().then((res) => {
-      this.sessions = res.data.data
-      return res.data.data
-    }).then((sessions) => {
-      this.sessionId = sessions[0].id
-    })
+    getSessions() {
+      getSessionAll().then((res) => {
+        this.sessions = res.data.data
+        return res.data.data
+      }).then((sessions) => {
+        this.sessionId = sessions[0].id
+      })
+    }
+  },
+  created() {
+    // 获取用户信息
+    this.getUser()
+    // 获取用户所有对话
+    this.getSessions()
   },
 };
 </script>

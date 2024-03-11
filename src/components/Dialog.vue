@@ -1,7 +1,13 @@
 <template>
   <el-main class="main">
     <el-row class="container">
+      <div v-if="Array.isArray(dialogs) && dialogs.length === 0" class="assistant">
+        <h2>你好 我是智能聊天机器人</h2>
+        <p>极速有效地提升工作效率，聪明一点，每天少工作一小时！</p>
+      </div>
       <el-table
+          v-else
+          empty-text="您还没有进行对话哦~"
           :data="dialogs"
           style="width: 100%"
           :show-header="false">
@@ -70,6 +76,11 @@ export default {
     sessionId: function (newVal, oldVal) {
       // 获取历史消息
       this.getHistoryMessages()
+      // 提示成功消息
+      this.$notify.success({
+        title: '成功',
+        message: '已成功切换会话！'
+      })
     }
   },
   methods: {

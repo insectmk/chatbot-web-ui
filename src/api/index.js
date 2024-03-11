@@ -2,6 +2,7 @@ import { apis } from './request'
 import {getAction, deleteAction, putAction, postAction, getActionBinary} from './method'
 
 // **请求
+const addSession = (params) => postAction(apis.addSession, params)
 const getModelVersionAll = (params) => getAction(apis.getModelVersionAll, params)
 const delSession = (params) => deleteAction(apis.delSession, params)
 const sendMsg = (params) => postAction(apis.sendMsg, params)
@@ -16,6 +17,7 @@ const login = (params) => postAction(apis.login, params)
 
 // **暴露
 export {
+    addSession,
     getModelVersionAll,
     delSession,
     sendMsg,
