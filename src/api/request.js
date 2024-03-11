@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    getModelVersionAll: '/modelVersion/all', // 获取所有的模型信息
     delSession: '/chatSession', // 删除会话
     sendMsg: '/chatMessage',    // 发送消息
     sendMsgStream: '/chatMessage/stream',    // 发送消息（流式接收）

@@ -2,6 +2,7 @@ import { apis } from './request'
 import {getAction, deleteAction, putAction, postAction, getActionBinary} from './method'
 
 // **请求
+const getModelVersionAll = (params) => getAction(apis.getModelVersionAll, params)
 const delSession = (params) => deleteAction(apis.delSession, params)
 const sendMsg = (params) => postAction(apis.sendMsg, params)
 const sendMsgStream = (params) => postAction(apis.sendMsgStream, params, {responseType: 'text/event-stream'})
@@ -15,6 +16,7 @@ const login = (params) => postAction(apis.login, params)
 
 // **暴露
 export {
+    getModelVersionAll,
     delSession,
     sendMsg,
     sendMsgStream,

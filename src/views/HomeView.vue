@@ -34,9 +34,21 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside style="width: auto; background-color: rgb(238, 241, 246)">
-        <el-button plain style="width: 100%" size="small" @click="isCollapse = !isCollapse">展/收</el-button>
+        <el-popover
+            placement="top-start"
+            width="130"
+            trigger="hover"
+            content="展开/收起侧边栏">
+          <el-button plain slot="reference" style="width: 100%" size="small" @click="isCollapse = !isCollapse">展/收</el-button>
+        </el-popover>
         <br/>
-        <el-button plain type="primary" style="width: 100%" size="small" @click="dialogVisibleAddSession = true">新建</el-button>
+        <el-popover
+            placement="top-start"
+            width="130"
+            trigger="hover"
+            content="创建一个新的会话">
+          <el-button plain slot="reference" type="primary" style="width: 100%" size="small" @click="addSessionClick">新建</el-button>
+        </el-popover>
         <br/>
         <el-popover
             placement="top-start"
@@ -101,7 +113,20 @@
 
         <el-form>
           <el-form-item>
-            <el-input v-model="formDataSession.modelVersionId" placeholder="选择模型"/>
+            <el-select style="width: 100%" v-model="formDataSession.modelVersionId" placeholder="选择模型">
+              <el-popover
+                  v-for="modelVersion in modelVersions"
+                  :key="modelVersion.id"
+                  placement="top-start"
+                  :title="modelVersion.name"
+                  width="200"
+                  trigger="hover"
+                  :content="modelVersion.remark">
+                <el-option :label="modelVersion.name"
+                           :value="modelVersion.id"
+                           slot="reference"></el-option>
+              </el-popover>
+            </el-select>
           </el-form-item>
           <el-form-item>
             <el-input v-model="formDataSession.remark" placeholder="对话备注"/>
@@ -118,7 +143,7 @@
 </template>
 
 <script>
-import {getSessionAll, getUserInfo, editPassword, delSession} from "@/api"
+import {getSessionAll, getUserInfo, editPassword, delSession, getModelVersionAll} from "@/api"
 import Dialog from "@/components/Dialog.vue"
 
 export default {
@@ -150,6 +175,8 @@ export default {
       sessionId: '',
       // 用户信息
       userInfo: {},
+      // 模型列表
+      modelVersions: []
     };
   },
   methods: {
@@ -157,6 +184,16 @@ export default {
     addSessionAct() {
       console.log(this.formDataSession)
       this.dialogVisibleAddSession = false
+    },
+    // 点击新建会话按钮
+    addSessionClick() {
+      // 查询所有的模型信息
+      getModelVersionAll().then(res => {
+        this.modelVersions = res.data.data
+      }).then(() => {
+        // 打开编辑框
+        this.dialogVisibleAddSession = true
+      })
     },
     // 删除会话
     delSessionAct() {
@@ -225,7 +262,7 @@ export default {
       this.$router.replace({path: '/login'})
     },
   },
-  created() {
+  mounted() {
     // 获取登录用户信息
     getUserInfo().then((res) => {
       this.userInfo = res.data.data
