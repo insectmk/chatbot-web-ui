@@ -1,5 +1,11 @@
 # 智能聊天机器人前端页面
 
+## 介绍
+
+本项目基于Vue2+ElementUI。
+
+后端见[智能聊天机器人前端页面](https://gitee.com/makuning/chatbot-web)。
+
 ## 运行项目
 
 ```bash
