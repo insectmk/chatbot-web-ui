@@ -3,10 +3,16 @@
     <el-form>
       <el-row style="width: 300px">
         <el-col :span="24" class="interval">
+          <el-input placeholder="请输入用户名" v-model="formData.username"/>
+        </el-col>
+        <el-col :span="24" class="interval">
           <el-input placeholder="请输入邮箱" v-model="formData.email"/>
         </el-col>
         <el-col :span="24" class="interval">
           <el-input placeholder="请输入密码" v-model="formData.password" show-password/>
+        </el-col>
+        <el-col :span="24" class="interval">
+          <el-input placeholder="请确认密码" v-model="formData.passwordRepeat" show-password/>
         </el-col>
         <el-col :span="17" class="interval">
           <el-input placeholder="请输入验证码" v-model="formData.captcha"/>
@@ -19,10 +25,7 @@
               fit="fill"></el-image>
         </el-col>
         <el-col :span="24" class="interval">
-          <el-button style="width: 100%" type="primary" @click="onSubmit">登录</el-button>
-        </el-col>
-        <el-col :span="24" class="interval">
-          <el-link class="unselectable" type="primary" target="_blank" @click="registerClick">立即注册</el-link>
+          <el-button style="width: 100%" type="primary" @click="onSubmit">注册</el-button>
         </el-col>
       </el-row>
     </el-form>
@@ -37,21 +40,16 @@ export default {
   data() {
     return {
       formData: {
+        username:'',
         email: '',
         password: '',
+        passwordRepeat: '',
         captcha: '',
       },
       captchaSrc: '',
     }
   },
   methods: {
-    // 点击注册按钮
-    registerClick() {
-      // 跳转到注册页面
-      this.$router.replace({
-        path: '/register'
-      })
-    },
     // 刷新图片
     flushCaptcha() {
       getCaptcha().then((res) => {

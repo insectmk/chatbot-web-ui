@@ -16,9 +16,14 @@ const routes = [
       requiresAuth: true
     },
   },{
+    // 注册页面
+    path: '/register',
+    name: '注册页面',
+    component: () => import('@/views/Register.vue')
+  },{
     // 登录页面
     path: '/login',
-    name: 'login',
+    name: '登录页面',
     component: LoginView
   },{
     // 跳转到404页面
