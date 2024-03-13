@@ -1,37 +1,45 @@
 # 智能聊天机器人前端页面
 
-#### 介绍
-聊天机器人前端页面
+## 介绍
 
-#### 软件架构
-软件架构说明
+本项目基于Vue2+ElementUI。
 
+后端见[智能聊天机器人前端页面](https://gitee.com/makuning/chatbot-web)。
 
-#### 安装教程
+## 项目演示
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+**主页面**
 
-#### 使用说明
+![image-20240313163004172](README.assets/image-20240313163004172.png)
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+**登录页面**
 
-#### 参与贡献
+![image-20240313171812186](README.assets/image-20240313171812186.png)
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+## 运行项目
 
+```bash
+# 安装依赖
+$ npm install
+# 运行在本地服务器
+$ npm run serve
+# 打包为静态文件
+$ npm run build
+```
 
-#### 特技
+## 所用到的第三方库
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+- axios：用于发送HTTP请求
+- element-ui：能够快速入门的Vue2前端组件
+- font-awesome：丰富的图标库
+- marked：用于动态解析Markdown文本字符串
+- marked-highlight：用于高亮Markdown代码
+- highlight.js：Markdown代码高亮样式
+- vue-router：用于规范URL跳转规则
+- vue-clipboard2：复制内容到剪切板
+
+## 遇到的问题
+
+- 前端每次发送的请求的SessionID都不同
+- Vue2无法监听数组改变，导致页面无法渲染最新的机器人消息。
+- 由于能力问题无法实现ChatGPT打字效果的数据生成（后端API实现成功，前端无法对接）。
