@@ -3,11 +3,14 @@
     <!-- 头部 -->
     <el-header style="display: flex; font-size: 12px">
       <!-- 头部左侧系统名 -->
-      <span style="margin-right: auto; font-size: 18px;">智能聊天机器人</span>
+      <span style="margin-right: auto; font-size: 18px;">
+        <el-image :src="require('@/assets/img/logo.png')" class="user-avatar" />
+        智能聊天机器人
+      </span>
       <!-- 头部右侧用户功能下拉菜单 -->
       <el-dropdown style="margin-left: auto;" trigger="click">
           <span class="el-dropdown-link">
-            <img :src="userInfo.head" class="user-avatar">
+            <el-image :src="userInfo.head" class="user-avatar" />
             {{ userInfo.username }}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
         <el-dropdown-menu slot="dropdown">
@@ -186,6 +189,7 @@
 
 <script>
 import {
+  getApiKey,
   getSessionAll,
   getUserInfo,
   editPassword,
@@ -243,12 +247,26 @@ export default {
         this.$notify.success({
           title: '成功',
           message: '成功复制API密钥',
-        });
+        })
       })
     },
     // 获取API密钥
     getApiKeyClick() {
-      this.userInfo.apiKey = '新获取的APIKEY' + Math.random()
+      this.$confirm('此操作将会清除之前的API, 是否继续?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        getApiKey().then(res => {
+          this.userInfo.apiKey = res.data.data
+        }).then(() => {
+          this.getSessions()
+          this.$notify.success({
+            title: '成功',
+            message: '已生成API密钥',
+          });
+        })
+      })
     },
     // 添加会话
     addSessionAct() {
@@ -437,7 +455,7 @@ body, html {
 }
 
 .el-header {
-  background-color: #b3c0d1;
+  background-color: #c7d1d9;
   color: #333;
   line-height: 60px;
 }
