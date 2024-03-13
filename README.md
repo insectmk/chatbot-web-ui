@@ -6,6 +6,10 @@
 
 后端见[智能聊天机器人前端页面](https://gitee.com/makuning/chatbot-web)。
 
+## 项目演示
+
+![image-20240313163004172](README.assets/image-20240313163004172.png)
+
 ## 运行项目
 
 ```bash
