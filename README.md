@@ -26,6 +26,7 @@ $ npm run build
 - marked-highlight：用于高亮Markdown代码
 - highlight.js：Markdown代码高亮样式
 - vue-router：用于规范URL跳转规则
+- vue-clipboard2：复制内容到剪切板
 
 ## 遇到的问题
 

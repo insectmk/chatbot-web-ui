@@ -239,10 +239,12 @@ export default {
   methods: {
     // 复制APIKEY
     copyApiKey() {
-      this.$notify.success({
-        title: '成功',
-        message: '复制成功！',
-      });
+      this.$copyText(this.userInfo.apiKey).then(event => {
+        this.$notify.success({
+          title: '成功',
+          message: '成功复制API密钥',
+        });
+      })
     },
     // 获取API密钥
     getApiKeyClick() {

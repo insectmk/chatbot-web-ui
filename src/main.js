@@ -3,6 +3,10 @@ import App from './App.vue'
 import router from './router'
 import { isTokenEffective } from '@/api'
 
+// 引入复制内容到剪切板功能
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
+
 // 引入Element-UI
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
