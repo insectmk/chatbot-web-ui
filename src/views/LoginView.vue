@@ -1,6 +1,7 @@
 <template>
-  <div class="father-box">
-    <el-form>
+  <div>
+    <h1 align="center"  style="color:LightSteelBlue ; font-size: 50px">智能聊天机器人</h1>
+    <el-form class="form-container">
       <el-row style="width: 300px">
         <el-col :span="24" class="interval">
           <el-input placeholder="请输入邮箱" v-model="formData.email"/>
@@ -108,6 +109,16 @@ export default {
 </script>
 
 <style lang="less">
+// 表单样式
+.form-container {
+  position:absolute;
+  top:25%;
+  width: 300px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 // 无法被选中
 .unselectable {
   -webkit-user-select: none; /* Safari */
@@ -119,11 +130,14 @@ export default {
 .interval {
   padding: 10px;
 }
-
-.father-box {
-  height: 80vh;
+// 背景色
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to right, #c7d1d9, #eaecf1); /* 这是一个从左到右的渐变 */
+  height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 </style>
