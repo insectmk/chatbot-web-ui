@@ -33,8 +33,10 @@
 </template>
 
 <script>
-import {login,getCaptcha,isTokenEffective} from '@/api'
-import axios from "axios"
+import {
+  register,
+  getCaptcha,
+  isTokenEffective} from '@/api'
 
 export default {
   data() {
@@ -61,31 +63,46 @@ export default {
         this.captchaSrc = data //data可以直接放到img标签的src中
       })
     },
-    // 提交登录
+    // 提交注册
     onSubmit() {
-      login(this.formData).then((res) => {
-        if (res.data.flag) {
-          // 成功提示
-          this.$notify.success({
-            title: '成功',
-            message: res.data.message,
-          });
-          // 将令牌转到localStorage中
-          localStorage.setItem('token', res.data.data)
-          // 设置全局请求头
-          axios.defaults.headers.common['token'] = res.data.data;
-          // 跳转到主页
-          this.$router.push({path: '/'})
-        } else {
-          // 错误提示
-          this.$notify.error({
-            title: '错误',
-            message: res.data.message
-          })
-          // 刷新验证码
-          this.flushCaptcha()
-        }
-      })
+      // 判断密码是否一致
+      if (this.formData.password !== this.formData.passwordRepeat) {
+        this.$notify.error({
+          title: '错误',
+          message: '两次密码不一致',
+        })
+      } else {
+        // 弹出加载框
+        const loading = this.$loading({
+          lock: true,
+          text: '正在发送注册链接...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        // 发送注册链接
+        register(this.formData).then((res) => {
+          if (res.data.flag) {
+            // 成功提示
+            this.$notify.success({
+              title: '成功',
+              message: res.data.message,
+            });
+            // 跳转到登录页
+            this.$router.push({path: '/login'})
+          } else {
+            // 错误提示
+            this.$notify.error({
+              title: '错误',
+              message: res.data.message
+            })
+            // 刷新验证码
+            this.flushCaptcha()
+          }
+        }).then(() => {
+          // 关闭加载框
+          loading.close()
+        })
+      }
     }
   },
   created() {

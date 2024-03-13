@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    register: '/user/register', // 注册用户
     getApiKey: '/user/apiKey', // 获取API密钥
     addSession: '/chatSession', // 新增会话
     getModelVersionAll: '/modelVersion/all', // 获取所有的模型信息
