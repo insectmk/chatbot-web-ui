@@ -108,7 +108,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style scoped lang="less">
 // 表单样式
 .form-container {
   position:absolute;
