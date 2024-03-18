@@ -98,18 +98,20 @@
           :visible.sync="dialogVisibleEdit"
           width="30%">
 
-        <el-form>
-          <el-form-item>
-            <el-input v-model="password" show-password placeholder="请输入新密码"/>
+        <el-form :model="passwordEdit"
+                 :rules="formRules"
+                  ref="passwordEdit">
+          <el-form-item prop="password">
+            <el-input v-model="passwordEdit.password" show-password placeholder="请输入新密码"/>
           </el-form-item>
-          <el-form-item>
-            <el-input v-model="passwordRepeat" show-password placeholder="请重复密码"/>
+          <el-form-item prop="password">
+            <el-input v-model="passwordEdit.passwordRepeat" show-password placeholder="请重复密码"/>
           </el-form-item>
         </el-form>
 
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisibleEdit = false">取 消</el-button>
-          <el-button type="primary" @click="editPassword">确 定</el-button>
+          <el-button type="primary" @click="editPassword('passwordEdit')">确 定</el-button>
         </span>
       </el-dialog>
 
@@ -197,6 +199,7 @@ import {
   getModelVersionAll,
   addSession} from "@/api"
 import Dialog from "@/components/Dialog.vue"
+import {password} from "@/util/RegularUtil";
 
 export default {
   components: {
@@ -204,11 +207,11 @@ export default {
   },
   data() {
     return {
-      // 密码表单规则
+      // 表单验证规则
       formRules: {
         password: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { pattern: password, message: '至少包含数字、字母和特殊字符，长度在6到24位之间', trigger: 'blur' }
         ],
       },
       // 新建对话框显示控制
@@ -221,8 +224,10 @@ export default {
         remark: '',
       },
       isCollapse: true,
-      password: '', // 密码
-      passwordRepeat: '', // 重复密码
+      passwordEdit: {
+        password: '', // 密码
+        passwordRepeat: '', // 重复密码
+      },
       dialogVisibleEdit: false, // 编辑框的显示
       // 登出按钮的显示控制
       logoutVisible: false,
@@ -238,6 +243,7 @@ export default {
         email: '',
         head: '',
         apiKey: '',
+        password: '',
         registrationTime: '',
         lastLoginTime: ''
       },
@@ -342,35 +348,45 @@ export default {
       })
     },
     // 修改密码
-    editPassword() {
-      // 判断密码是否一致
-      if (this.password !== this.passwordRepeat) {
-        this.$notify.error({
-          title: '错误',
-          message: '两次密码不一致',
-        })
-      } else {
-        // 发送修改请求
-        editPassword({
-          password: this.password
-        }).then((res) => {
-          if (res.data.flag) {
-            this.$notify.success({
-              title: '成功',
-              message: '密码修改成功,请重新登录！'
-            })
-            this.dialogVisibleEdit = false
-            // 重新登录
-            localStorage.removeItem('token')
-            this.$router.replace({path: '/login'})
-          } else {
+    editPassword(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 判断密码是否一致
+          if (this.passwordEdit.password !== this.passwordEdit.passwordRepeat) {
             this.$notify.error({
               title: '错误',
-              message: res.data.message
+              message: '两次密码不一致',
+            })
+          } else {
+            // 发送修改请求
+            editPassword({
+              password: this.passwordEdit.password
+            }).then((res) => {
+              if (res.data.flag) {
+                this.$notify.success({
+                  title: '成功',
+                  message: '密码修改成功,请重新登录！'
+                })
+                this.dialogVisibleEdit = false
+                // 重新登录
+                localStorage.removeItem('token')
+                this.$router.replace({path: '/login'})
+              } else {
+                this.$notify.error({
+                  title: '错误',
+                  message: res.data.message
+                })
+              }
             })
           }
-        })
-      }
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: '请按要求填写表单',
+          })
+        }
+      })
     },
     // 退出登录
     logout() {
