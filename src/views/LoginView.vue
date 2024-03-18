@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="father-container">
     <h1 align="center"  style="color:LightSteelBlue ; font-size: 50px">智能聊天机器人</h1>
     <el-form class="form-container">
       <el-row style="width: 300px">
@@ -130,8 +130,9 @@ export default {
 .interval {
   padding: 10px;
 }
+
 // 背景色
-body {
+.father-container {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;

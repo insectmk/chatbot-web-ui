@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="father-container">
     <h1 align="center"  style="color:LightSteelBlue ; font-size: 50px">智能聊天机器人</h1>
     <el-form class="form-container">
       <el-row style="width: 300px">
         <el-col :span="24" class="interval">
-          <el-input placeholder="请输入用户名" v-model="formData.username"/>
+            <el-input placeholder="请输入用户名" v-model="formData.username"/>
         </el-col>
         <el-col :span="24" class="interval">
           <el-input placeholder="请输入邮箱" v-model="formData.email"/>
@@ -148,7 +148,7 @@ export default {
 }
 
 // 背景色
-body {
+.father-container {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;

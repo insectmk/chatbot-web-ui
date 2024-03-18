@@ -204,6 +204,13 @@ export default {
   },
   data() {
     return {
+      // 密码表单规则
+      formRules: {
+        password: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        ],
+      },
       // 新建对话框显示控制
       dialogVisibleAddSession: false,
       // 新建对话的表单内容
