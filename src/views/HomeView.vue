@@ -383,7 +383,7 @@ export default {
         } else {
           this.$notify.error({
             title: '错误',
-            message: '请按要求填写表单',
+            message: '请按要求填写内容',
           })
         }
       })
