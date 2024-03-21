@@ -29,8 +29,10 @@
         <el-input
             type="textarea"
             :rows="3"
+            @input="messageToSendCheck"
             v-model="messageToSend"
             placeholder="请输入内容"
+            :maxlength="messageToSendMaxLength"
             style="font-size: 18px;">
         </el-input>
         <el-button type="primary" style="float: right;" @click="send">发送</el-button>
@@ -59,6 +61,7 @@ marked.use(markedHighlight({
 export default {
   data() {
     return {
+      messageToSendMaxLength: 255,
       marked: marked,
       dialogs: [],
       messageToSend: '',
@@ -67,23 +70,16 @@ export default {
   props: {
     sessionId: ''
   },
-  created() {
-    // 获取历史消息
-    this.getHistoryMessages()
-  },
-  watch: {
-    // 会话变化刷新历史消息
-    sessionId: function (newVal, oldVal) {
-      // 获取历史消息
-      this.getHistoryMessages()
-      // 提示成功消息
-      this.$notify.success({
-        title: '成功',
-        message: '已成功切换会话！'
-      })
-    }
-  },
   methods: {
+    // 监测发送消息的长度
+    messageToSendCheck() {
+      if (this.messageToSend.length === this.messageToSendMaxLength) {
+        this.$notify.warning({
+          title: '警告',
+          message: `语句不能超过${this.messageToSendMaxLength}个字符`
+        })
+      }
+    },
     // 发送消息
     send() {
       // 创建用户消息
@@ -163,7 +159,23 @@ export default {
         loading.close()
       })
     }
-  }
+  },
+  watch: {
+    // 会话变化刷新历史消息
+    sessionId: function (newVal, oldVal) {
+      // 获取历史消息
+      this.getHistoryMessages()
+      // 提示成功消息
+      this.$notify.success({
+        title: '成功',
+        message: '已成功切换会话！'
+      })
+    }
+  },
+  created() {
+    // 获取历史消息
+    this.getHistoryMessages()
+  },
 }
 </script>
 
