@@ -35,6 +35,7 @@
         <el-form-item>
           <el-button style="width: 100%" type="primary" @click="onSubmit('formData')">注册</el-button>
         </el-form-item>
+        <el-link class="unselectable" type="primary" target="_blank" @click="loginClick">已有账号？点此登录</el-link>
       </el-row>
     </el-form>
   </div>
@@ -80,6 +81,13 @@ export default {
     }
   },
   methods: {
+    // 点击登录链接
+    loginClick() {
+      // 跳转到登录页面
+      this.$router.replace({
+        path: '/login'
+      })
+    },
     // 刷新图片
     flushCaptcha() {
       getCaptcha().then((res) => {
