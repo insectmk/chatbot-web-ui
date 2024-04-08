@@ -84,7 +84,7 @@
                 :key="session.id"
                 :index="session.id">
               <span slot="title">{{ session.remark }}</span>
-              <i class="el-icon-service"></i>
+              <i class="el-icon-chat-dot-round"></i>
             </el-menu-item>
         </el-menu>
       </el-aside>

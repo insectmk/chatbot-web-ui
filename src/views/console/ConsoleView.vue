@@ -60,7 +60,7 @@
             <el-menu-item
                 index="user-manager">
               <span slot="title">用户管理</span>
-              <i class="el-icon-service"></i>
+              <i class="el-icon-s-custom"></i>
             </el-menu-item>
           </router-link>
 
@@ -68,7 +68,7 @@
             <el-menu-item
                 index="system-log">
               <span slot="title">系统日志</span>
-              <i class="el-icon-service"></i>
+              <i class="el-icon-tickets"></i>
             </el-menu-item>
           </router-link>
 
@@ -76,7 +76,7 @@
             <el-menu-item
                 index="system-setting">
               <span slot="title">系统设置</span>
-              <i class="el-icon-service"></i>
+              <i class="el-icon-setting"></i>
             </el-menu-item>
           </router-link>
 
@@ -84,7 +84,7 @@
             <el-menu-item
                 index="token-setting">
               <span slot="title">Token设置</span>
-              <i class="el-icon-service"></i>
+              <i class="el-icon-chat-dot-round"></i>
             </el-menu-item>
           </router-link>
         </el-menu>
@@ -178,12 +178,10 @@ import {
   } from "@/api"
 import Dialog from "@/components/Dialog.vue"
 import {password} from "@/util/RegularUtil";
-import Table from "@/components/Table.vue"
 
 export default {
   components: {
     Dialog,
-    Table
   },
   data() {
     return {

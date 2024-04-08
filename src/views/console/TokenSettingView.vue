@@ -1,6 +1,6 @@
 <template>
   <el-main>
-    <h1 align="center">Token设置！</h1>
+    <Navbar/>
   </el-main>
 </template>
 

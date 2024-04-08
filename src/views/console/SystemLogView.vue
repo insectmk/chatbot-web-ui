@@ -1,6 +1,6 @@
 <template>
   <el-main>
-    <h1 align="center">系统日志！</h1>
+    <Navbar/>
   </el-main>
 </template>
 

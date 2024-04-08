@@ -37,6 +37,7 @@ $ npm run build
 - highlight.js：Markdown代码高亮样式
 - vue-router：用于规范URL跳转规则
 - vue-clipboard2：复制内容到剪切板
+- af-table-column：Element-UI表格自适应
 
 ## 遇到的问题
 
