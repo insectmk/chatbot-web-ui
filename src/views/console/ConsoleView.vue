@@ -5,7 +5,7 @@
       <!-- 头部左侧系统名 -->
       <span style="margin-right: auto; font-size: 18px;">
         <el-image :src="require('@/assets/img/logo.png')" class="user-avatar" />
-        智能聊天机器人
+        智能聊天机器人后台管理
       </span>
       <!-- 头部右侧用户功能下拉菜单 -->
       <el-dropdown style="margin-left: auto;" trigger="click">
@@ -41,6 +41,7 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside style="width: auto; background-color: rgb(238, 241, 246)">
+        <!-- 展开/收起 -->
         <el-popover
             placement="right"
             width="130"
@@ -49,48 +50,36 @@
           <el-button plain slot="reference" style="width: 100%" size="small" @click="isCollapse = !isCollapse">展/收</el-button>
         </el-popover>
         <br/>
-        <el-popover
-            placement="right"
-            width="130"
-            trigger="hover"
-            content="创建一个新的会话">
-          <el-button plain slot="reference" type="primary" style="width: 100%" size="small" @click="addSessionClick">新建</el-button>
-        </el-popover>
-        <br/>
-        <el-popover
-            placement="top-start"
-            width="160"
-            v-model="delSessionVisible">
-          <p>确定删除当前会话吗？</p>
-          <div style="text-align: right; margin: 0">
-            <el-button size="mini" type="text" @click="delSessionVisible = false">取消</el-button>
-            <el-button type="primary" size="mini" @click="delSessionAct">确定</el-button>
-          </div>
-          <span slot="reference">
-            <el-button plain type="danger"
-                       style="width: 100%"
-                       size="small">删除</el-button>
-          </span>
-        </el-popover>
 
-        <!-- 对话列表 -->
+        <!-- 菜单列表 -->
         <el-menu
-            :default-active="sessionId"
+            default-active="user-manager"
             :collapse="isCollapse"
             class="el-menu-vertical-demo">
-            <el-menu-item
-                v-for="(session) in sessions"
-                @click="sessionId = session.id"
-                :key="session.id"
-                :index="session.id">
-              <span slot="title">{{ session.remark }}</span>
-              <i class="el-icon-service"></i>
-            </el-menu-item>
+          <el-menu-item
+            index="user-manager">
+            <span slot="title">用户管理</span>
+            <i class="el-icon-service"></i>
+          </el-menu-item>
+          <el-menu-item
+              index="system-log">
+            <span slot="title">系统日志</span>
+            <i class="el-icon-service"></i>
+          </el-menu-item>
+          <el-menu-item
+              index="system-setting">
+            <span slot="title">系统设置</span>
+            <i class="el-icon-service"></i>
+          </el-menu-item>
+          <el-menu-item
+              index="token-setting">
+            <span slot="title">Token设置</span>
+            <i class="el-icon-service"></i>
+          </el-menu-item>
         </el-menu>
       </el-aside>
 
-      <!-- 主内容（会话消息） -->
-      <Dialog :sessionId="sessionId"></Dialog>
+
 
       <!--  密码编辑框  -->
       <el-dialog
@@ -100,7 +89,7 @@
 
         <el-form :model="passwordEdit"
                  :rules="formRules"
-                  ref="passwordEdit">
+                 ref="passwordEdit">
           <el-form-item prop="password">
             <el-input v-model="passwordEdit.password" show-password placeholder="请输入新密码"/>
           </el-form-item>
@@ -112,40 +101,6 @@
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisibleEdit = false">取 消</el-button>
           <el-button type="primary" @click="editPassword('passwordEdit')">确 定</el-button>
-        </span>
-      </el-dialog>
-
-      <!--  新建会话框  -->
-      <el-dialog
-          title="新建会话"
-          :visible.sync="dialogVisibleAddSession"
-          width="30%">
-
-        <el-form>
-          <el-form-item>
-            <el-select style="width: 100%" v-model="formDataSession.modelVersionId" placeholder="选择模型">
-              <el-popover
-                  v-for="modelVersion in modelVersions"
-                  :key="modelVersion.id"
-                  placement="right"
-                  :title="modelVersion.name"
-                  width="200"
-                  trigger="hover"
-                  :content="modelVersion.remark">
-                <el-option :label="modelVersion.name"
-                           :value="modelVersion.id"
-                           slot="reference"></el-option>
-              </el-popover>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="formDataSession.remark" placeholder="对话备注"/>
-          </el-form-item>
-        </el-form>
-
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisibleEdit = false">取 消</el-button>
-          <el-button type="primary" @click="addSessionAct">确 定</el-button>
         </span>
       </el-dialog>
 
@@ -196,7 +151,7 @@
 
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisibleUserInfo = false">关 闭</el-button>
-<!--          <el-button type="primary" @click="editPassword">确 定</el-button>-->
+          <!--          <el-button type="primary" @click="editPassword">确 定</el-button>-->
         </span>
       </el-dialog>
     </el-container>
@@ -206,18 +161,17 @@
 <script>
 import {
   getApiKey,
-  getSessionAll,
   getUserInfo,
   editPassword,
-  delSession,
-  getModelVersionAll,
-  addSession} from "@/api"
+  } from "@/api"
 import Dialog from "@/components/Dialog.vue"
 import {password} from "@/util/RegularUtil";
+import Table from "@/components/Table.vue"
 
 export default {
   components: {
-    Dialog
+    Dialog,
+    Table
   },
   data() {
     return {
@@ -237,7 +191,7 @@ export default {
         // 对话备注
         remark: '',
       },
-      isCollapse: true,
+      isCollapse: false,
       passwordEdit: {
         password: '', // 密码
         passwordRepeat: '', // 重复密码
@@ -268,99 +222,6 @@ export default {
     };
   },
   methods: {
-    // 复制APIKEY
-    copyApiKey() {
-      this.$copyText(this.userInfo.apiKey).then(event => {
-        this.$notify.success({
-          title: '成功',
-          message: '成功复制API密钥',
-        })
-      })
-    },
-    // 获取API密钥
-    getApiKeyClick() {
-      this.$confirm('此操作将会清除之前的API, 是否继续?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        getApiKey().then(res => {
-          this.userInfo.apiKey = res.data.data
-        }).then(() => {
-          this.getSessions()
-          this.$notify.success({
-            title: '成功',
-            message: '已生成API密钥',
-          });
-        })
-      })
-    },
-    // 添加会话
-    addSessionAct() {
-      // 发送添加请求
-      addSession(this.formDataSession).then(res => {
-        if (res.data.flag) {
-          // 成功提示
-          this.$notify.success({
-            title: '成功',
-            message: res.data.message,
-          });
-          // 获取用户对话列表
-          this.getSessions()
-          // 清除历史信息
-          this.formDataSession.modelVersionId = ''
-          this.formDataSession.remark = ''
-          // 关闭添加框
-          this.dialogVisibleAddSession = false
-        } else {
-          // 成功提示
-          this.$notify.error({
-            title: '错误',
-            message: res.data.message,
-          });
-        }
-      })
-    },
-    // 点击新建会话按钮
-    addSessionClick() {
-      // 查询所有的模型信息
-      getModelVersionAll().then(res => {
-        this.modelVersions = res.data.data
-      }).then(() => {
-        // 打开编辑框
-        this.dialogVisibleAddSession = true
-      })
-    },
-    // 删除会话
-    delSessionAct() {
-      // 关闭删除会话确认框
-      this.delSessionVisible = false
-      // 发送删除请求
-      delSession({
-        sessionId: this.sessionId
-      }).then(res => {
-          if (res.data.flag) {
-            // 成功提示
-            this.$notify.success({
-              title: '成功',
-              message: res.data.message,
-            });
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: res.data.message,
-            });
-          }
-          return res.data.flag
-      }).then(flag => {
-        if (flag) {
-          // 清除会话数组中对应的数据
-          this.sessions = this.sessions.filter(session => session.id !== this.sessionId)
-          // 重新设置当前会话
-          this.sessionId = this.sessions[0].id
-        }
-      })
-    },
     // 修改密码
     editPassword(formName) {
       // 验证表单
@@ -402,6 +263,33 @@ export default {
         }
       })
     },
+    // 复制APIKEY
+    copyApiKey() {
+      this.$copyText(this.userInfo.apiKey).then(event => {
+        this.$notify.success({
+          title: '成功',
+          message: '成功复制API密钥',
+        })
+      })
+    },
+    // 获取API密钥
+    getApiKeyClick() {
+      this.$confirm('此操作将会清除之前的API, 是否继续?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        getApiKey().then(res => {
+          this.userInfo.apiKey = res.data.data
+        }).then(() => {
+          this.getSessions()
+          this.$notify.success({
+            title: '成功',
+            message: '已生成API密钥',
+          });
+        })
+      })
+    },
     // 退出登录
     logout() {
       // 删除令牌
@@ -427,21 +315,10 @@ export default {
         }
       })
     },
-    // 获取用户对话列表
-    getSessions() {
-      getSessionAll().then((res) => {
-        this.sessions = res.data.data
-        return res.data.data
-      }).then((sessions) => {
-        this.sessionId = sessions[0].id
-      })
-    }
   },
   created() {
     // 获取用户信息
     this.getUser()
-    // 获取用户所有对话
-    this.getSessions()
   },
 };
 </script>

@@ -21,6 +21,11 @@ const routes = [
     name: '注册页面',
     component: () => import('@/views/Register.vue')
   },{
+    // 注册页面
+    path: '/console',
+    name: '后台页面',
+    component: () => import('@/views/console/ConsoleView.vue')
+  },{
     // 登录页面
     path: '/login',
     name: '登录页面',
