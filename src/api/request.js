@@ -1,6 +1,6 @@
 // 后端接口
 const apis = {
-    findUser: '/console/find/user', // 查询用户
+    findUser: '/console/user', // 查询用户
     register: '/user/register', // 注册用户
     getApiKey: '/user/apiKey', // 获取API密钥
     addSession: '/chatSession', // 新增会话

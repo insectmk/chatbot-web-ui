@@ -1,6 +1,15 @@
 <template>
   <el-main>
+    <!-- 导航  -->
     <Navbar/>
+    <!--  条件栏  -->
+    <el-row>
+      <el-col :span="24">
+        <el-input v-model="queryPageBean.queryString" placeholder="用户名/邮箱" style="width: 200px;"></el-input>
+        <el-button @click="findPage()">查询</el-button>
+        <el-button type="primary" @click="dialogFormVisible = true">新建</el-button>
+      </el-col>
+    </el-row>
     <el-row>
       <!--  表格  -->
       <el-col :span="24">
@@ -83,10 +92,7 @@ export default {
       queryPageBean: {
         currentPage: 1,
         pageSize: 10,
-        queryEntity: {
-          username: '',
-          email: ''
-        }
+        queryString: ''
       },
       // MyBatis分页对象
       page: {},
