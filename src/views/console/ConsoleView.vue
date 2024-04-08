@@ -56,30 +56,42 @@
             default-active="user-manager"
             :collapse="isCollapse"
             class="el-menu-vertical-demo">
-          <el-menu-item
-            index="user-manager">
-            <span slot="title">用户管理</span>
-            <i class="el-icon-service"></i>
-          </el-menu-item>
-          <el-menu-item
-              index="system-log">
-            <span slot="title">系统日志</span>
-            <i class="el-icon-service"></i>
-          </el-menu-item>
-          <el-menu-item
-              index="system-setting">
-            <span slot="title">系统设置</span>
-            <i class="el-icon-service"></i>
-          </el-menu-item>
-          <el-menu-item
-              index="token-setting">
-            <span slot="title">Token设置</span>
-            <i class="el-icon-service"></i>
-          </el-menu-item>
+          <router-link to="/console/user">
+            <el-menu-item
+                index="user-manager">
+              <span slot="title">用户管理</span>
+              <i class="el-icon-service"></i>
+            </el-menu-item>
+          </router-link>
+
+          <router-link to="/console/log">
+            <el-menu-item
+                index="system-log">
+              <span slot="title">系统日志</span>
+              <i class="el-icon-service"></i>
+            </el-menu-item>
+          </router-link>
+
+          <router-link to="/console/setting">
+            <el-menu-item
+                index="system-setting">
+              <span slot="title">系统设置</span>
+              <i class="el-icon-service"></i>
+            </el-menu-item>
+          </router-link>
+
+          <router-link to="/console/token">
+            <el-menu-item
+                index="token-setting">
+              <span slot="title">Token设置</span>
+              <i class="el-icon-service"></i>
+            </el-menu-item>
+          </router-link>
         </el-menu>
       </el-aside>
 
-
+      <!-- 主内容 -->
+      <router-view/>
 
       <!--  密码编辑框  -->
       <el-dialog

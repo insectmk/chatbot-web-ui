@@ -21,10 +21,37 @@ const routes = [
     name: '注册页面',
     component: () => import('@/views/Register.vue')
   },{
-    // 注册页面
+    // 后台页面
     path: '/console',
     name: '后台页面',
-    component: () => import('@/views/console/ConsoleView.vue')
+    redirect: '/console/user',
+    component: () => import('@/views/console/ConsoleView.vue'),
+    meta: {
+      requiresAuth: true
+    },
+    children: [
+      {
+        // 用户管理
+        path: '/console/user',
+        name: '用户管理',
+        component: () => import('@/views/console/UserViewView.vue')
+      },{
+        // 系统日志
+        path: '/console/log',
+        name: '系统日志',
+        component: () => import('@/views/console/SystemLogView.vue')
+      },{
+        // 系统设置
+        path: '/console/setting',
+        name: '系统设置',
+        component: () => import('@/views/console/SystemSettingView.vue')
+      },{
+        // Token设置
+        path: '/console/token',
+        name: 'Token设置',
+        component: () => import('@/views/console/TokenSettingView.vue')
+      },
+    ]
   },{
     // 登录页面
     path: '/login',
