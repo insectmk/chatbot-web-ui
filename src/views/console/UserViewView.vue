@@ -65,8 +65,10 @@
           <el-table-column
               align="center"
               label="操作">
-            <el-button type="primary" size="mini">更新</el-button>
-            <el-button type="danger" size="mini">删除</el-button>
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="openEdit(scope.row)">更新</el-button>
+              <el-button type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
+            </template>
           </el-table-column>
         </el-table>
       </el-col>
@@ -115,17 +117,51 @@
         <el-button type="primary" @click="handleAdd">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 更新用户的页面 -->
+    <el-dialog title="更新用户" :visible.sync="dialogFormVisibleEdit">
+      <el-form :model="formData" label-position="top">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="用户名" prop="username">
+              <el-input v-model="formData.username"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="密码" prop="password">
+              <el-input v-model="formData.password"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="formData.email"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="头像" prop="head">
+              <el-input v-model="formData.head"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleEdit">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-main>
 </template>
 
 <script>
-import {findUser, addUser} from '@/api'
+import {findUser, addUser, editUser} from '@/api'
 
 export default {
   data() {
     return {
       // 新增框的显示
       dialogFormVisible: false,
+      // 编辑框的显示
+      dialogFormVisibleEdit: false,
       // 查询条件
       queryPageBean: {
         currentPage: 1,
@@ -139,6 +175,34 @@ export default {
     }
   },
   methods: {
+    // 删除用户
+    handleDelete(id) {
+      console.log(id)
+    },
+    // 打开编辑框
+    openEdit(row) {
+      this.formData = row
+      this.dialogFormVisibleEdit = true
+    },
+    // 更新用户
+    handleEdit() {
+      editUser(this.formData).then(res => {
+        if (res.data.flag) {
+          this.$notify.success({
+            title: '成功',
+            message: res.data.message,
+          })
+          this.findPage()
+          this.formData = {}
+          this.dialogFormVisibleEdit = false
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.data.message,
+          })
+        }
+      })
+    },
     // 添加用户
     handleAdd() {
       addUser(this.formData).then(res => {
@@ -148,6 +212,7 @@ export default {
             message: res.data.message,
           })
           this.findPage()
+          this.formData = {}
           this.dialogFormVisible = false
         } else {
           this.$notify.error({

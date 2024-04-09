@@ -1,7 +1,9 @@
 import { apis } from './request'
 import {getAction, deleteAction, putAction, postAction, getActionBinary} from './method'
+import {put} from "axios";
 
 // **请求
+const editUser = (params) => putAction(apis.editUser, params)
 const addUser = (params) => postAction(apis.addUser, params)
 const findUser = (params) => getAction(apis.findUser, params)
 const register = (params) => postAction(apis.register, params)
@@ -21,6 +23,7 @@ const login = (params) => postAction(apis.login, params)
 
 // **暴露
 export {
+    editUser,
     addUser,
     findUser,
     register,
