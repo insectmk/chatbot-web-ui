@@ -64,19 +64,19 @@
             </el-menu-item>
           </router-link>
 
-          <router-link to="/console/log">
-            <el-menu-item
-                index="/console/log">
-              <span slot="title">系统日志</span>
-              <i class="el-icon-tickets"></i>
-            </el-menu-item>
-          </router-link>
-
           <router-link to="/console/model">
             <el-menu-item
                 index="/console/model">
               <span slot="title">模型管理</span>
               <i class="el-icon-takeaway-box"></i>
+            </el-menu-item>
+          </router-link>
+
+          <router-link to="/console/log">
+            <el-menu-item
+                index="/console/log">
+              <span slot="title">系统日志</span>
+              <i class="el-icon-tickets"></i>
             </el-menu-item>
           </router-link>
 
