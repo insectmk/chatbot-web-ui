@@ -3,6 +3,7 @@ import {getAction, deleteAction, putAction, postAction, getActionBinary} from '.
 import {put} from "axios";
 
 // **请求
+const addModel = (params) => postAction(apis.addModel, params)
 const findModel = (params) => getAction(apis.findModel, params)
 const clearSystemLog = (params) => deleteAction(apis.clearSystemLog, params)
 const findSystemLog = (params) => getAction(apis.findSystemLog, params)
@@ -27,6 +28,7 @@ const login = (params) => postAction(apis.login, params)
 
 // **暴露
 export {
+    addModel,
     findModel,
     clearSystemLog,
     findSystemLog,

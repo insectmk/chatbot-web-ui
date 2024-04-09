@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    addModel: '/console/model', // 添加模型
     findModel: '/console/model', // 分页查询模型
     clearSystemLog: '/console/systemLog',    // 清空日志
     findSystemLog: '/console/systemLog', // 查询日志
