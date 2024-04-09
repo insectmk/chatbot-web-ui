@@ -125,37 +125,37 @@
     </el-dialog>
 
     <!-- 更新页面 -->
-    <el-dialog title="更新用户" :visible.sync="dialogFormVisibleEdit">
+    <el-dialog title="更新模型" :visible.sync="dialogFormVisibleEdit">
       <el-form :model="formData" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="用户名" prop="username">
-              <el-input v-model="formData.username"/>
+            <el-form-item label="模型名称" prop="name">
+              <el-input v-model="formData.name"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="密码" prop="password">
-              <el-input v-model="formData.password"/>
+            <el-form-item label="版本号" prop="versionNumber">
+              <el-input v-model="formData.versionNumber"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="formData.email"/>
+            <el-form-item label="API地址" prop="apiHost">
+              <el-input v-model="formData.apiHost"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="头像" prop="head">
-              <el-input v-model="formData.head"/>
+            <el-form-item label="API密钥" prop="apiKey">
+              <el-input v-model="formData.apiKey"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="最大会话数" prop="maxSession">
-              <el-input v-model="formData.maxSession"/>
+            <el-form-item label="最大上下文" prop="maxToken">
+              <el-input v-model="formData.maxToken"/>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="剩余Token数" prop="tokens">
-              <el-input v-model="formData.tokens"/>
+          <el-col :span="24">
+            <el-form-item label="备注" prop="remark">
+              <el-input type="textarea" v-model="formData.remark"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -169,7 +169,7 @@
 </template>
 
 <script>
-import {findModel, addModel, deleteUser} from '@/api'
+import {findModel, addModel, editModel} from '@/api'
 
 export default {
   data() {
@@ -221,9 +221,9 @@ export default {
       this.formData = row
       this.dialogFormVisibleEdit = true
     },
-    // 更新用户
+    // 更新
     handleEdit() {
-      editUser(this.formData).then(res => {
+      editModel(this.formData).then(res => {
         if (res.data.flag) {
           this.$notify.success({
             title: '成功',
