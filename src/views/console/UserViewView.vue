@@ -39,6 +39,10 @@
               label="头像"
               :show-overflow-tooltip='true'
               >
+            <!-- 图片的显示 -->
+            <template   slot-scope="scope">
+              <img :src="scope.row.head"  min-width="70" height="70" />
+            </template>
           </el-table-column>
           <el-table-column
               prop="apiKey"
@@ -79,15 +83,49 @@
         </el-pagination>
       </el-col>
     </el-row>
+
+    <!-- 新建用户的页面 -->
+    <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+      <el-form :model="formData" label-position="top">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="用户名" prop="username">
+              <el-input v-model="formData.username"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="密码" prop="password">
+              <el-input v-model="formData.password"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="formData.email"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="头像" prop="head">
+              <el-input v-model="formData.head"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleAdd">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-main>
 </template>
 
 <script>
-import {findUser} from '@/api'
+import {findUser, addUser} from '@/api'
 
 export default {
   data() {
     return {
+      // 新增框的显示
+      dialogFormVisible: false,
       // 查询条件
       queryPageBean: {
         currentPage: 1,
@@ -96,9 +134,29 @@ export default {
       },
       // MyBatis分页对象
       page: {},
+      // 表单数据
+      formData: {},
     }
   },
   methods: {
+    // 添加用户
+    handleAdd() {
+      addUser(this.formData).then(res => {
+        if (res.data.flag) {
+          this.$notify.success({
+            title: '成功',
+            message: res.data.message,
+          })
+          this.findPage()
+          this.dialogFormVisible = false
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.data.message,
+          })
+        }
+      })
+    },
     // 当前页发生变化
     handleCurrentChange(val) {
       this.queryPageBean.currentPage = val

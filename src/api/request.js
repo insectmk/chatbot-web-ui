@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    addUser: '/console/user',    // 添加用户
     findUser: '/console/user', // 查询用户
     register: '/user/register', // 注册用户
     getApiKey: '/user/apiKey', // 获取API密钥

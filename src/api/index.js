@@ -2,6 +2,7 @@ import { apis } from './request'
 import {getAction, deleteAction, putAction, postAction, getActionBinary} from './method'
 
 // **请求
+const addUser = (params) => postAction(apis.addUser, params)
 const findUser = (params) => getAction(apis.findUser, params)
 const register = (params) => postAction(apis.register, params)
 const getApiKey = () => getAction(apis.getApiKey)
@@ -20,6 +21,7 @@ const login = (params) => postAction(apis.login, params)
 
 // **暴露
 export {
+    addUser,
     findUser,
     register,
     getApiKey,
