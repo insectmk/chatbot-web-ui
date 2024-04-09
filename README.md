@@ -4,7 +4,7 @@
 
 本项目基于Vue2+ElementUI。
 
-后端见[智能聊天机器人前端页面](https://gitee.com/makuning/chatbot-web)。
+后端见[智能聊天机器人后端](https://gitee.com/makuning/chatbot-web)。
 
 ## 项目演示
 
@@ -37,6 +37,8 @@ $ npm run build
 - highlight.js：Markdown代码高亮样式
 - vue-router：用于规范URL跳转规则
 - vue-clipboard2：复制内容到剪切板
+- af-table-column：Element-UI表格自适应
+- echarts：画图
 
 ## 遇到的问题
 

@@ -1,30 +1,30 @@
 <template>
-  <div>
+  <div class="father-container">
     <h1 align="center"  style="color:LightSteelBlue ; font-size: 50px">智能聊天机器人</h1>
-    <el-form class="form-container">
+    <el-form class="form-container" :rules="formRules" :model="formData" ref="formData">
       <el-row style="width: 300px">
-        <el-col :span="24" class="interval">
+        <el-form-item prop="email">
           <el-input placeholder="请输入邮箱" v-model="formData.email"/>
-        </el-col>
-        <el-col :span="24" class="interval">
+        </el-form-item>
+        <el-form-item prop="password">
           <el-input placeholder="请输入密码" v-model="formData.password" show-password/>
-        </el-col>
-        <el-col :span="17" class="interval">
-          <el-input placeholder="请输入验证码" v-model="formData.captcha"/>
-        </el-col>
-        <el-col :span="7" style="padding: 10px 10px 0 0;">
-          <el-image
-              style="width: 100%;height: 100%;object-fit:cover;"
-              @click="flushCaptcha"
-              :src="captchaSrc"
-              fit="fill"></el-image>
-        </el-col>
-        <el-col :span="24" class="interval">
-          <el-button style="width: 100%" type="primary" @click="onSubmit">登录</el-button>
-        </el-col>
-        <el-col :span="24" class="interval">
-          <el-link class="unselectable" type="primary" target="_blank" @click="registerClick">立即注册</el-link>
-        </el-col>
+        </el-form-item>
+        <el-form-item prop="captcha">
+          <el-col :span="18">
+            <el-input placeholder="请输入验证码" maxlength="4" v-model="formData.captcha"/>
+          </el-col>
+          <el-col :span="6">
+            <el-image
+                style="width: 100%;height: 100%;object-fit:cover;"
+                @click="flushCaptcha"
+                :src="captchaSrc"
+                fit="fill"></el-image>
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-button style="width: 100%" type="primary" @click="onSubmit('formData')">登录</el-button>
+        </el-form-item>
+        <el-link class="unselectable" type="primary" target="_blank" @click="registerClick">立即注册</el-link>
       </el-row>
     </el-form>
   </div>
@@ -32,11 +32,27 @@
 
 <script>
 import {login,getCaptcha,isTokenEffective} from '@/api'
+import {email,password,captcha} from '@/util/RegularUtil'
 import axios from "axios"
 
 export default {
   data() {
     return {
+      // 表单验证规则
+      formRules: {
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { pattern: email, message: '邮箱格式不正确', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { pattern: password, message: '至少包含数字、字母和特殊字符，长度在6到24位之间', trigger: 'blur' }
+        ],
+        captcha: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { pattern: captcha, message: '验证码格式不正确', trigger: 'blur' }
+        ]
+      },
       formData: {
         email: '',
         password: '',
@@ -65,30 +81,41 @@ export default {
       })
     },
     // 提交登录
-    onSubmit() {
-      login(this.formData).then((res) => {
-        if (res.data.flag) {
-          // 成功提示
-          this.$notify.success({
-            title: '成功',
-            message: res.data.message,
-          });
-          // 将令牌转到localStorage中
-          localStorage.setItem('token', res.data.data)
-          // 设置全局请求头
-          axios.defaults.headers.common['token'] = res.data.data;
-          // 跳转到主页
-          this.$router.push({path: '/'})
+    onSubmit(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          login(this.formData).then((res) => {
+            if (res.data.flag) {
+              // 成功提示
+              this.$notify.success({
+                title: '成功',
+                message: res.data.message,
+              });
+              // 将令牌转到localStorage中
+              localStorage.setItem('token', res.data.data)
+              // 设置全局请求头
+              axios.defaults.headers.common['token'] = res.data.data;
+              // 跳转到主页
+              this.$router.push({path: '/'})
+            } else {
+              // 错误提示
+              this.$notify.error({
+                title: '错误',
+                message: res.data.message
+              })
+              // 刷新验证码
+              this.flushCaptcha()
+            }
+          })
         } else {
-          // 错误提示
           this.$notify.error({
             title: '错误',
-            message: res.data.message
+            message: '请按要求填写内容',
           })
-          // 刷新验证码
-          this.flushCaptcha()
         }
-      })
+      });
+
     }
   },
   created() {
@@ -108,7 +135,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style scoped lang="less">
 // 表单样式
 .form-container {
   position:absolute;
@@ -130,8 +157,9 @@ export default {
 .interval {
   padding: 10px;
 }
+
 // 背景色
-body {
+.father-container {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;

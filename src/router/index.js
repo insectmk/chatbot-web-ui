@@ -21,6 +21,48 @@ const routes = [
     name: '注册页面',
     component: () => import('@/views/Register.vue')
   },{
+    // 后台页面
+    path: '/console',
+    name: '后台页面',
+    redirect: '/console/user',
+    component: () => import('@/views/console/ConsoleView.vue'),
+    meta: {
+      requiresAuth: true
+    },
+    children: [
+      {
+        // 用户管理
+        path: '/console/user',
+        name: '用户管理',
+        component: () => import('@/views/console/UserViewView.vue')
+      },{
+        // 系统日志
+        path: '/console/log',
+        name: '系统日志',
+        component: () => import('@/views/console/SystemLogView.vue')
+      },{
+        // 系统设置
+        path: '/console/setting',
+        name: '系统设置',
+        component: () => import('@/views/console/SystemSettingView.vue')
+      },{
+        // 会话设置
+        path: '/console/token',
+        name: '会话设置',
+        component: () => import('@/views/console/TokenSettingView.vue')
+      },{
+        // 模型管理
+        path: '/console/model',
+        name: '模型管理',
+        component: () => import('@/views/console/ModelVersionView.vue')
+      },{
+        // 模型统计
+        path: '/console/statistic',
+        name: '模型统计',
+        component: () => import('@/views/console/StatisticsView.vue')
+      },
+    ]
+  },{
     // 登录页面
     path: '/login',
     name: '登录页面',

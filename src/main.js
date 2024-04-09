@@ -12,6 +12,14 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI)
 
+// Element-UI表格宽度自适应
+import AFTableColumn from 'af-table-column'
+Vue.use(AFTableColumn)
+
+// 注册导航
+import Navbar from "@/components/Navbar.vue";
+Vue.component('Navbar', Navbar)
+
 // 引入Font-Awesome
 import 'font-awesome/css/font-awesome.min.css'
 
@@ -21,6 +29,10 @@ Vue.config.productionTip = false
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("token");
   isTokenEffective({ token: token }).then((res) => {
+    // 判断是否需要访问后台
+    if (to.path.indexOf('console') !== -1) {
+      // 访问后台的逻辑
+    }
     //筛选需要传token的路由，匹配route⾥⾯需要登录的路径，如果匹配到就是true
     if (to.matched.some((record) => record.meta.requiresAuth)) {
       //根据token是否有效，判断是否需要调到登录⻚⾯
