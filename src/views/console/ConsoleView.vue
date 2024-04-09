@@ -53,12 +53,12 @@
 
         <!-- 菜单列表 -->
         <el-menu
-            default-active="user-manager"
+            :default-active="menuActive"
             :collapse="isCollapse"
             class="el-menu-vertical-demo">
           <router-link to="/console/user">
             <el-menu-item
-                index="user-manager">
+                index="/console/user">
               <span slot="title">用户管理</span>
               <i class="el-icon-s-custom"></i>
             </el-menu-item>
@@ -66,7 +66,7 @@
 
           <router-link to="/console/log">
             <el-menu-item
-                index="system-log">
+                index="/console/log">
               <span slot="title">系统日志</span>
               <i class="el-icon-tickets"></i>
             </el-menu-item>
@@ -74,7 +74,7 @@
 
           <router-link to="/console/setting">
             <el-menu-item
-                index="system-setting">
+                index="/console/setting">
               <span slot="title">系统设置</span>
               <i class="el-icon-setting"></i>
             </el-menu-item>
@@ -82,7 +82,7 @@
 
           <router-link to="/console/token">
             <el-menu-item
-                index="token-setting">
+                index="/console/token">
               <span slot="title">会话设置</span>
               <i class="el-icon-chat-dot-round"></i>
             </el-menu-item>
@@ -90,7 +90,7 @@
 
           <router-link to="/console/model">
             <el-menu-item
-                index="model-version">
+                index="/console/model">
               <span slot="title">模型管理</span>
               <i class="el-icon-takeaway-box"></i>
             </el-menu-item>
@@ -193,6 +193,8 @@ export default {
   },
   data() {
     return {
+      // 活动菜单
+      menuActive: '/console/user',
       // 表单验证规则
       formRules: {
         password: [
@@ -334,7 +336,17 @@ export default {
       })
     },
   },
+  watch: {
+    // 监听路由变化
+    $route(to,from){
+      // console.log(from.path);//从哪来
+      // console.log(to.path);//到哪去
+      this.menuActive = to.path
+    }
+  },
   created() {
+    // 活动菜单
+    this.menuActive = this.$route.path
     // 获取用户信息
     this.getUser()
   },
