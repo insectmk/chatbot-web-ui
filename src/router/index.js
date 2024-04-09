@@ -46,10 +46,15 @@ const routes = [
         name: '系统设置',
         component: () => import('@/views/console/SystemSettingView.vue')
       },{
-        // Token设置
+        // 会话设置
         path: '/console/token',
-        name: 'Token设置',
+        name: '会话设置',
         component: () => import('@/views/console/TokenSettingView.vue')
+      },{
+        // 模型管理
+        path: '/console/model',
+        name: '模型管理',
+        component: () => import('@/views/console/ModelVersionView.vue')
       },
     ]
   },{

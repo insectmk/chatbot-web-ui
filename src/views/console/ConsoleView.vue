@@ -83,8 +83,16 @@
           <router-link to="/console/token">
             <el-menu-item
                 index="token-setting">
-              <span slot="title">Token设置</span>
+              <span slot="title">会话设置</span>
               <i class="el-icon-chat-dot-round"></i>
+            </el-menu-item>
+          </router-link>
+
+          <router-link to="/console/model">
+            <el-menu-item
+                index="model-version">
+              <span slot="title">模型管理</span>
+              <i class="el-icon-takeaway-box"></i>
             </el-menu-item>
           </router-link>
         </el-menu>
