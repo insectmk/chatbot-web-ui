@@ -54,6 +54,11 @@
               :show-overflow-tooltip='true'>
           </el-table-column>
           <el-table-column
+              prop="generateTokens"
+              label="已生成的Token数量"
+              :show-overflow-tooltip='true'>
+          </el-table-column>
+          <el-table-column
               prop="remark"
               label="备注"
               :show-overflow-tooltip='true'>
