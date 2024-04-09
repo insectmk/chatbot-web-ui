@@ -33,6 +33,7 @@
               :show-overflow-tooltip='true'>
             <template slot-scope="scope">
               <el-tag
+                  size="medium"
                   :type="getLevelTagType(scope.row.level)"
                   effect="dark">
                 {{ scope.row.level }}
@@ -69,7 +70,7 @@
 </template>
 
 <script>
-import {findSystemLog} from '@/api'
+import {clearSystemLog, findSystemLog} from '@/api'
 
 export default {
   data() {
@@ -87,13 +88,30 @@ export default {
   methods: {
     // 清空日志
     handleClearLog() {
-
+      this.$confirm('此操作将会清空所有的日志, 是否继续?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        clearSystemLog().then(res => {
+          if (res.data.flag) {
+            this.$notify.success({
+              title: '成功',
+              message: res.data.message,
+            })
+            this.findPage()
+          } else {
+            this.$notify.error({
+              title: '错误',
+              message: res.data.message,
+            })
+          }
+        })
+      })
     },
     // 获取等级的Tag标签type值
     getLevelTagType(level) {
       if (level === '信息') {
-        return 'info'
-      } else if (level === '成功') {
         return 'success'
       } else if (level === '警告') {
         return 'warning'

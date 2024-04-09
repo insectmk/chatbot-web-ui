@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    clearSystemLog: '/console/systemLog',    // 清空日志
     findSystemLog: '/console/systemLog', // 查询日志
     deleteUser: '/console/user', // 删除用户
     editUser: '/console/user',  // 更新用户
