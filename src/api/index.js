@@ -3,6 +3,7 @@ import {getAction, deleteAction, putAction, postAction, getActionBinary} from '.
 import {put} from "axios";
 
 // **请求
+const getApiTips = (params) => getAction(apis.getApiTips, params)
 const getModelUsageStatistic = (params) => getAction(apis.getModelUsageStatistic, params)
 const deleteModel = (params) => deleteAction(apis.deleteModel, params)
 const editModel = (params) => putAction(apis.editModel, params)
@@ -31,6 +32,7 @@ const login = (params) => postAction(apis.login, params)
 
 // **暴露
 export {
+    getApiTips,
     getModelUsageStatistic,
     deleteModel,
     editModel,

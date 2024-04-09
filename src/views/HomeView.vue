@@ -174,7 +174,7 @@
                 <i class="el-icon-question" style="font-size: 14px; vertical-align: middle;"></i>
                 <!--  提示的内容 -->
                 <div slot="content">
-                  内容提示
+                  {{ apiTips }}
                 </div>
               </el-tooltip>
             </template>
@@ -185,6 +185,12 @@
                 <el-button slot="append" @click="getApiKeyClick">重新生成</el-button>
               </el-input>
             </template>
+          </el-form-item>
+          <el-form-item label="最大会话数">
+            <el-input v-model="userInfo.maxSession" readonly placeholder="注册时间"/>
+          </el-form-item>
+          <el-form-item label="剩余Tokens">
+            <el-input v-model="userInfo.tokens" readonly placeholder="注册时间"/>
           </el-form-item>
           <el-form-item label="注册时间">
             <el-input v-model="userInfo.registrationTime" readonly placeholder="注册时间"/>
@@ -211,6 +217,7 @@ import {
   editPassword,
   delSession,
   getModelVersionAll,
+  getApiTips,
   addSession} from "@/api"
 import Dialog from "@/components/Dialog.vue"
 import {password} from "@/util/RegularUtil";
@@ -221,6 +228,8 @@ export default {
   },
   data() {
     return {
+      // API内容提示
+      apiTips: '',
       // 表单验证规则
       formRules: {
         password: [
@@ -442,6 +451,10 @@ export default {
     this.getUser()
     // 获取用户所有对话
     this.getSessions()
+    // 获取API提示
+    getApiTips().then(res => {
+      this.apiTips = res.data.data
+    })
   },
 };
 </script>
