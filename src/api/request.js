@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    deleteUser: '/console/user', // 删除用户
     editUser: '/console/user',  // 更新用户
     addUser: '/console/user',    // 添加用户
     findUser: '/console/user', // 查询用户

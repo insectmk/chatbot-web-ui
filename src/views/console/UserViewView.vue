@@ -153,7 +153,7 @@
 </template>
 
 <script>
-import {findUser, addUser, editUser} from '@/api'
+import {findUser, addUser, editUser, deleteUser} from '@/api'
 
 export default {
   data() {
@@ -177,7 +177,28 @@ export default {
   methods: {
     // 删除用户
     handleDelete(id) {
-      console.log(id)
+      this.$confirm('此操作将会删除此用户与该用户的所有对话, 是否继续?', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteUser({
+          id: id
+        }).then(res => {
+          if (res.data.flag) {
+            this.$notify.success({
+              title: '成功',
+              message: res.data.message,
+            })
+            this.findPage()
+          } else {
+            this.$notify.error({
+              title: '错误',
+              message: res.data.message,
+            })
+          }
+        })
+      })
     },
     // 打开编辑框
     openEdit(row) {
