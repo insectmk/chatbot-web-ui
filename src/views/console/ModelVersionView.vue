@@ -169,7 +169,7 @@
 </template>
 
 <script>
-import {findModel, addModel, editModel} from '@/api'
+import {findModel, addModel, editModel, deleteModel} from '@/api'
 
 export default {
   data() {
@@ -191,14 +191,14 @@ export default {
     }
   },
   methods: {
-    // 删除用户
+    // 删除
     handleDelete(id) {
-      this.$confirm('此操作将会删除此用户与该用户的所有对话, 是否继续?', '警告', {
+      this.$confirm('此操作将会删除此模型并转移基于此模型的对话到默认模型, 是否继续?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteUser({
+        deleteModel({
           id: id
         }).then(res => {
           if (res.data.flag) {
@@ -279,7 +279,7 @@ export default {
     }
   },
   created() {
-    // 获取用户
+    // 分页查询
     this.findPage();
   },
 }

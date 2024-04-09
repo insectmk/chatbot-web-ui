@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    deleteModel: '/console/model', //删除模型
     editModel: '/console/model', // 编辑模型
     addModel: '/console/model', // 添加模型
     findModel: '/console/model', // 分页查询模型
