@@ -55,6 +55,11 @@ const routes = [
         path: '/console/model',
         name: '模型管理',
         component: () => import('@/views/console/ModelVersionView.vue')
+      },{
+        // 模型统计
+        path: '/console/statistic',
+        name: '模型统计',
+        component: () => import('@/views/console/StatisticsView.vue')
       },
     ]
   },{

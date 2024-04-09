@@ -80,6 +80,14 @@
             </el-menu-item>
           </router-link>
 
+          <router-link to="/console/statistic">
+            <el-menu-item
+                index="/console/statistic">
+              <span slot="title">模型统计</span>
+              <i class="el-icon-tickets"></i>
+            </el-menu-item>
+          </router-link>
+
 <!--          <router-link to="/console/token">
             <el-menu-item
                 index="/console/token">

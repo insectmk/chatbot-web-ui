@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    getModelUsageStatistic: '/console/statistic/modelUsage', // 获取模型统计
     deleteModel: '/console/model', //删除模型
     editModel: '/console/model', // 编辑模型
     addModel: '/console/model', // 添加模型

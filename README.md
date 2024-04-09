@@ -38,6 +38,7 @@ $ npm run build
 - vue-router：用于规范URL跳转规则
 - vue-clipboard2：复制内容到剪切板
 - af-table-column：Element-UI表格自适应
+- echarts：画图
 
 ## 遇到的问题
 
