@@ -63,6 +63,18 @@
               >
           </el-table-column>
           <el-table-column
+              prop="maxSession"
+              label="最大会话数"
+              :show-overflow-tooltip='true'
+          >
+          </el-table-column>
+          <el-table-column
+              prop="maxToken"
+              label="最大Token数"
+              :show-overflow-tooltip='true'
+          >
+          </el-table-column>
+          <el-table-column
               align="center"
               label="操作">
             <template slot-scope="scope">
@@ -110,6 +122,16 @@
               <el-input v-model="formData.head"/>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="最大会话数" prop="maxSession">
+              <el-input v-model="formData.maxSession"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="最大Token数" prop="maxToken">
+              <el-input v-model="formData.maxToken"/>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -142,10 +164,20 @@
               <el-input v-model="formData.head"/>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="最大会话数" prop="maxSession">
+              <el-input v-model="formData.maxSession"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="最大Token数" prop="maxToken">
+              <el-input v-model="formData.maxToken"/>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="formData = {};dialogFormVisibleEdit = false">取 消</el-button>
         <el-button type="primary" @click="handleEdit">确 定</el-button>
       </div>
     </el-dialog>

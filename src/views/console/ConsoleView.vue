@@ -72,22 +72,6 @@
             </el-menu-item>
           </router-link>
 
-          <router-link to="/console/setting">
-            <el-menu-item
-                index="/console/setting">
-              <span slot="title">系统设置</span>
-              <i class="el-icon-setting"></i>
-            </el-menu-item>
-          </router-link>
-
-          <router-link to="/console/token">
-            <el-menu-item
-                index="/console/token">
-              <span slot="title">会话设置</span>
-              <i class="el-icon-chat-dot-round"></i>
-            </el-menu-item>
-          </router-link>
-
           <router-link to="/console/model">
             <el-menu-item
                 index="/console/model">
@@ -95,6 +79,22 @@
               <i class="el-icon-takeaway-box"></i>
             </el-menu-item>
           </router-link>
+
+<!--          <router-link to="/console/token">
+            <el-menu-item
+                index="/console/token">
+              <span slot="title">会话设置</span>
+              <i class="el-icon-chat-dot-round"></i>
+            </el-menu-item>
+          </router-link>-->
+
+<!--          <router-link to="/console/setting">
+            <el-menu-item
+                index="/console/setting">
+              <span slot="title">系统设置</span>
+              <i class="el-icon-setting"></i>
+            </el-menu-item>
+          </router-link>-->
         </el-menu>
       </el-aside>
 
