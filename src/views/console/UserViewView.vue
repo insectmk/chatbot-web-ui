@@ -69,8 +69,8 @@
           >
           </el-table-column>
           <el-table-column
-              prop="maxToken"
-              label="最大Token数"
+              prop="tokens"
+              label="剩余Token数"
               :show-overflow-tooltip='true'
           >
           </el-table-column>
@@ -128,8 +128,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="最大Token数" prop="maxToken">
-              <el-input v-model="formData.maxToken"/>
+            <el-form-item label="剩余Token数" prop="tokens">
+              <el-input v-model="formData.tokens"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -170,8 +170,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="最大Token数" prop="maxToken">
-              <el-input v-model="formData.maxToken"/>
+            <el-form-item label="剩余Token数" prop="tokens">
+              <el-input v-model="formData.tokens"/>
             </el-form-item>
           </el-col>
         </el-row>
