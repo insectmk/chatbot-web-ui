@@ -119,7 +119,16 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="头像" prop="head">
-              <el-input v-model="formData.head"/>
+              <el-upload
+                  class="avatar-uploader"
+                  :headers="header"
+                  :action="userHeadUploadAddr"
+                  :show-file-list="false"
+                  :on-success="handleAvatarSuccess"
+                  :before-upload="beforeAvatarUpload">
+                <img v-if="formData.head" :src="formData.head" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -234,14 +243,16 @@ export default {
       // MyBatis分页对象
       page: {},
       // 表单数据
-      formData: {},
+      formData: {
+        head: '',
+      },
     }
   },
   methods: {
     // 上传图片的操作
     handleAvatarSuccess(res, file) {
-      this.formData.isUploadHead = true
       this.formData.head = URL.createObjectURL(file.raw);
+      this.formData.isUploadHead = true
     },
     // 上传图片前验证文件
     beforeAvatarUpload(file) {
