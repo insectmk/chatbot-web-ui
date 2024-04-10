@@ -89,7 +89,7 @@
 
     <!-- 新建页面 -->
     <el-dialog title="添加模型" :visible.sync="dialogFormVisible">
-      <el-form :model="formData" label-position="top">
+      <el-form :model="formData" :rules="formRules" ref="addForm" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="模型名称" prop="name">
@@ -125,13 +125,13 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleAdd">确 定</el-button>
+        <el-button type="primary" @click="handleAdd('addForm')">确 定</el-button>
       </div>
     </el-dialog>
 
     <!-- 更新页面 -->
     <el-dialog title="更新模型" :visible.sync="dialogFormVisibleEdit">
-      <el-form :model="formData" label-position="top">
+      <el-form :model="formData" :rules="formRules" ref="editForm" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="模型名称" prop="name">
@@ -167,7 +167,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="formData = {};dialogFormVisibleEdit = false">取 消</el-button>
-        <el-button type="primary" @click="handleEdit">确 定</el-button>
+        <el-button type="primary" @click="handleEdit('editForm')">确 定</el-button>
       </div>
     </el-dialog>
   </el-main>
@@ -175,10 +175,27 @@
 
 <script>
 import {findModel, addModel, editModel, deleteModel} from '@/api'
+import {apiUrl} from "@/util/RegularUtil"
 
 export default {
   data() {
     return {
+      // 表单验证规则
+      formRules: {
+        name: [
+          { required: true, message: '请输入模型名称', trigger: 'blur' },
+        ],
+        versionNumber: [
+          { required: true, message: '请输入模型版本号', trigger: 'blur' },
+        ],
+        apiHost: [
+          { required: true, message: '请输入模型接口地址', trigger: 'blur' },
+          { pattern: apiUrl, message: '请输入有效的接口地址', trigger: 'blur' }
+        ],
+        remark: [
+          { required: true, message: '请输入备注', trigger: 'blur' },
+        ],
+      },
       // 新增框的显示
       dialogFormVisible: false,
       // 编辑框的显示
@@ -227,39 +244,61 @@ export default {
       this.dialogFormVisibleEdit = true
     },
     // 更新
-    handleEdit() {
-      editModel(this.formData).then(res => {
-        if (res.data.flag) {
-          this.$notify.success({
-            title: '成功',
-            message: res.data.message,
+    handleEdit(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          editModel(this.formData).then(res => {
+            if (res.data.flag) {
+              this.$notify.success({
+                title: '成功',
+                message: res.data.message,
+              })
+              this.findPage()
+              this.formData = {}
+              this.dialogFormVisibleEdit = false
+            } else {
+              this.$notify.error({
+                title: '错误',
+                message: res.data.message,
+              })
+            }
           })
-          this.findPage()
-          this.formData = {}
-          this.dialogFormVisibleEdit = false
         } else {
+          // 错误提示
           this.$notify.error({
             title: '错误',
-            message: res.data.message,
+            message: '请按要求填写内容'
           })
         }
       })
     },
     // 添加
-    handleAdd() {
-      addModel(this.formData).then(res => {
-        if (res.data.flag) {
-          this.$notify.success({
-            title: '成功',
-            message: res.data.message,
+    handleAdd(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          addModel(this.formData).then(res => {
+            if (res.data.flag) {
+              this.$notify.success({
+                title: '成功',
+                message: res.data.message,
+              })
+              this.findPage()
+              this.formData = {}
+              this.dialogFormVisible = false
+            } else {
+              this.$notify.error({
+                title: '错误',
+                message: res.data.message,
+              })
+            }
           })
-          this.findPage()
-          this.formData = {}
-          this.dialogFormVisible = false
         } else {
+          // 错误提示
           this.$notify.error({
             title: '错误',
-            message: res.data.message,
+            message: '请按要求填写内容'
           })
         }
       })
