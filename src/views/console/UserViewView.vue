@@ -100,7 +100,7 @@
 
     <!-- 新建用户的页面 -->
     <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
-      <el-form :model="formData" label-position="top">
+      <el-form :model="formData" :rules="formRules" ref="addFrom" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="用户名" prop="username">
@@ -124,25 +124,25 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="最大会话数" prop="maxSession">
-              <el-input v-model="formData.maxSession"/>
+              <el-input type="number" v-model="formData.maxSession"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="剩余Token数" prop="tokens">
-              <el-input v-model="formData.tokens"/>
+              <el-input type="number" v-model="formData.tokens"/>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleAdd">确 定</el-button>
+        <el-button type="primary" @click="handleAdd('addFrom')">确 定</el-button>
       </div>
     </el-dialog>
 
     <!-- 更新用户的页面 -->
     <el-dialog title="更新用户" :visible.sync="dialogFormVisibleEdit">
-      <el-form :model="formData" label-position="top">
+      <el-form :model="formData" :rules="formRules" ref="editForm" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="用户名" prop="username">
@@ -166,19 +166,19 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="最大会话数" prop="maxSession">
-              <el-input v-model="formData.maxSession"/>
+              <el-input type="number" v-model="formData.maxSession"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="剩余Token数" prop="tokens">
-              <el-input v-model="formData.tokens"/>
+              <el-input type="number" v-model="formData.tokens"/>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="formData = {};dialogFormVisibleEdit = false">取 消</el-button>
-        <el-button type="primary" @click="handleEdit">确 定</el-button>
+        <el-button type="primary" @click="handleEdit('editForm')">确 定</el-button>
       </div>
     </el-dialog>
   </el-main>
@@ -186,10 +186,26 @@
 
 <script>
 import {findUser, addUser, editUser, deleteUser} from '@/api'
+import {email, password, username} from "@/util/RegularUtil";
 
 export default {
   data() {
     return {
+      // 表单验证规则
+      formRules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { pattern: username, message: '2-20位', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { pattern: email, message: '邮箱格式不正确', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { pattern: password, message: '至少包含数字、字母和特殊字符，长度在6到24位之间', trigger: 'blur' }
+        ],
+      },
       // 新增框的显示
       dialogFormVisible: false,
       // 编辑框的显示
@@ -238,39 +254,62 @@ export default {
       this.dialogFormVisibleEdit = true
     },
     // 更新用户
-    handleEdit() {
-      editUser(this.formData).then(res => {
-        if (res.data.flag) {
-          this.$notify.success({
-            title: '成功',
-            message: res.data.message,
+    handleEdit(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          editUser(this.formData).then(res => {
+            if (res.data.flag) {
+              this.$notify.success({
+                title: '成功',
+                message: res.data.message,
+              })
+              this.findPage()
+              this.formData = {}
+              this.dialogFormVisibleEdit = false
+            } else {
+              this.$notify.error({
+                title: '错误',
+                message: res.data.message,
+              })
+            }
           })
-          this.findPage()
-          this.formData = {}
-          this.dialogFormVisibleEdit = false
         } else {
+          // 错误提示
           this.$notify.error({
             title: '错误',
-            message: res.data.message,
+            message: '请按要求填写内容'
           })
         }
       })
+
     },
     // 添加用户
-    handleAdd() {
-      addUser(this.formData).then(res => {
-        if (res.data.flag) {
-          this.$notify.success({
-            title: '成功',
-            message: res.data.message,
+    handleAdd(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          addUser(this.formData).then(res => {
+            if (res.data.flag) {
+              this.$notify.success({
+                title: '成功',
+                message: res.data.message,
+              })
+              this.findPage()
+              this.formData = {}
+              this.dialogFormVisible = false
+            } else {
+              this.$notify.error({
+                title: '错误',
+                message: res.data.message,
+              })
+            }
           })
-          this.findPage()
-          this.formData = {}
-          this.dialogFormVisible = false
         } else {
+          // 错误提示
           this.$notify.error({
             title: '错误',
-            message: res.data.message,
+            message: '请按要求填写内容'
           })
         }
       })
