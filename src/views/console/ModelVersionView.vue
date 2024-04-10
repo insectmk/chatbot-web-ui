@@ -97,23 +97,23 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="版本号" prop="versionNumber">
+            <el-form-item label="版本号（例：0.0.1）" prop="versionNumber">
               <el-input v-model="formData.versionNumber"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="API地址" prop="apiHost">
+            <el-form-item label="API地址（例：http://127.0.0.1:8000/）" prop="apiHost">
               <el-input v-model="formData.apiHost"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="API密钥" prop="apiKey">
+            <el-form-item label="API密钥（无则留空）" prop="apiKey">
               <el-input v-model="formData.apiKey"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="最大上下文" prop="maxToken">
-              <el-input v-model="formData.maxToken"/>
+            <el-form-item label="最大上下文（默认1024）" prop="maxToken">
+              <el-input type="number" v-model="formData.maxToken"/>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -130,7 +130,7 @@
     </el-dialog>
 
     <!-- 更新页面 -->
-    <el-dialog title="更新模型" :visible.sync="dialogFormVisibleEdit">
+    <el-dialog title="更新模型" :visible.sync="dialogFormVisibleEdit" @close='handleEditClose'>
       <el-form :model="formData" :rules="formRules" ref="editForm" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -139,23 +139,23 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="版本号" prop="versionNumber">
+            <el-form-item label="版本号（例：0.0.1）" prop="versionNumber">
               <el-input v-model="formData.versionNumber"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="API地址" prop="apiHost">
+            <el-form-item label="API地址（例：http://127.0.0.1:8000/）" prop="apiHost">
               <el-input v-model="formData.apiHost"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="API密钥" prop="apiKey">
+            <el-form-item label="API密钥（无则留空）" prop="apiKey">
               <el-input v-model="formData.apiKey"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="最大上下文" prop="maxToken">
-              <el-input v-model="formData.maxToken"/>
+            <el-form-item label="最大上下文（默认1024）" prop="maxToken">
+              <el-input type="number" v-model="formData.maxToken"/>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -213,6 +213,10 @@ export default {
     }
   },
   methods: {
+    // 编辑框关闭
+    handleEditClose() {
+      this.formData = {}
+    },
     // 删除
     handleDelete(id) {
       this.$confirm('此操作将会删除此模型并转移基于此模型的对话到默认模型, 是否继续?', '警告', {

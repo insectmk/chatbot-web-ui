@@ -141,7 +141,7 @@
     </el-dialog>
 
     <!-- 更新用户的页面 -->
-    <el-dialog title="更新用户" :visible.sync="dialogFormVisibleEdit">
+    <el-dialog title="更新用户" :visible.sync="dialogFormVisibleEdit" @close="handleEditClose">
       <el-form :model="formData" :rules="formRules" ref="editForm" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -223,6 +223,10 @@ export default {
     }
   },
   methods: {
+    // 编辑框关闭
+    handleEditClose() {
+      this.formData = {}
+    },
     // 删除用户
     handleDelete(id) {
       this.$confirm('此操作将会删除此用户与该用户的所有对话, 是否继续?', '警告', {
