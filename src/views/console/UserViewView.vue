@@ -160,8 +160,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="头像" prop="head">
-              <el-input v-model="formData.head"/>
+            <el-form-item label="头像">
+              <el-upload
+                  class="avatar-uploader"
+                  :headers="header"
+                  :action="userHeadUploadAddr"
+                  :show-file-list="false"
+                  :on-success="handleAvatarSuccess"
+                  :before-upload="beforeAvatarUpload">
+                <img v-if="formData.head" :src="formData.head" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -186,11 +195,17 @@
 
 <script>
 import {findUser, addUser, editUser, deleteUser} from '@/api'
-import {email, password, username} from "@/util/RegularUtil";
+import {email, password, username} from "@/util/RegularUtil"
+import axios  from "axios"
+import {apis} from "@/api/request"
 
 export default {
   data() {
     return {
+      // 图片上传的头部信息
+      header: {},
+      // 图片上传地址
+      userHeadUploadAddr: '',
       // 表单验证规则
       formRules: {
         username: [
@@ -202,7 +217,7 @@ export default {
           { pattern: email, message: '邮箱格式不正确', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
+          //{ required: true, message: '请输入密码', trigger: 'blur' },
           { pattern: password, message: '至少包含数字、字母和特殊字符，长度在6到24位之间', trigger: 'blur' }
         ],
       },
@@ -223,6 +238,24 @@ export default {
     }
   },
   methods: {
+    // 上传图片的操作
+    handleAvatarSuccess(res, file) {
+      this.formData.isUploadHead = true
+      this.formData.head = URL.createObjectURL(file.raw);
+    },
+    // 上传图片前验证文件
+    beforeAvatarUpload(file) {
+      const isIMG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isIMG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isIMG && isLt2M;
+    },
     // 编辑框关闭
     handleEditClose() {
       this.formData = {}
@@ -340,10 +373,39 @@ export default {
   created() {
     // 获取用户
     this.findPage();
+    // 获取图片上传地址
+    this.userHeadUploadAddr = axios.defaults.baseURL + apis.uploadUserHead
+    // 设置图片请求头部信息
+    this.header = {
+      token: localStorage.getItem("token")
+    }
   },
 }
 </script>
 
 <style lang="less">
-
+// 头像显示框样式
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>

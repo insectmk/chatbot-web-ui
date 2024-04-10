@@ -3,6 +3,7 @@ import {getAction, deleteAction, putAction, postAction, getActionBinary} from '.
 import {put} from "axios";
 
 // **请求
+const uploadUserHead = (params) => getAction(apis.getApiTips, params)
 const getApiTips = (params) => getAction(apis.getApiTips, params)
 const getModelUsageStatistic = (params) => getAction(apis.getModelUsageStatistic, params)
 const deleteModel = (params) => deleteAction(apis.deleteModel, params)
