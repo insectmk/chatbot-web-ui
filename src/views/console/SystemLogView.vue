@@ -5,7 +5,7 @@
     <!--  条件栏  -->
     <el-row>
       <el-col :span="24">
-        <el-input v-model="queryPageBean.queryString" placeholder="等级/邮箱/信息" style="width: 200px;"></el-input>
+        <el-input v-model="queryPageBean.queryString" placeholder="地址/邮箱/等级/信息" style="width: 200px;"></el-input>
         <el-button @click="findPage()">查询</el-button>
         <el-button type="primary" @click="handleClearLog">清空日志</el-button>
       </el-col>
@@ -21,6 +21,11 @@
           <el-table-column
               label="序号"
               type="index">
+          </el-table-column>
+          <el-table-column
+              prop="ipAddress"
+              label="IP地址"
+              :show-overflow-tooltip='true'>
           </el-table-column>
           <el-table-column
               prop="opEmail"
