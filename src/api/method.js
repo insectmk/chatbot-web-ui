@@ -7,16 +7,6 @@ axios.defaults.headers.common['token'] = localStorage.getItem("token")
 // 全局设置API地址
 axios.defaults.baseURL = 'http://127.0.0.1:9001'
 
-// 用户名和密码
-const username = '3067836615@qq.com';
-const password = '_Mk20010624';
-
-// 将用户名和密码组合并转换为 base64 编码的字符串
-const authString = `${username}:${password}`;
-const authBase64 = btoa(authString);
-
-// 设置 Axios 的默认 Authorization 头部
-axios.defaults.headers.common['Authorization'] = `Basic ${authBase64}`;
 export function getActionBinary(url, parameter, headers) {
   return axios({
     url: url,
