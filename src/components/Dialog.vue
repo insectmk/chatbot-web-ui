@@ -101,10 +101,17 @@ export default {
         sessionId: this.sessionId,
         messageContent: this.messageToSend
       }).then((res) => {
-        this.dialogs.push({
-          role: 'assistant',
-          content: res.data.data
-        })
+        if (res.data.flag) {
+          this.dialogs.push({
+            role: 'assistant',
+            content: res.data.data
+          })
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.data.message,
+          })
+        }
       }).then(() => {
         // 用户清除输入的消息
         this.messageToSend = ''
