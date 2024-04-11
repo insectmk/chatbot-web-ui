@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // 全局设置请求带cookie
-axios.defaults.withCredentials = true
+//axios.defaults.withCredentials = true
 // 全局设置请求带token请求头
 axios.defaults.headers.common['token'] = localStorage.getItem("token")
 // 全局设置API地址
