@@ -29,7 +29,7 @@
                 </el-form-item>
                 <el-form-item label="头像">
                   <!-- 图片的显示 -->
-                  <img :alt="`用户${props.row.username}的头像`" :src="props.row.head" width="70"/>
+                  <img class="headImg" :alt="`用户${props.row.username}的头像`" :src="props.row.head" width="70"/>
                 </el-form-item>
                 <el-form-item label="API密钥">
                   <span>{{ props.row.apiKey }}</span>
@@ -125,7 +125,7 @@
                   :show-file-list="false"
                   :on-success="handleAvatarSuccess"
                   :before-upload="beforeAvatarUpload">
-                <img v-if="formData.head" :src="formData.head" class="avatar">
+                <img :alt="`用户${formData.username}的头像`" v-if="formData.head" :src="formData.head" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
@@ -409,6 +409,13 @@ export default {
 }
 
 // 头像显示框样式
+.headImg {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
