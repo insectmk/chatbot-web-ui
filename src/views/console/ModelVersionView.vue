@@ -18,6 +18,36 @@
             stripe
             highlight-current-row
             style="width: 100%">
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="模型名称">
+                  <span>{{ props.row.name }}</span>
+                </el-form-item>
+                <el-form-item label="版本号">
+                  <span>{{ props.row.versionNumber }}</span>
+                </el-form-item>
+                <el-form-item label="API地址">
+                  <span>{{ props.row.apiHost }}</span>
+                </el-form-item>
+                <el-form-item label="API密钥">
+                  <span>{{ props.row.apiKey }}</span>
+                </el-form-item>
+                <el-form-item label="最长上下文">
+                  <span>{{ props.row.maxToken }}</span>
+                </el-form-item>
+                <el-form-item label="生成Token">
+                  <span>{{ props.row.generateTokens }}</span>
+                </el-form-item>
+                <el-form-item label="发布时间">
+                  <span>{{ props.row.deploymentTime }}</span>
+                </el-form-item>
+                <el-form-item label="备注">
+                  <span>{{ props.row.remark }}</span>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
           <el-table-column
               label="序号"
               type="index">
@@ -26,12 +56,6 @@
               prop="name"
               label="模型名称"
               :show-overflow-tooltip='true'>
-          </el-table-column>
-          <el-table-column
-              prop="versionNumber"
-              label="版本号"
-              :show-overflow-tooltip='true'
-          >
           </el-table-column>
           <el-table-column
               prop="apiHost"
@@ -46,21 +70,6 @@
           <el-table-column
               prop="maxToken"
               label="最长上下文"
-              :show-overflow-tooltip='true'>
-          </el-table-column>
-          <el-table-column
-              prop="deploymentTime"
-              label="发布时间"
-              :show-overflow-tooltip='true'>
-          </el-table-column>
-          <el-table-column
-              prop="generateTokens"
-              label="已生成的Token数量"
-              :show-overflow-tooltip='true'>
-          </el-table-column>
-          <el-table-column
-              prop="remark"
-              label="备注"
               :show-overflow-tooltip='true'>
           </el-table-column>
           <el-table-column
@@ -334,5 +343,17 @@ export default {
 </script>
 
 <style lang="less">
-
+// 表格展开行样式
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
 </style>
