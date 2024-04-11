@@ -35,7 +35,6 @@ router.beforeEach((to, from, next) => {
       if (res.data.flag) {
         // 判断是否需要访问后台
         if (to.path.indexOf('console') !== -1) {
-          console.log(to.path)
           // 访问后台的逻辑
           isRoot({token: token}).then(resR => {
             if (!resR.data.flag) {

@@ -18,6 +18,37 @@
             stripe
             highlight-current-row
             style="width: 100%">
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="昵称">
+                  <span>{{ props.row.username }}</span>
+                </el-form-item>
+                <el-form-item label="邮箱">
+                  <span>{{ props.row.email }}</span>
+                </el-form-item>
+                <el-form-item label="头像">
+                  <!-- 图片的显示 -->
+                  <img :alt="`用户${props.row.username}的头像`" :src="props.row.head" width="70"/>
+                </el-form-item>
+                <el-form-item label="API密钥">
+                  <span>{{ props.row.apiKey }}</span>
+                </el-form-item>
+                <el-form-item label="最大会话">
+                  <span>{{ props.row.maxSession }}</span>
+                </el-form-item>
+                <el-form-item label="剩余Token">
+                  <span>{{ props.row.tokens }}</span>
+                </el-form-item>
+                <el-form-item label="注册时间">
+                  <span>{{ props.row.registrationTime }}</span>
+                </el-form-item>
+                <el-form-item label="最后登录">
+                  <span>{{ props.row.lastLoginTime }}</span>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
           <el-table-column
               label="序号"
               type="index">
@@ -25,54 +56,22 @@
           <el-table-column
               prop="username"
               label="用户名"
-              :show-overflow-tooltip='true'
-              >
+              :show-overflow-tooltip='true'>
           </el-table-column>
           <el-table-column
               prop="email"
               label="邮箱"
-              :show-overflow-tooltip='true'
-              >
-          </el-table-column>
-          <el-table-column
-              prop="head"
-              label="头像"
-              :show-overflow-tooltip='true'
-              >
-            <!-- 图片的显示 -->
-            <template   slot-scope="scope">
-              <img :src="scope.row.head"  min-width="70" height="70" />
-            </template>
-          </el-table-column>
-          <el-table-column
-              prop="apiKey"
-              label="API密钥"
-              :show-overflow-tooltip='true'
-             >
-          </el-table-column>
-          <el-table-column
-              prop="registrationTime"
-              label="注册时间"
-              :show-overflow-tooltip='true'
-              >
-          </el-table-column>
-          <el-table-column
-              prop="lastLoginTime"
-              label="最后登录时间"
-              :show-overflow-tooltip='true'
-              >
+              :show-overflow-tooltip='true'>
           </el-table-column>
           <el-table-column
               prop="maxSession"
               label="最大会话数"
-              :show-overflow-tooltip='true'
-          >
+              :show-overflow-tooltip='true'>
           </el-table-column>
           <el-table-column
               prop="tokens"
               label="剩余Token数"
-              :show-overflow-tooltip='true'
-          >
+              :show-overflow-tooltip='true'>
           </el-table-column>
           <el-table-column
               align="center"
@@ -395,6 +394,20 @@ export default {
 </script>
 
 <style lang="less">
+// 表格展开行样式
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+
 // 头像显示框样式
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
