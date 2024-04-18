@@ -1,5 +1,5 @@
 <template>
-  <el-main class="main">
+  <el-main id="main"  class="main">
     <el-row class="container">
       <div v-if="Array.isArray(dialogs) && dialogs.length === 0" class="assistant">
         <h2>你好 我是智能聊天机器人</h2>
@@ -105,6 +105,8 @@ export default {
           messageContent: this.messageToSend,
         }),
       });
+      // 清空输入框消息
+      this.messageToSend = ''
 
       // 如果没有响应则返回
       if (!response.body) return;
@@ -119,7 +121,7 @@ export default {
         let { value, done } = await reader.read();
         if (done) break;
         // 处理数据
-        value = value?.replace('data:', '').replace(/\s\n$/, '')
+        value = value.replace('data:', '').replace(/\s\n$/, '')
         // 找到机器人div并依次加入回复
         const assistantElements = document.querySelectorAll('.assistant');
         const lastAssistantElement = assistantElements[assistantElements.length - 1];
@@ -151,6 +153,10 @@ export default {
       }).then(() => {
         // 关闭加载框
         loading.close()
+      }).then(() => {
+        // 滚动到消息发送框
+        let mainDiv = document.getElementById('main')
+        mainDiv.scrollTop = mainDiv.scrollHeight
       })
     }
   },
