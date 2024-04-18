@@ -120,12 +120,12 @@ export default {
       while (true) {
         let { value, done } = await reader.read();
         if (done) break;
-        // 处理数据
-        value = value.replace('data:', '').replace(/\s\n$/, '')
+
         // 找到机器人div并依次加入回复
         const assistantElements = document.querySelectorAll('.assistant');
         const lastAssistantElement = assistantElements[assistantElements.length - 1];
-        this.dialogs[this.dialogs.length-1].content += value
+        // 处理数据
+        this.dialogs[this.dialogs.length-1].content += value.replace('data:', '').replace(/\s\n$/, '')
         lastAssistantElement.innerHTML = marked(this.dialogs[this.dialogs.length-1].content)
         // 添加内容
         /*this.$set(this.dialogs, this.dialogs.length-1, {
