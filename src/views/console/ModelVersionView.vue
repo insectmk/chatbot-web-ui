@@ -33,6 +33,18 @@
                 <el-form-item label="API密钥">
                   <span>{{ props.row.apiKey }}</span>
                 </el-form-item>
+                <el-form-item label="Temperature">
+                  <span>{{ props.row.temperature }}</span>
+                </el-form-item>
+                <el-form-item label="Top_P">
+                  <span>{{ props.row.topP }}</span>
+                </el-form-item>
+                <el-form-item label="Presence">
+                  <span>{{ props.row.presencePenalty }}</span>
+                </el-form-item>
+                <el-form-item label="Frequency">
+                  <span>{{ props.row.frequencyPenalty }}</span>
+                </el-form-item>
                 <el-form-item label="最长上下文">
                   <span>{{ props.row.maxToken }}</span>
                 </el-form-item>
@@ -121,6 +133,26 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item label="Temperature（默认1）" prop="temperature">
+              <el-input v-model="formData.temperature"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Top_P（默认0.3）" prop="topP">
+              <el-input v-model="formData.topP"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Presence Penalty（默认0）" prop="presencePenalty">
+              <el-input v-model="formData.presencePenalty"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Frequency Penalty（默认1）" prop="frequencyPenalty">
+              <el-input v-model="formData.frequencyPenalty"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="最大上下文（默认1024）" prop="maxToken">
               <el-input type="number" v-model="formData.maxToken"/>
             </el-form-item>
@@ -160,6 +192,26 @@
           <el-col :span="12">
             <el-form-item label="API密钥（无则留空）" prop="apiKey">
               <el-input v-model="formData.apiKey"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Temperature（默认1）" prop="temperature">
+              <el-input v-model="formData.temperature"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Top_P（默认0.3）" prop="topP">
+              <el-input v-model="formData.topP"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Presence Penalty（默认0）" prop="presencePenalty">
+              <el-input v-model="formData.presencePenalty"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Frequency Penalty（默认1）" prop="frequencyPenalty">
+              <el-input v-model="formData.frequencyPenalty"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
