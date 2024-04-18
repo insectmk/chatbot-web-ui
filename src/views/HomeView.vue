@@ -121,8 +121,8 @@
           :visible.sync="dialogVisibleAddSession"
           width="30%">
 
-        <el-form>
-          <el-form-item>
+        <el-form :model="formDataSession" :rules="formRules" ref="sessionAdd">
+          <el-form-item prop="modelVersionId">
             <el-select style="width: 100%" v-model="formDataSession.modelVersionId" placeholder="选择模型">
               <el-popover
                   v-for="modelVersion in modelVersions"
@@ -138,14 +138,14 @@
               </el-popover>
             </el-select>
           </el-form-item>
-          <el-form-item>
+          <el-form-item prop="remark">
             <el-input v-model="formDataSession.remark" placeholder="对话备注"/>
           </el-form-item>
         </el-form>
 
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisibleEdit = false">取 消</el-button>
-          <el-button type="primary" @click="addSessionAct">确 定</el-button>
+          <el-button type="primary" @click="addSessionAct('sessionAdd')">确 定</el-button>
         </span>
       </el-dialog>
 
@@ -236,6 +236,12 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' },
           { pattern: password, message: '至少包含数字、字母和特殊字符，长度在6到24位之间', trigger: 'blur' }
         ],
+        modelVersionId: [
+          { required: true, message: '请选择模型', trigger: 'blur' },
+        ],
+        remark: [
+          { required: true, message: '请输入备注', trigger: 'blur' },
+        ]
       },
       // 新建对话框显示控制
       dialogVisibleAddSession: false,
@@ -305,28 +311,39 @@ export default {
       })
     },
     // 添加会话
-    addSessionAct() {
-      // 发送添加请求
-      addSession(this.formDataSession).then(res => {
-        if (res.data.flag) {
-          // 成功提示
-          this.$notify.success({
-            title: '成功',
-            message: res.data.message,
-          });
-          // 获取用户对话列表
-          this.getSessions()
-          // 清除历史信息
-          this.formDataSession.modelVersionId = ''
-          this.formDataSession.remark = ''
-          // 关闭添加框
-          this.dialogVisibleAddSession = false
+    addSessionAct(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 发送添加请求
+          addSession(this.formDataSession).then(res => {
+            if (res.data.flag) {
+              // 成功提示
+              this.$notify.success({
+                title: '成功',
+                message: res.data.message,
+              });
+              // 获取用户对话列表
+              this.getSessions()
+              // 清除历史信息
+              this.formDataSession.modelVersionId = ''
+              this.formDataSession.remark = ''
+              // 关闭添加框
+              this.dialogVisibleAddSession = false
+            } else {
+              // 成功提示
+              this.$notify.error({
+                title: '错误',
+                message: res.data.message,
+              });
+            }
+          })
         } else {
-          // 成功提示
+          // 失败逻辑
           this.$notify.error({
             title: '错误',
-            message: res.data.message,
-          });
+            message: '请按要求填写表单',
+          })
         }
       })
     },
