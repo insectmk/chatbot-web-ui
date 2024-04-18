@@ -5,7 +5,7 @@ import axios from 'axios'
 // 全局设置请求带token请求头
 axios.defaults.headers.common['token'] = localStorage.getItem("token")
 // 全局设置API地址
-axios.defaults.baseURL = 'http://insectmk.top:9001'
+axios.defaults.baseURL = 'http://127.0.0.1:9001'
 
 export function getActionBinary(url, parameter, headers) {
   return axios({

@@ -35,7 +35,7 @@
             :maxlength="messageToSendMaxLength"
             style="font-size: 18px;">
         </el-input>
-        <el-button type="primary" style="float: right;" @click="send">发送</el-button>
+        <el-button :disabled="sendBtnDisabled" type="primary" style="float: right;" @click="send">发送</el-button>
       </el-col>
     </el-row>
   </el-main>
@@ -43,11 +43,13 @@
 
 <script>
 import {getHistoryMsg, sendMsg} from '@/api'
+import {apis} from '@/api/request'
 import {marked} from 'marked'
 import { markedHighlight } from "marked-highlight"
 import hljs from 'highlight.js'
 // 注意引入样式，你可以前往 node_module 下查看更多的样式主题
 import 'highlight.js/styles/base16/darcula.css'
+import axios from "axios";
 
 // 高亮拓展
 marked.use(markedHighlight({
@@ -61,6 +63,8 @@ marked.use(markedHighlight({
 export default {
   data() {
     return {
+      // 发送按钮禁用
+      sendBtnDisabled: false,
       messageToSendMaxLength: 255,
       marked: marked,
       dialogs: [],
@@ -81,45 +85,16 @@ export default {
       }
     },
     // 发送消息
-    send() {
+    async send() {
       // 创建用户消息
       this.dialogs.push({
         role: 'user',
         content: this.messageToSend
       })
-
-      // 弹出加载框
-      const loading = this.$loading({
-        lock: true,
-        text: '正在生成对话...',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      });
-
-      // 发送消息
-      sendMsg({
-        sessionId: this.sessionId,
-        messageContent: this.messageToSend
-      }).then((res) => {
-        if (res.data.flag) {
-          this.dialogs.push({
-            role: 'assistant',
-            content: res.data.data
-          })
-        } else {
-          this.$notify.error({
-            title: '错误',
-            message: res.data.message,
-          })
-        }
-      }).then(() => {
-        // 用户清除输入的消息
-        this.messageToSend = ''
-        // 关闭加载框
-        loading.close();
-      })
-
-      /*fetch('http://127.0.0.1:9001/chatMessage/stream', {
+      // 禁用发送按钮
+      this.sendBtnDisabled = true
+      // 发送流式对话
+      const response = await fetch(axios.defaults.baseURL + apis.sendMsgStream, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -127,25 +102,37 @@ export default {
         },
         body: JSON.stringify({
           sessionId: this.sessionId,
-          content: this.messageToSend,
+          messageContent: this.messageToSend,
         }),
-      }).then(response => {
-        // 获取 reader
-        const reader = response.body.getReader();
+      });
 
-        // 读取数据
-        return reader.read().then(function process({done, value}) {
-          if (done) {
-            console.log('Stream finished');
-            return;
-          }
-
-          console.log('Received data chunk', value);
-
-          // 读取下一段数据
-          return reader.read().then(process);
-        });
-      })*/
+      // 如果没有响应则返回
+      if (!response.body) return;
+      // 创建机器人消息
+      this.dialogs.push({
+        role: 'assistant',
+        content: ''
+      })
+      // 开始读取数据
+      const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
+      while (true) {
+        let { value, done } = await reader.read();
+        if (done) break;
+        // 处理数据
+        value = value?.replace('data:', '').replace(/\s\n$/, '')
+        // 找到机器人div并依次加入回复
+        const assistantElements = document.querySelectorAll('.assistant');
+        const lastAssistantElement = assistantElements[assistantElements.length - 1];
+        this.dialogs[this.dialogs.length-1].content += value
+        lastAssistantElement.innerHTML = marked(this.dialogs[this.dialogs.length-1].content)
+        // 添加内容
+        /*this.$set(this.dialogs, this.dialogs.length-1, {
+          role: 'assistant',
+          content: this.dialogs[this.dialogs.length-1].content + value
+        });*/
+      }
+      // 解禁发送按钮
+      this.sendBtnDisabled = false
     },
     // 获取历史消息
     getHistoryMessages() {
