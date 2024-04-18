@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import { isTokenEffective } from '@/api'
+import { isTokenEffective,isRoot } from '@/api'
 
 // 引入复制内容到剪切板功能
 import VueClipboard from 'vue-clipboard2'
@@ -29,14 +29,23 @@ Vue.config.productionTip = false
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("token");
   isTokenEffective({ token: token }).then((res) => {
-    // 判断是否需要访问后台
-    if (to.path.indexOf('console') !== -1) {
-      // 访问后台的逻辑
-    }
     //筛选需要传token的路由，匹配route⾥⾯需要登录的路径，如果匹配到就是true
     if (to.matched.some((record) => record.meta.requiresAuth)) {
       //根据token是否有效，判断是否需要调到登录⻚⾯
       if (res.data.flag) {
+        // 判断是否需要访问后台
+        if (to.path.indexOf('console') !== -1) {
+          // 访问后台的逻辑
+          isRoot({token: token}).then(resR => {
+            if (!resR.data.flag) {
+              ElementUI.Message({
+                type: 'error',
+                message: resR.data.message,
+              });
+              return next({ path: '/'})
+            }
+          })
+        }
         next()
       } else {
         return next({ path: '/login'})

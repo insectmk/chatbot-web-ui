@@ -1,5 +1,7 @@
 // 后端接口
 const apis = {
+    isRoot: '/login/isRoot', // 是否为root用户
+    uploadUserHead: '/console/user/head', // 用户头像上传
     getApiTips: '/api/tips', // 获取API说明
     getModelUsageStatistic: '/console/statistic/modelUsage', // 获取模型统计
     deleteModel: '/console/model', //删除模型

@@ -4,13 +4,13 @@
     <el-header style="display: flex; font-size: 12px">
       <!-- 头部左侧系统名 -->
       <span style="margin-right: auto; font-size: 18px;">
-        <el-image :src="require('@/assets/img/logo.png')" class="user-avatar" />
+        <el-image :src="require('@/assets/img/logo.png')" class="user-avatar"/>
         智能聊天机器人后台管理
       </span>
       <!-- 头部右侧用户功能下拉菜单 -->
       <el-dropdown style="margin-left: auto;" trigger="click">
           <span class="el-dropdown-link">
-            <el-image :src="userInfo.head" class="user-avatar" />
+            <el-image :src="userInfo.head" class="user-avatar"/>
             {{ userInfo.username }}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
         <el-dropdown-menu slot="dropdown">
@@ -47,7 +47,8 @@
             width="130"
             trigger="hover"
             content="展开/收起侧边栏">
-          <el-button plain slot="reference" style="width: 100%" size="small" @click="isCollapse = !isCollapse">展/收</el-button>
+          <el-button plain slot="reference" style="width: 100%" size="small" @click="isCollapse = !isCollapse">展/收
+          </el-button>
         </el-popover>
         <br/>
 
@@ -88,21 +89,21 @@
             </el-menu-item>
           </router-link>
 
-<!--          <router-link to="/console/token">
-            <el-menu-item
-                index="/console/token">
-              <span slot="title">会话设置</span>
-              <i class="el-icon-chat-dot-round"></i>
-            </el-menu-item>
-          </router-link>-->
+          <!--          <router-link to="/console/token">
+                      <el-menu-item
+                          index="/console/token">
+                        <span slot="title">会话设置</span>
+                        <i class="el-icon-chat-dot-round"></i>
+                      </el-menu-item>
+                    </router-link>-->
 
-<!--          <router-link to="/console/setting">
-            <el-menu-item
-                index="/console/setting">
-              <span slot="title">系统设置</span>
-              <i class="el-icon-setting"></i>
-            </el-menu-item>
-          </router-link>-->
+          <!--          <router-link to="/console/setting">
+                      <el-menu-item
+                          index="/console/setting">
+                        <span slot="title">系统设置</span>
+                        <i class="el-icon-setting"></i>
+                      </el-menu-item>
+                    </router-link>-->
         </el-menu>
       </el-aside>
 
@@ -154,10 +155,10 @@
               <span>API密钥</span>
               <el-tooltip class="item" effect="dark" placement="top">
                 <!--  问号的图标   -->
-                <i class="el-icon-question" style="font-size: 14px; vertical-align: middle;"></i>
+                <i class="el-icon-question" @click="dialogVisibleAPI = true" style="font-size: 14px; vertical-align: middle;"></i>
                 <!--  提示的内容 -->
                 <div slot="content">
-                  内容提示
+                  点击查看API使用说明
                 </div>
               </el-tooltip>
             </template>
@@ -182,6 +183,17 @@
           <!--          <el-button type="primary" @click="editPassword">确 定</el-button>-->
         </span>
       </el-dialog>
+
+      <!-- API文档 -->
+      <el-dialog
+          title="API使用说明"
+          :visible.sync="dialogVisibleAPI"
+          width="50%">
+        <div v-html="marked(apiTips)"></div>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogVisibleAPI = false">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-container>
   </el-container>
 </template>
@@ -190,10 +202,11 @@
 import {
   getApiKey,
   getUserInfo,
-  editPassword,
-  } from "@/api"
+  editPassword, getApiTips,
+} from "@/api"
 import Dialog from "@/components/Dialog.vue"
 import {password} from "@/util/RegularUtil";
+import {marked} from 'marked'
 
 export default {
   components: {
@@ -201,13 +214,17 @@ export default {
   },
   data() {
     return {
+      // API内容提示
+      apiTips: '',
+      // API文档的显示
+      dialogVisibleAPI: false,
       // 活动菜单
       menuActive: '/console/user',
       // 表单验证规则
       formRules: {
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { pattern: password, message: '至少包含数字、字母和特殊字符，长度在6到24位之间', trigger: 'blur' }
+          {required: true, message: '请输入密码', trigger: 'blur'},
+          {pattern: password, message: '至少包含数字、字母和特殊字符，长度在6到24位之间', trigger: 'blur'}
         ],
       },
       // 新建对话框显示控制
@@ -250,6 +267,7 @@ export default {
     };
   },
   methods: {
+    marked,
     // 修改密码
     editPassword(formName) {
       // 验证表单
@@ -346,7 +364,7 @@ export default {
   },
   watch: {
     // 监听路由变化
-    $route(to,from){
+    $route(to, from) {
       // console.log(from.path);//从哪来
       // console.log(to.path);//到哪去
       this.menuActive = to.path
@@ -357,6 +375,10 @@ export default {
     this.menuActive = this.$route.path
     // 获取用户信息
     this.getUser()
+    // 获取API提示
+    getApiTips().then(res => {
+      this.apiTips = res.data.data
+    })
   },
 };
 </script>

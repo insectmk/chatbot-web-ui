@@ -55,7 +55,7 @@ export default {
       formRules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
-          { pattern: username, message: '3-20位', trigger: 'blur' }
+          { pattern: username, message: '2-20位', trigger: 'blur' }
         ],
         email: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },

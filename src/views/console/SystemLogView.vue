@@ -5,7 +5,8 @@
     <!--  条件栏  -->
     <el-row>
       <el-col :span="24">
-        <el-input v-model="queryPageBean.queryString" placeholder="等级/邮箱/信息" style="width: 200px;"></el-input>
+        <el-input v-model="queryPageBean.queryString" placeholder="地址/邮箱/等级/信息"
+                  style="width: 200px;"></el-input>
         <el-button @click="findPage()">查询</el-button>
         <el-button type="primary" @click="handleClearLog">清空日志</el-button>
       </el-col>
@@ -18,9 +19,42 @@
             stripe
             highlight-current-row
             style="width: 100%">
+          <el-table-column type="expand">
+            <template slot-scope="props">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="IP地址">
+                  <span>{{ props.row.ipAddress }}</span>
+                </el-form-item>
+                <el-form-item label="邮箱">
+                  <span>{{ props.row.opEmail }}</span>
+                </el-form-item>
+                <el-form-item label="日志等级">
+                  <span>
+                    <el-tag
+                        size="medium"
+                        :type="getLevelTagType(props.row.level)"
+                        effect="dark">
+                      {{ props.row.level }}
+                    </el-tag>
+                  </span>
+                </el-form-item>
+                <el-form-item label="信息">
+                  <span>{{ props.row.message }}</span>
+                </el-form-item>
+                <el-form-item label="创建事件">
+                  <span>{{ props.row.createTime }}</span>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
           <el-table-column
               label="序号"
               type="index">
+          </el-table-column>
+          <el-table-column
+              prop="ipAddress"
+              label="IP地址"
+              :show-overflow-tooltip='true'>
           </el-table-column>
           <el-table-column
               prop="opEmail"
@@ -146,5 +180,17 @@ export default {
 </script>
 
 <style lang="less">
-
+// 表格展开行样式
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
 </style>

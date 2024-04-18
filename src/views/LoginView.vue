@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import {login,getCaptcha,isTokenEffective} from '@/api'
+import {login,getCaptcha,isTokenEffective,getApiTips} from '@/api'
 import {email,password,captcha} from '@/util/RegularUtil'
 import axios from "axios"
 
