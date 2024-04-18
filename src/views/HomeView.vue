@@ -171,10 +171,10 @@
               <span>API密钥</span>
               <el-tooltip class="item" effect="dark" placement="top">
                 <!--  问号的图标   -->
-                <i class="el-icon-question" style="font-size: 14px; vertical-align: middle;"></i>
+                <i class="el-icon-question" @click="dialogVisibleAPI = true" style="font-size: 14px; vertical-align: middle;"></i>
                 <!--  提示的内容 -->
                 <div slot="content">
-                  {{ apiTips }}
+                  点击查看API使用说明
                 </div>
               </el-tooltip>
             </template>
@@ -205,6 +205,17 @@
 <!--          <el-button type="primary" @click="editPassword">确 定</el-button>-->
         </span>
       </el-dialog>
+
+      <!-- API文档 -->
+      <el-dialog
+          title="API使用说明"
+          :visible.sync="dialogVisibleAPI"
+          width="50%">
+        <div v-html="marked(apiTips)"></div>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogVisibleAPI = false">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-container>
   </el-container>
 </template>
@@ -220,7 +231,8 @@ import {
   getApiTips,
   addSession} from "@/api"
 import Dialog from "@/components/Dialog.vue"
-import {password} from "@/util/RegularUtil";
+import {password} from "@/util/RegularUtil"
+import {marked} from 'marked'
 
 export default {
   components: {
@@ -230,6 +242,8 @@ export default {
     return {
       // API内容提示
       apiTips: '',
+      // API文档的显示
+      dialogVisibleAPI: false,
       // 表单验证规则
       formRules: {
         password: [
@@ -283,6 +297,7 @@ export default {
     };
   },
   methods: {
+    marked,
     // 复制APIKEY
     copyApiKey() {
       this.$copyText(this.userInfo.apiKey).then(event => {
