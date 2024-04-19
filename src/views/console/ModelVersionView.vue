@@ -85,6 +85,25 @@
               :show-overflow-tooltip='true'>
           </el-table-column>
           <el-table-column
+              prop="isOnline"
+              label="在线状态"
+              :show-overflow-tooltip='true'>
+            <template slot-scope="scope">
+              <el-tag
+                  v-if="isUrlOnline((scope.row.apiHost + '/status').replace(/([^:])(\/\/+)/g, '$1/'), 'GET')"
+                  type="success"
+                  effect="dark">
+                在线
+              </el-tag>
+              <el-tag
+                  v-else
+                  type="danger"
+                  effect="dark">
+                离线
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
               align="center"
               label="操作">
             <template slot-scope="scope">
@@ -237,6 +256,7 @@
 <script>
 import {findModel, addModel, editModel, deleteModel} from '@/api'
 import {apiUrl} from "@/util/RegularUtil"
+import {isUrlOnline} from "@/util/URLUtil"
 
 export default {
   data() {
@@ -274,6 +294,7 @@ export default {
     }
   },
   methods: {
+    isUrlOnline,
     // 编辑框关闭
     handleEditClose() {
       this.formData = {}

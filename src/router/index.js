@@ -41,16 +41,6 @@ const routes = [
         name: '系统日志',
         component: () => import('@/views/console/SystemLogView.vue')
       },{
-        // 系统设置
-        path: '/console/setting',
-        name: '系统设置',
-        component: () => import('@/views/console/SystemSettingView.vue')
-      },{
-        // 会话设置
-        path: '/console/token',
-        name: '会话设置',
-        component: () => import('@/views/console/TokenSettingView.vue')
-      },{
         // 模型管理
         path: '/console/model',
         name: '模型管理',
