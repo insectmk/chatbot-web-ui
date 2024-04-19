@@ -1,17 +1,14 @@
 /**
  * 判断url是否在线
  * @param url
+ * @param method
  * @returns {boolean}
  */
-export function isUrlOnline(url, method) {
-    let xhr = new XMLHttpRequest();
-    xhr.open(method, url, false);
+export async function isUrlOnline(url, method) {
     try {
-        xhr.send();
-        return xhr.status === 200;
-    } catch (e) {
-        // 在这里处理异常，例如网络问题等
-        console.error("Checking the URL failed:", e);
+        const response = await fetch(url, { method: method });
+        return response.status >= 200 && response.status < 300;
+    } catch (error) {
         return false;
     }
 }

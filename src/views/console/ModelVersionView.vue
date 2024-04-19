@@ -90,7 +90,7 @@
               :show-overflow-tooltip='true'>
             <template slot-scope="scope">
               <el-tag
-                  v-if="isUrlOnline((scope.row.apiHost + '/status').replace(/([^:])(\/\/+)/g, '$1/'), 'GET')"
+                  v-if="scope.row.isOnline"
                   type="success"
                   size="small"
                   effect="dark">
@@ -296,7 +296,6 @@ export default {
     }
   },
   methods: {
-    isUrlOnline,
     // 编辑框关闭
     handleEditClose() {
       this.formData = {}
@@ -401,12 +400,24 @@ export default {
       findModel(this.queryPageBean).then(res => {
         if (res.data.flag) {
           this.page = res.data.data
+          return res.data.data.records
         } else {
           this.$notify.error({
             title: '错误',
             message: res.data.message,
           })
         }
+      }).then((models) => {
+        if (!models) return
+        for (let index in models) {
+          isUrlOnline((models[index].apiHost + '/status').replace(/([^:])(\/\/+)/g, '$1/'), 'GET')
+              .then(flag => {
+                this.$set(this.page.records[index], 'isOnline', flag)
+                //model.isOnline = flag
+              })
+        }
+      }).then(() => {
+        console.log(this.page.records)
       })
     }
   },
