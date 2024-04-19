@@ -92,12 +92,14 @@
               <el-tag
                   v-if="isUrlOnline((scope.row.apiHost + '/status').replace(/([^:])(\/\/+)/g, '$1/'), 'GET')"
                   type="success"
+                  size="small"
                   effect="dark">
                 在线
               </el-tag>
               <el-tag
                   v-else
                   type="danger"
+                  size="small"
                   effect="dark">
                 离线
               </el-tag>
