@@ -10,6 +10,7 @@
           empty-text="您还没有进行对话哦~"
           :data="dialogs"
           style="width: 100%"
+          @cell-click="cellClick"
           :show-header="false">
         <el-table-column
             prop="content"
@@ -75,6 +76,15 @@ export default {
     sessionId: ''
   },
   methods: {
+    // 点击消息按钮快速复制
+    cellClick(row, column, cell, event) {
+      this.$copyText(row.content).then(event => {
+        this.$notify.success({
+          title: '成功',
+          message: '成功复制内容',
+        })
+      })
+    },
     // 监测发送消息的长度
     messageToSendCheck() {
       if (this.messageToSend.length === this.messageToSendMaxLength) {
