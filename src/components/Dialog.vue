@@ -66,7 +66,7 @@ export default {
     return {
       // 发送按钮禁用
       sendBtnDisabled: false,
-      messageToSendMaxLength: 255,
+      messageToSendMaxLength: 512,
       marked: marked,
       dialogs: [],
       messageToSend: '',
