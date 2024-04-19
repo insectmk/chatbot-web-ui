@@ -85,6 +85,27 @@
               :show-overflow-tooltip='true'>
           </el-table-column>
           <el-table-column
+              prop="isOnline"
+              label="在线状态"
+              :show-overflow-tooltip='true'>
+            <template slot-scope="scope">
+              <el-tag
+                  v-if="scope.row.isOnline"
+                  type="success"
+                  size="small"
+                  effect="dark">
+                在线
+              </el-tag>
+              <el-tag
+                  v-else
+                  type="danger"
+                  size="small"
+                  effect="dark">
+                离线
+              </el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
               align="center"
               label="操作">
             <template slot-scope="scope">
@@ -237,6 +258,7 @@
 <script>
 import {findModel, addModel, editModel, deleteModel} from '@/api'
 import {apiUrl} from "@/util/RegularUtil"
+import {isUrlOnline} from "@/util/URLUtil"
 
 export default {
   data() {
@@ -378,12 +400,24 @@ export default {
       findModel(this.queryPageBean).then(res => {
         if (res.data.flag) {
           this.page = res.data.data
+          return res.data.data.records
         } else {
           this.$notify.error({
             title: '错误',
             message: res.data.message,
           })
         }
+      }).then((models) => {
+        if (!models) return
+        for (let index in models) {
+          isUrlOnline((models[index].apiHost + '/status').replace(/([^:])(\/\/+)/g, '$1/'), 'GET')
+              .then(flag => {
+                this.$set(this.page.records[index], 'isOnline', flag)
+                //model.isOnline = flag
+              })
+        }
+      }).then(() => {
+        console.log(this.page.records)
       })
     }
   },

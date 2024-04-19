@@ -10,6 +10,7 @@
           empty-text="您还没有进行对话哦~"
           :data="dialogs"
           style="width: 100%"
+          @cell-click="cellClick"
           :show-header="false">
         <el-table-column
             prop="content"
@@ -65,7 +66,7 @@ export default {
     return {
       // 发送按钮禁用
       sendBtnDisabled: false,
-      messageToSendMaxLength: 255,
+      messageToSendMaxLength: 512,
       marked: marked,
       dialogs: [],
       messageToSend: '',
@@ -75,6 +76,15 @@ export default {
     sessionId: ''
   },
   methods: {
+    // 点击消息按钮快速复制
+    cellClick(row, column, cell, event) {
+      this.$copyText(row.content).then(event => {
+        this.$notify.success({
+          title: '成功',
+          message: '成功复制内容',
+        })
+      })
+    },
     // 监测发送消息的长度
     messageToSendCheck() {
       if (this.messageToSend.length === this.messageToSendMaxLength) {
@@ -86,6 +96,14 @@ export default {
     },
     // 发送消息
     async send() {
+      // 输入消息不能为空
+      if (!this.messageToSend.trim()) {
+        this.$notify.error({
+          title: '错误',
+          message: '输入内容不能为空'
+        })
+        return
+      }
       // 创建用户消息
       this.dialogs.push({
         role: 'user',
@@ -107,9 +125,11 @@ export default {
       });
       // 清空输入框消息
       this.messageToSend = ''
-
+      console.log(response)
       // 如果没有响应则返回
-      if (!response.body) return;
+      if (!response.body) {
+        return
+      }
       // 创建机器人消息
       this.dialogs.push({
         role: 'assistant',
@@ -120,18 +140,12 @@ export default {
       while (true) {
         let { value, done } = await reader.read();
         if (done) break;
-        // 处理数据
-        value = value.replace('data:', '').replace(/\s\n$/, '')
         // 找到机器人div并依次加入回复
         const assistantElements = document.querySelectorAll('.assistant');
         const lastAssistantElement = assistantElements[assistantElements.length - 1];
-        this.dialogs[this.dialogs.length-1].content += value
+        // 处理数据
+        this.dialogs[this.dialogs.length-1].content += (value.replace('data:', '').replace(/\s\n$/, ''))
         lastAssistantElement.innerHTML = marked(this.dialogs[this.dialogs.length-1].content)
-        // 添加内容
-        /*this.$set(this.dialogs, this.dialogs.length-1, {
-          role: 'assistant',
-          content: this.dialogs[this.dialogs.length-1].content + value
-        });*/
       }
       // 解禁发送按钮
       this.sendBtnDisabled = false
