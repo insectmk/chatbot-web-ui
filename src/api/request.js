@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    deletePartner: '/partner', // 删除搭档
     addPartner: '/partner', // 新增搭档
     getPublicPartner: '/partner/public', // 查询所有公开的搭档
     getUserPartner: '/partner', // 查询用户的搭档

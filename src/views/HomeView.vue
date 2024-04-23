@@ -238,13 +238,17 @@
                   class="partner"
                   v-for="partner in partners"
                   :key="partner.id"
-                  :span="5">
+                  :xs="22"
+                  :sm="10"
+                  :md="10"
+                  :lg="5"
+                  :xl="5">
                 <el-avatar :src="partner.head"></el-avatar>
                 {{ partner.name }}
                 <span style="margin-left: auto;cursor: pointer;">
                   <i class="el-icon-edit" title="编辑"></i>
                   <br />
-                  <i class="el-icon-delete" title="删除" @click=""></i>
+                  <i class="el-icon-delete" title="删除" @click="partnerDel(partner.id, partner.name)"></i>
                 </span>
               </el-col>
             </el-row>
@@ -302,6 +306,7 @@
 
 <script>
 import {
+  deletePartner,
   addPartner,
   getPublicPartner,
   getUserPartner,
@@ -312,7 +317,8 @@ import {
   delSession,
   getModelVersionAll,
   getApiTips,
-  addSession} from "@/api"
+  addSession, deleteModel
+} from "@/api"
 import Dialog from "@/components/Dialog.vue"
 import {apiUrl, password} from "@/util/RegularUtil"
 import {marked} from 'marked'
@@ -401,6 +407,31 @@ export default {
     };
   },
   methods: {
+    // 删除搭档
+    partnerDel(id, name) {
+      this.$confirm(`正在删除${name}搭档, 是否继续?`, '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deletePartner({
+          id: id
+        }).then(res => {
+          if (res.data.flag) {
+            this.$notify.success({
+              title: '成功',
+              message: res.data.message,
+            })
+            this.getUserPartner()
+          } else {
+            this.$notify.error({
+              title: '错误',
+              message: res.data.message,
+            })
+          }
+        })
+      })
+    },
     // 添加搭档
     addPartnerAct(formName) {
       // 验证表单
