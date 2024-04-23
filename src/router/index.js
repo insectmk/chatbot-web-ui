@@ -40,12 +40,12 @@ const routes = [
         path: '/console/log',
         name: '系统日志',
         component: () => import('@/views/console/SystemLogView.vue')
-      },{
+      }/*,{
         // 搭档管理
         path: '/console/partner',
         name: '搭档管理',
         component: () => import('@/views/console/PartnerView.vue')
-      },{
+      }*/,{
         // 模型管理
         path: '/console/model',
         name: '模型管理',
