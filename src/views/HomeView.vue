@@ -53,6 +53,14 @@
             placement="right"
             width="130"
             trigger="hover"
+            content="管理我的搭档">
+          <el-button plain slot="reference" type="success" style="width: 100%" size="small" @click="managePartnerClick">搭档</el-button>
+        </el-popover>
+        <br/>
+        <el-popover
+            placement="right"
+            width="130"
+            trigger="hover"
             content="创建一个新的会话">
           <el-button plain slot="reference" type="primary" style="width: 100%" size="small" @click="addSessionClick">新建</el-button>
         </el-popover>
@@ -216,6 +224,92 @@
           <el-button type="primary" @click="dialogVisibleAPI = false">确 定</el-button>
         </span>
       </el-dialog>
+
+      <!-- 搭档管理页面 -->
+      <el-dialog
+          title="我的搭档"
+          :visible.sync="dialogVisiblePartner"
+          width="50%">
+        <el-button type="primary" plain style="margin-bottom: 20px" @click="addPartnerClick">新增搭档</el-button>
+        <el-tabs v-model="partnerActiveName" @tab-click="partnerHandleClick">
+          <el-tab-pane label="我的搭档" name="myPartner">
+            <el-row>
+              <el-col :span="6">
+                搭档1
+              </el-col>
+              <el-col :span="6">
+                搭档1
+              </el-col>
+              <el-col :span="6">
+                搭档1
+              </el-col>
+              <el-col :span="6">
+                搭档1
+              </el-col>
+              <el-col :span="6">
+                搭档1
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+          <el-tab-pane label="公用搭档" name="publicPartner">
+            <el-row>
+              <el-col :span="6">
+                搭档1
+              </el-col>
+              <el-col :span="6">
+                搭档1
+              </el-col>
+              <el-col :span="6">
+                搭档1
+              </el-col>
+              <el-col :span="6">
+                搭档1
+              </el-col>
+              <el-col :span="6">
+                搭档1
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+        </el-tabs>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisiblePartner = false">关 闭</el-button>
+        </span>
+      </el-dialog>
+
+      <!--  新增搭档框  -->
+      <el-dialog
+          title="新建会话"
+          :visible.sync="dialogVisiblePartnerAdd"
+          width="30%">
+
+        <el-form :model="formDataSession" :rules="formRules" ref="sessionAdd">
+          <el-form-item prop="modelVersionId">
+            <el-select style="width: 100%" v-model="formDataSession.modelVersionId" placeholder="选择模型">
+              <el-popover
+                  v-for="modelVersion in modelVersions"
+                  :key="modelVersion.id"
+                  placement="right"
+                  :title="modelVersion.name"
+                  width="200"
+                  trigger="hover"
+                  :content="modelVersion.remark">
+                <el-option :label="modelVersion.name"
+                           :value="modelVersion.id"
+                           slot="reference"></el-option>
+              </el-popover>
+            </el-select>
+          </el-form-item>
+          <el-form-item prop="remark">
+            <el-input v-model="formDataSession.remark" placeholder="对话备注"/>
+          </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisiblePartnerAdd = false">取 消</el-button>
+          <el-button type="primary" @click="addSessionAct('sessionAdd')">确 定</el-button>
+        </span>
+      </el-dialog>
+
     </el-container>
   </el-container>
 </template>
@@ -240,6 +334,12 @@ export default {
   },
   data() {
     return {
+      // 添加搭档页面
+      dialogVisiblePartnerAdd: false,
+      // 搭档管理页面显示哪个
+      partnerActiveName: 'myPartner',
+      // 搭档管理页面的显示
+      dialogVisiblePartner: false,
       // API内容提示
       apiTips: '',
       // API文档的显示
@@ -297,6 +397,18 @@ export default {
     };
   },
   methods: {
+    // 添加搭档页面
+    addPartnerClick() {
+      this.dialogVisiblePartnerAdd = true
+    },
+    // 搭档管理页面tabs点击事件
+    partnerHandleClick(tab, event) {
+      console.log(tab, event)
+    },
+    // 点击管理搭档按钮
+    managePartnerClick() {
+      this.dialogVisiblePartner = true
+    },
     marked,
     // 复制APIKEY
     copyApiKey() {
