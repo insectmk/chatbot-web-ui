@@ -278,7 +278,11 @@
                 class="partner"
                 v-for="partner in publicPartners"
                 :key="partner.id"
-                :span="5">
+                :xs="22"
+                :sm="10"
+                :md="10"
+                :lg="5"
+                :xl="5">
               <el-avatar :src="partner.head"></el-avatar>
               {{ partner.name }}
             </el-col>
