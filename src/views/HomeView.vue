@@ -146,6 +146,26 @@
               </el-popover>
             </el-select>
           </el-form-item>
+          <el-form-item prop="partnerId">
+            <el-select style="width: 100%" v-model="formDataSession.partnerId" placeholder="选择搭档">
+              <el-popover
+                  v-for="partner in [...new Set(partners, publicPartners)]"
+                  :key="partner.id"
+                  placement="right"
+                  :title="partner.name"
+                  width="200"
+                  trigger="hover"
+                  :content="partner.prompt">
+                <el-option :label="partner.name"
+                           :value="partner.id"
+                           style="display: flex;align-items: center;"
+                           slot="reference">
+                  <el-avatar :src="partner.head" size="small" style="margin-right: 10px;"></el-avatar>
+                  {{partner.name}}
+                </el-option>
+              </el-popover>
+            </el-select>
+          </el-form-item>
           <el-form-item prop="remark">
             <el-input v-model="formDataSession.remark" placeholder="对话备注"/>
           </el-form-item>
@@ -387,6 +407,9 @@ export default {
         ],
         modelVersionId: [
           { required: true, message: '请选择模型', trigger: 'blur' },
+        ],
+        partnerId: [
+          { required: true, message: '请选择搭档', trigger: 'blur' },
         ],
         remark: [
           { required: true, message: '请输入备注', trigger: 'blur' },
@@ -630,6 +653,9 @@ export default {
     },
     // 点击新建会话按钮
     addSessionClick() {
+      // 查询所有的搭档信息
+      this.getUserPartner()
+      this.getPublicPartner()
       // 查询所有的模型信息
       getModelVersionAll().then(res => {
         this.modelVersions = res.data.data
