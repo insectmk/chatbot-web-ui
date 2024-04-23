@@ -65,6 +65,14 @@
             </el-menu-item>
           </router-link>
 
+          <router-link to="/console/partner">
+            <el-menu-item
+                index="/console/partner">
+              <span slot="title">搭档管理</span>
+              <i class="el-icon-service"></i>
+            </el-menu-item>
+          </router-link>
+
           <router-link to="/console/model">
             <el-menu-item
                 index="/console/model">

@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    findPartner: '/console/partner', // 分页条件查询搭档
     editPartner: '/partner', // 编辑搭档
     deletePartner: '/partner', // 删除搭档
     addPartner: '/partner', // 新增搭档
