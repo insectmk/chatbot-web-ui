@@ -53,6 +53,14 @@
             placement="right"
             width="130"
             trigger="hover"
+            content="管理我的搭档">
+          <el-button plain slot="reference" type="success" style="width: 100%" size="small" @click="managePartnerClick">搭档</el-button>
+        </el-popover>
+        <br/>
+        <el-popover
+            placement="right"
+            width="130"
+            trigger="hover"
             content="创建一个新的会话">
           <el-button plain slot="reference" type="primary" style="width: 100%" size="small" @click="addSessionClick">新建</el-button>
         </el-popover>
@@ -138,6 +146,26 @@
               </el-popover>
             </el-select>
           </el-form-item>
+          <el-form-item prop="partnerId">
+            <el-select style="width: 100%" v-model="formDataSession.partnerId" placeholder="选择搭档">
+              <el-popover
+                  v-for="partner in [...new Set(partners, publicPartners)]"
+                  :key="partner.id"
+                  placement="right"
+                  :title="partner.name"
+                  width="200"
+                  trigger="hover"
+                  :content="partner.prompt">
+                <el-option :label="partner.name"
+                           :value="partner.id"
+                           style="display: flex;align-items: center;"
+                           slot="reference">
+                  <el-avatar :src="partner.head" size="small" style="margin-right: 10px;"></el-avatar>
+                  {{partner.name}}
+                </el-option>
+              </el-popover>
+            </el-select>
+          </el-form-item>
           <el-form-item prop="remark">
             <el-input v-model="formDataSession.remark" placeholder="对话备注"/>
           </el-form-item>
@@ -216,12 +244,128 @@
           <el-button type="primary" @click="dialogVisibleAPI = false">确 定</el-button>
         </span>
       </el-dialog>
+
+      <!-- 搭档管理页面 -->
+      <el-dialog
+          title="我的搭档"
+          :visible.sync="dialogVisiblePartner"
+          width="50%">
+        <el-button type="primary" plain style="margin-bottom: 20px" @click="addPartnerClick">新增搭档</el-button>
+        <el-tabs v-model="partnerActiveName" >
+          <el-tab-pane label="我的搭档" name="myPartner">
+            <el-row>
+              <el-col
+                  class="partner"
+                  v-for="partner in partners"
+                  :key="partner.id"
+                  :xs="22"
+                  :sm="10"
+                  :md="10"
+                  :lg="5"
+                  :xl="5">
+                <el-avatar :src="partner.head"></el-avatar>
+                {{ partner.name }}
+                <span style="margin-left: auto;cursor: pointer;">
+                  <i class="el-icon-edit" title="编辑" @click="partnerEdit(partner)"></i>
+                  <br />
+                  <i class="el-icon-delete" title="删除" @click="partnerDel(partner.id, partner.name)"></i>
+                </span>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+          <el-tab-pane label="公共搭档" name="publicPartner">
+            <el-col
+                class="partner"
+                v-for="partner in publicPartners"
+                :key="partner.id"
+                :xs="22"
+                :sm="10"
+                :md="10"
+                :lg="5"
+                :xl="5">
+              <el-avatar :src="partner.head"></el-avatar>
+              {{ partner.name }}
+            </el-col>
+          </el-tab-pane>
+        </el-tabs>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisiblePartner = false">关 闭</el-button>
+        </span>
+      </el-dialog>
+
+      <!--  新增搭档框  -->
+      <el-dialog
+          title="新建搭档"
+          :visible.sync="dialogVisiblePartnerAdd"
+          width="30%">
+
+        <el-form :model="formDataPartner" :rules="formRules" ref="partnerAdd">
+          <el-form-item prop="name">
+            <el-input v-model="formDataPartner.name" placeholder="搭档名称"/>
+          </el-form-item>
+          <el-form-item prop="prompt">
+            <el-input
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 8}"
+                v-model="formDataPartner.prompt"
+                placeholder="人物设定"/>
+          </el-form-item>
+          <el-form-item prop="head">
+            <el-input v-model="formDataPartner.head" placeholder="头像地址"/>
+          </el-form-item>
+          <el-form-item prop="isPublic" label="是否公开">
+            <el-switch v-model="formDataPartner.isPublic"></el-switch>
+          </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisiblePartnerAdd = false">取 消</el-button>
+          <el-button type="primary" @click="addPartnerAct('partnerAdd')">确 定</el-button>
+        </span>
+      </el-dialog>
+
+      <!--  编辑搭档框  -->
+      <el-dialog
+          :title="`编辑${formDataPartner.name}搭档`"
+          :visible.sync="dialogVisiblePartnerEdit"
+          width="30%">
+
+        <el-form :model="formDataPartner" :rules="formRules" ref="partnerEdit">
+          <el-form-item prop="name">
+            <el-input v-model="formDataPartner.name" placeholder="搭档名称"/>
+          </el-form-item>
+          <el-form-item prop="prompt">
+            <el-input
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 8}"
+                v-model="formDataPartner.prompt"
+                placeholder="人物设定"/>
+          </el-form-item>
+          <el-form-item prop="head">
+            <el-input v-model="formDataPartner.head" placeholder="头像地址"/>
+          </el-form-item>
+          <el-form-item prop="isPublic" label="是否公开">
+            <el-switch v-model="formDataPartner.isPublic"></el-switch>
+          </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisiblePartnerEdit = false">取 消</el-button>
+          <el-button type="primary" @click="editPartnerAct('partnerEdit')">确 定</el-button>
+        </span>
+      </el-dialog>
+
     </el-container>
   </el-container>
 </template>
 
 <script>
 import {
+  editPartner,
+  deletePartner,
+  addPartner,
+  getPublicPartner,
+  getUserPartner,
   getApiKey,
   getSessionAll,
   getUserInfo,
@@ -229,9 +373,10 @@ import {
   delSession,
   getModelVersionAll,
   getApiTips,
-  addSession} from "@/api"
+  addSession, deleteModel
+} from "@/api"
 import Dialog from "@/components/Dialog.vue"
-import {password} from "@/util/RegularUtil"
+import {apiUrl, password} from "@/util/RegularUtil"
 import {marked} from 'marked'
 
 export default {
@@ -240,6 +385,20 @@ export default {
   },
   data() {
     return {
+      // 编辑搭档页面的显示
+      dialogVisiblePartnerEdit: false,
+      // 搭档表单数据
+      formDataPartner: {},
+      // 公共搭档
+      publicPartners: [],
+      // 用户搭档
+      partners: [],
+      // 添加搭档页面
+      dialogVisiblePartnerAdd: false,
+      // 搭档管理页面显示哪个
+      partnerActiveName: 'myPartner',
+      // 搭档管理页面的显示
+      dialogVisiblePartner: false,
       // API内容提示
       apiTips: '',
       // API文档的显示
@@ -253,9 +412,21 @@ export default {
         modelVersionId: [
           { required: true, message: '请选择模型', trigger: 'blur' },
         ],
+        partnerId: [
+          { required: true, message: '请选择搭档', trigger: 'blur' },
+        ],
         remark: [
           { required: true, message: '请输入备注', trigger: 'blur' },
-        ]
+        ],
+        name: [
+          { required: true, message: '请输入搭档名称', trigger: 'blur' },
+        ],
+        prompt: [
+          { required: true, message: '请输入人物设定', trigger: 'blur' },
+        ],
+        head: [
+          { required: true, message: '请输入头像地址', trigger: 'blur' },
+        ],
       },
       // 新建对话框显示控制
       dialogVisibleAddSession: false,
@@ -297,6 +468,128 @@ export default {
     };
   },
   methods: {
+    // 更新搭档
+    editPartnerAct(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 验证成功
+          editPartner(this.formDataPartner).then(res => {
+            if (res.data.flag) {
+              // 成功逻辑
+              this.$notify.success({
+                title: '成功',
+                message: res.data.message
+              })
+              this.getUserPartner()
+              this.getPublicPartner()
+              this.formDataPartner = {}
+              this.dialogVisiblePartnerEdit = false
+            } else {
+              this.$notify.error({
+                title: '错误',
+                message: res.data.message,
+              })
+            }
+          })
+        } else {
+          // 失败逻辑
+          this.$notify.error({
+            title: '错误',
+            message: '请按要求填写表单',
+          })
+        }
+      })
+    },
+    // 点击搭档编辑按钮
+    partnerEdit(partner) {
+      this.formDataPartner = partner
+      this.dialogVisiblePartnerEdit = true
+    },
+    // 删除搭档
+    partnerDel(id, name) {
+      this.$confirm(`正在删除${name}搭档, 是否继续?`, '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deletePartner({
+          id: id
+        }).then(res => {
+          if (res.data.flag) {
+            this.$notify.success({
+              title: '成功',
+              message: res.data.message,
+            })
+            this.getUserPartner()
+            this.getPublicPartner()
+          } else {
+            this.$notify.error({
+              title: '错误',
+              message: res.data.message,
+            })
+          }
+        })
+      })
+    },
+    // 添加搭档
+    addPartnerAct(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 验证成功
+          addPartner(this.formDataPartner).then(res => {
+            if (res.data.flag) {
+              // 成功逻辑
+              this.$notify.success({
+                title: '成功',
+                message: res.data.message
+              })
+              this.getUserPartner()
+              this.getPublicPartner()
+              this.formDataPartner = {}
+              this.dialogVisiblePartnerAdd = false
+            } else {
+              this.$notify.error({
+                title: '错误',
+                message: res.data.message,
+              })
+            }
+          })
+        } else {
+          // 失败逻辑
+          this.$notify.error({
+            title: '错误',
+            message: '请按要求填写表单',
+          })
+        }
+      })
+    },
+    // 添加搭档页面
+    addPartnerClick() {
+      this.dialogVisiblePartnerAdd = true
+    },
+    // 点击管理搭档按钮
+    managePartnerClick() {
+      // 查询用户搭档
+      this.getUserPartner()
+      // 查询公共搭档
+      this.getPublicPartner()
+      // 打开搭档弹出框
+      this.dialogVisiblePartner = true
+    },
+    // 查询公共搭档
+    getPublicPartner() {
+      getPublicPartner().then(res => {
+        this.publicPartners = res.data.data
+      })
+    },
+    // 查询用户搭档
+    getUserPartner() {
+      getUserPartner().then(res => {
+        this.partners = res.data.data
+      })
+    },
     marked,
     // 复制APIKEY
     copyApiKey() {
@@ -364,6 +657,9 @@ export default {
     },
     // 点击新建会话按钮
     addSessionClick() {
+      // 查询所有的搭档信息
+      this.getUserPartner()
+      this.getPublicPartner()
       // 查询所有的模型信息
       getModelVersionAll().then(res => {
         this.modelVersions = res.data.data
@@ -551,5 +847,14 @@ body, html {
 
 .el-aside {
   color: #333;
+}
+
+// 搭档盒子样式
+.partner {
+  margin: 8px;
+  padding: 10px;
+  border: 1px solid black;
+  display: flex;
+  align-items: center; /* 垂直居中 */
 }
 </style>

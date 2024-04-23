@@ -13,6 +13,7 @@ export function getActionBinary(url, parameter, headers) {
     method: 'get',
     data: parameter,
     headers:headers,
+
     responseType: 'arraybuffer', // 关键 设置 响应类型为二进制流
   })
 }

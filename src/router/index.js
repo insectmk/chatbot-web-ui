@@ -34,13 +34,18 @@ const routes = [
         // 用户管理
         path: '/console/user',
         name: '用户管理',
-        component: () => import('@/views/console/UserViewView.vue')
+        component: () => import('@/views/console/UserView.vue')
       },{
         // 系统日志
         path: '/console/log',
         name: '系统日志',
         component: () => import('@/views/console/SystemLogView.vue')
-      },{
+      }/*,{
+        // 搭档管理
+        path: '/console/partner',
+        name: '搭档管理',
+        component: () => import('@/views/console/PartnerView.vue')
+      }*/,{
         // 模型管理
         path: '/console/model',
         name: '模型管理',

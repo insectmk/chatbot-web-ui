@@ -39,6 +39,7 @@ $ npm run build
 - vue-clipboard2：复制内容到剪切板
 - af-table-column：Element-UI表格自适应
 - echarts：画图
+- @microsoft/fetch-event-source：处理后端的流式接口
 
 ## 遇到的问题
 
