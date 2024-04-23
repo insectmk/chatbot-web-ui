@@ -34,7 +34,7 @@ const routes = [
         // 用户管理
         path: '/console/user',
         name: '用户管理',
-        component: () => import('@/views/console/UserViewView.vue')
+        component: () => import('@/views/console/UserView.vue')
       },{
         // 系统日志
         path: '/console/log',
