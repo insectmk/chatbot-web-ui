@@ -238,7 +238,7 @@
                   class="partner"
                   v-for="partner in partners"
                   :key="partner.id"
-                  :span="6">
+                  :span="5">
                 <el-avatar :src="partner.head"></el-avatar>
                 {{ partner.name }}
                 <span style="margin-left: auto;cursor: pointer;">
@@ -254,7 +254,7 @@
                 class="partner"
                 v-for="partner in publicPartners"
                 :key="partner.id"
-                :span="6">
+                :span="5">
               <el-avatar :src="partner.head"></el-avatar>
               {{ partner.name }}
             </el-col>
@@ -267,35 +267,32 @@
 
       <!--  新增搭档框  -->
       <el-dialog
-          title="新建会话"
+          title="新建搭档"
           :visible.sync="dialogVisiblePartnerAdd"
           width="30%">
 
-        <el-form :model="formDataSession" :rules="formRules" ref="sessionAdd">
-          <el-form-item prop="modelVersionId">
-            <el-select style="width: 100%" v-model="formDataSession.modelVersionId" placeholder="选择模型">
-              <el-popover
-                  v-for="modelVersion in modelVersions"
-                  :key="modelVersion.id"
-                  placement="right"
-                  :title="modelVersion.name"
-                  width="200"
-                  trigger="hover"
-                  :content="modelVersion.remark">
-                <el-option :label="modelVersion.name"
-                           :value="modelVersion.id"
-                           slot="reference"></el-option>
-              </el-popover>
-            </el-select>
+        <el-form :model="formDataPartner" :rules="formRules" ref="partnerAdd">
+          <el-form-item prop="name">
+            <el-input v-model="formDataPartner.name" placeholder="搭档名称"/>
           </el-form-item>
-          <el-form-item prop="remark">
-            <el-input v-model="formDataSession.remark" placeholder="对话备注"/>
+          <el-form-item prop="prompt">
+            <el-input
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 8}"
+                v-model="formDataPartner.prompt"
+                placeholder="人物设定"/>
+          </el-form-item>
+          <el-form-item prop="head">
+            <el-input v-model="formDataPartner.head" placeholder="头像地址"/>
+          </el-form-item>
+          <el-form-item prop="isPublic" label="是否公开">
+            <el-switch v-model="formDataPartner.isPublic"></el-switch>
           </el-form-item>
         </el-form>
 
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisiblePartnerAdd = false">取 消</el-button>
-          <el-button type="primary" @click="addSessionAct('sessionAdd')">确 定</el-button>
+          <el-button type="primary" @click="addPartnerAct('partnerAdd')">确 定</el-button>
         </span>
       </el-dialog>
 
@@ -305,6 +302,7 @@
 
 <script>
 import {
+  addPartner,
   getPublicPartner,
   getUserPartner,
   getApiKey,
@@ -316,7 +314,7 @@ import {
   getApiTips,
   addSession} from "@/api"
 import Dialog from "@/components/Dialog.vue"
-import {password} from "@/util/RegularUtil"
+import {apiUrl, password} from "@/util/RegularUtil"
 import {marked} from 'marked'
 
 export default {
@@ -325,6 +323,8 @@ export default {
   },
   data() {
     return {
+      // 搭档表单数据
+      formDataPartner: {},
       // 公共搭档
       publicPartners: [],
       // 用户搭档
@@ -350,7 +350,16 @@ export default {
         ],
         remark: [
           { required: true, message: '请输入备注', trigger: 'blur' },
-        ]
+        ],
+        name: [
+          { required: true, message: '请输入搭档名称', trigger: 'blur' },
+        ],
+        prompt: [
+          { required: true, message: '请输入人物设定', trigger: 'blur' },
+        ],
+        head: [
+          { required: true, message: '请输入头像地址', trigger: 'blur' },
+        ],
       },
       // 新建对话框显示控制
       dialogVisibleAddSession: false,
@@ -392,6 +401,38 @@ export default {
     };
   },
   methods: {
+    // 添加搭档
+    addPartnerAct(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 验证成功
+          addPartner(this.formDataPartner).then(res => {
+            if (res.data.flag) {
+              // 成功逻辑
+              this.$notify.success({
+                title: '成功',
+                message: res.data.message
+              })
+              this.getUserPartner()
+              this.formDataPartner = {}
+              this.dialogVisiblePartnerAdd = false
+            } else {
+              this.$notify.error({
+                title: '错误',
+                message: res.data.message,
+              })
+            }
+          })
+        } else {
+          // 失败逻辑
+          this.$notify.error({
+            title: '错误',
+            message: '请按要求填写表单',
+          })
+        }
+      })
+    },
     // 添加搭档页面
     addPartnerClick() {
       this.dialogVisiblePartnerAdd = true
@@ -399,15 +440,23 @@ export default {
     // 点击管理搭档按钮
     managePartnerClick() {
       // 查询用户搭档
-      getUserPartner().then(res => {
-        this.partners = res.data.data
-      })
+      this.getUserPartner()
       // 查询公共搭档
+      this.getPublicPartner()
+      // 打开搭档弹出框
+      this.dialogVisiblePartner = true
+    },
+    // 查询公共搭档
+    getPublicPartner() {
       getPublicPartner().then(res => {
         this.publicPartners = res.data.data
       })
-      // 打开搭档弹出框
-      this.dialogVisiblePartner = true
+    },
+    // 查询用户搭档
+    getUserPartner() {
+      getUserPartner().then(res => {
+        this.partners = res.data.data
+      })
     },
     marked,
     // 复制APIKEY
@@ -667,7 +716,7 @@ body, html {
 
 // 搭档盒子样式
 .partner {
-  margin: 2px;
+  margin: 8px;
   padding: 10px;
   border: 1px solid black;
   display: flex;
