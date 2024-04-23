@@ -231,42 +231,32 @@
           :visible.sync="dialogVisiblePartner"
           width="50%">
         <el-button type="primary" plain style="margin-bottom: 20px" @click="addPartnerClick">新增搭档</el-button>
-        <el-tabs v-model="partnerActiveName" @tab-click="partnerHandleClick">
+        <el-tabs v-model="partnerActiveName" >
           <el-tab-pane label="我的搭档" name="myPartner">
             <el-row>
-              <el-col :span="6">
-                搭档1
-              </el-col>
-              <el-col :span="6">
-                搭档1
-              </el-col>
-              <el-col :span="6">
-                搭档1
-              </el-col>
-              <el-col :span="6">
-                搭档1
-              </el-col>
-              <el-col :span="6">
-                搭档1
+              <el-col
+                  class="partner"
+                  v-for="partner in partners"
+                  :key="partner.id"
+                  :span="6">
+                <el-avatar :src="partner.head"></el-avatar>
+                {{ partner.name }}
+                <span style="margin-left: auto;cursor: pointer;">
+                  <i class="el-icon-edit" title="编辑"></i>
+                  <br />
+                  <i class="el-icon-delete" title="删除" @click=""></i>
+                </span>
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="公用搭档" name="publicPartner">
+          <el-tab-pane label="公共搭档" name="publicPartner">
             <el-row>
-              <el-col :span="6">
-                搭档1
-              </el-col>
-              <el-col :span="6">
-                搭档1
-              </el-col>
-              <el-col :span="6">
-                搭档1
-              </el-col>
-              <el-col :span="6">
-                搭档1
-              </el-col>
-              <el-col :span="6">
-                搭档1
+              <el-col
+                  class="partner"
+                  v-for="partner in partners"
+                  :key="partner.id"
+                  :span="6">
+                {{ partner.name }}
               </el-col>
             </el-row>
           </el-tab-pane>
@@ -316,6 +306,7 @@
 
 <script>
 import {
+  getUserPartner,
   getApiKey,
   getSessionAll,
   getUserInfo,
@@ -334,6 +325,10 @@ export default {
   },
   data() {
     return {
+      // 公共搭档
+      publicPartners: [],
+      // 用户搭档
+      partners: [],
       // 添加搭档页面
       dialogVisiblePartnerAdd: false,
       // 搭档管理页面显示哪个
@@ -401,13 +396,13 @@ export default {
     addPartnerClick() {
       this.dialogVisiblePartnerAdd = true
     },
-    // 搭档管理页面tabs点击事件
-    partnerHandleClick(tab, event) {
-      console.log(tab, event)
-    },
     // 点击管理搭档按钮
     managePartnerClick() {
-      this.dialogVisiblePartner = true
+      // 查询用户搭档
+      getUserPartner().then(res => {
+        this.partners = res.data.data
+        this.dialogVisiblePartner = true
+      })
     },
     marked,
     // 复制APIKEY
@@ -663,5 +658,14 @@ body, html {
 
 .el-aside {
   color: #333;
+}
+
+// 搭档盒子样式
+.partner {
+  margin: 2px;
+  padding: 10px;
+  border: 1px solid black;
+  display: flex;
+  align-items: center; /* 垂直居中 */
 }
 </style>
