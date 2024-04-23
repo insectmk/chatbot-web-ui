@@ -51,6 +51,8 @@ import hljs from 'highlight.js'
 // 注意引入样式，你可以前往 node_module 下查看更多的样式主题
 import 'highlight.js/styles/base16/darcula.css'
 import axios from "axios";
+import { fetchEventSource } from '@microsoft/fetch-event-source'
+import {EventSourceMessage} from "@microsoft/fetch-event-source";
 
 // 高亮拓展
 marked.use(markedHighlight({
@@ -76,7 +78,7 @@ export default {
     sessionId: ''
   },
   methods: {
-    // 点击消息按钮快速复制
+    // 点击消息单元格事件
     cellClick(row, column, cell, event) {
       this.$copyText(row.content).then(event => {
         this.$notify.success({
@@ -95,7 +97,8 @@ export default {
       }
     },
     // 发送消息
-    async send() {
+    send() {
+      let response = ''
       // 输入消息不能为空
       if (!this.messageToSend.trim()) {
         this.$notify.error({
@@ -104,15 +107,23 @@ export default {
         })
         return
       }
+      // 禁用发送按钮
+      this.sendBtnDisabled = true
       // 创建用户消息
       this.dialogs.push({
         role: 'user',
         content: this.messageToSend
       })
-      // 禁用发送按钮
-      this.sendBtnDisabled = true
-      // 发送流式对话
-      const response = await fetch(axios.defaults.baseURL + apis.sendMsgStream, {
+      // 对话接口地址
+      let url = axios.defaults.baseURL + apis.sendMsgStream;
+      const ctrl = new AbortController();
+      // 创建机器人消息
+      this.dialogs.push({
+        role: 'assistant',
+        content: ''
+      })
+      // 发送对话
+      fetchEventSource(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -122,33 +133,34 @@ export default {
           sessionId: this.sessionId,
           messageContent: this.messageToSend,
         }),
-      });
-      // 清空输入框消息
-      this.messageToSend = ''
-      console.log(response)
-      // 如果没有响应则返回
-      if (!response.body) {
-        return
-      }
-      // 创建机器人消息
-      this.dialogs.push({
-        role: 'assistant',
-        content: ''
+        signal: ctrl.signal,
+        openWhenHidden: true,
+        onmessage: (msg) => {
+          // 找到机器人div并依次加入回复
+          const assistantElements = document.querySelectorAll('.assistant');
+          const lastAssistantElement = assistantElements[assistantElements.length - 1];
+          // 处理数据
+          let result = JSON.parse(msg.data)
+          response += result.content
+          this.dialogs[this.dialogs.length-1].content = response
+          lastAssistantElement.innerHTML = marked(response)
+        },
+        onclose: () => {
+          // 清空输入框消息
+          this.messageToSend = ''
+          // 解禁发送按钮
+          this.sendBtnDisabled = false
+          console.log("SSE接收信息 断开");
+          // 监听后端断开，前端主动断开
+          ctrl.abort();
+        },
+        onerror: (err) => {
+          console.log("SSE接收信息 异常");
+          console.log(err)
+          throw err;
+          //必须throw才能停止
+        },
       })
-      // 开始读取数据
-      const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
-      while (true) {
-        let { value, done } = await reader.read();
-        if (done) break;
-        // 找到机器人div并依次加入回复
-        const assistantElements = document.querySelectorAll('.assistant');
-        const lastAssistantElement = assistantElements[assistantElements.length - 1];
-        // 处理数据
-        this.dialogs[this.dialogs.length-1].content += (value.replace('data:', '').replace(/\s\n$/, ''))
-        lastAssistantElement.innerHTML = marked(this.dialogs[this.dialogs.length-1].content)
-      }
-      // 解禁发送按钮
-      this.sendBtnDisabled = false
     },
     // 获取历史消息
     getHistoryMessages() {
