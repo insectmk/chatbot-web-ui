@@ -246,7 +246,7 @@
                 <el-avatar :src="partner.head"></el-avatar>
                 {{ partner.name }}
                 <span style="margin-left: auto;cursor: pointer;">
-                  <i class="el-icon-edit" title="编辑"></i>
+                  <i class="el-icon-edit" title="编辑" @click="partnerEdit(partner)"></i>
                   <br />
                   <i class="el-icon-delete" title="删除" @click="partnerDel(partner.id, partner.name)"></i>
                 </span>
@@ -300,12 +300,44 @@
         </span>
       </el-dialog>
 
+      <!--  编辑搭档框  -->
+      <el-dialog
+          :title="`编辑${formDataPartner.name}搭档`"
+          :visible.sync="dialogVisiblePartnerEdit"
+          width="30%">
+
+        <el-form :model="formDataPartner" :rules="formRules" ref="partnerEdit">
+          <el-form-item prop="name">
+            <el-input v-model="formDataPartner.name" placeholder="搭档名称"/>
+          </el-form-item>
+          <el-form-item prop="prompt">
+            <el-input
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 8}"
+                v-model="formDataPartner.prompt"
+                placeholder="人物设定"/>
+          </el-form-item>
+          <el-form-item prop="head">
+            <el-input v-model="formDataPartner.head" placeholder="头像地址"/>
+          </el-form-item>
+          <el-form-item prop="isPublic" label="是否公开">
+            <el-switch v-model="formDataPartner.isPublic"></el-switch>
+          </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisiblePartnerEdit = false">取 消</el-button>
+          <el-button type="primary" @click="editPartnerAct('partnerEdit')">确 定</el-button>
+        </span>
+      </el-dialog>
+
     </el-container>
   </el-container>
 </template>
 
 <script>
 import {
+  editPartner,
   deletePartner,
   addPartner,
   getPublicPartner,
@@ -329,6 +361,8 @@ export default {
   },
   data() {
     return {
+      // 编辑搭档页面的显示
+      dialogVisiblePartnerEdit: false,
       // 搭档表单数据
       formDataPartner: {},
       // 公共搭档
@@ -407,6 +441,44 @@ export default {
     };
   },
   methods: {
+    // 更新搭档
+    editPartnerAct(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 验证成功
+          editPartner(this.formDataPartner).then(res => {
+            if (res.data.flag) {
+              // 成功逻辑
+              this.$notify.success({
+                title: '成功',
+                message: res.data.message
+              })
+              this.getUserPartner()
+              this.getPublicPartner()
+              this.formDataPartner = {}
+              this.dialogVisiblePartnerEdit = false
+            } else {
+              this.$notify.error({
+                title: '错误',
+                message: res.data.message,
+              })
+            }
+          })
+        } else {
+          // 失败逻辑
+          this.$notify.error({
+            title: '错误',
+            message: '请按要求填写表单',
+          })
+        }
+      })
+    },
+    // 点击搭档编辑按钮
+    partnerEdit(partner) {
+      this.formDataPartner = partner
+      this.dialogVisiblePartnerEdit = true
+    },
     // 删除搭档
     partnerDel(id, name) {
       this.$confirm(`正在删除${name}搭档, 是否继续?`, '警告', {
@@ -423,6 +495,7 @@ export default {
               message: res.data.message,
             })
             this.getUserPartner()
+            this.getPublicPartner()
           } else {
             this.$notify.error({
               title: '错误',
@@ -446,6 +519,7 @@ export default {
                 message: res.data.message
               })
               this.getUserPartner()
+              this.getPublicPartner()
               this.formDataPartner = {}
               this.dialogVisiblePartnerAdd = false
             } else {
