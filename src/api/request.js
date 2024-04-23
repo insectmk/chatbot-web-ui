@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    getPublicPartner: '/partner/public', // 查询所有公开的搭档
     getUserPartner: '/partner', // 查询用户的搭档
     isRoot: '/login/isRoot', // 是否为root用户
     uploadUserHead: '/console/user/head', // 用户头像上传

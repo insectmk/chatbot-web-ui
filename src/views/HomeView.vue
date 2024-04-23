@@ -250,15 +250,14 @@
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="公共搭档" name="publicPartner">
-            <el-row>
-              <el-col
-                  class="partner"
-                  v-for="partner in partners"
-                  :key="partner.id"
-                  :span="6">
-                {{ partner.name }}
-              </el-col>
-            </el-row>
+            <el-col
+                class="partner"
+                v-for="partner in publicPartners"
+                :key="partner.id"
+                :span="6">
+              <el-avatar :src="partner.head"></el-avatar>
+              {{ partner.name }}
+            </el-col>
           </el-tab-pane>
         </el-tabs>
         <span slot="footer" class="dialog-footer">
@@ -306,6 +305,7 @@
 
 <script>
 import {
+  getPublicPartner,
   getUserPartner,
   getApiKey,
   getSessionAll,
@@ -401,8 +401,13 @@ export default {
       // 查询用户搭档
       getUserPartner().then(res => {
         this.partners = res.data.data
-        this.dialogVisiblePartner = true
       })
+      // 查询公共搭档
+      getPublicPartner().then(res => {
+        this.publicPartners = res.data.data
+      })
+      // 打开搭档弹出框
+      this.dialogVisiblePartner = true
     },
     marked,
     // 复制APIKEY
