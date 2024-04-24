@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import {getHistoryMsg, getSessionModel} from '@/api'
+import {getHistoryMsg, getSessionModel, editChatSession} from '@/api'
 import {apis} from '@/api/request'
 import {marked} from 'marked'
 import {markedHighlight} from "marked-highlight"
@@ -114,16 +114,40 @@ export default {
     sessionId: ''
   },
   methods: {
+    // 判断url是否在线并更新模型在线状态
+    isUrlOnline(url) {
+      isUrlOnline((url + '/status').replace(/([^:])(\/\/+)/g, '$1/'), 'GET')
+          .then(flag => {
+            this.$set(this.currentModel, 'isOnline', flag)
+          })
+    },
     // 点击顶部模型下拉菜单项
     handelClickModelDropdown(model) {
-      console.log(model)
+      // 更换会话的模型
+      editChatSession({
+        id: this.sessionId,
+        modelVersionId: model.id
+      }).then(res => {
+        if (res.data.flag) {
+          // 切换当前模型
+          this.$set(this,'currentModel',model)
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: res.data.message
+          })
+        }
+      })
     },
     // 获取当前会话的模型信息
     getModel() {
       getSessionModel({
         sessionId: this.sessionId
       }).then(res => {
+        // 更新当前会话模型信息
         this.currentModel = res.data.data
+        // 判断模型是否在线
+        this.isUrlOnline(this.currentModel.apiHost)
       })
     },
     // 点击模型按钮
@@ -250,10 +274,7 @@ export default {
   watch: {
     // 当前模型变化刷新模型在线状态
     'currentModel.apiHost': function(newVal, oldVal) {
-      isUrlOnline((newVal + '/status').replace(/([^:])(\/\/+)/g, '$1/'), 'GET')
-          .then(flag => {
-            this.$set(this.currentModel, 'isOnline', flag)
-          })
+      this.isUrlOnline(newVal)
     },
     // 会话变化刷新历史消息
     sessionId: function (newVal, oldVal) {
