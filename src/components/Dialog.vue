@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import {getHistoryMsg, getSessionModel, editChatSession} from '@/api'
+import {getHistoryMsg, getSessionModel, editChatSession, addModelRate} from '@/api'
 import {apis} from '@/api/request'
 import {marked} from 'marked'
 import {markedHighlight} from "marked-highlight"
@@ -175,11 +175,25 @@ export default {
       // 验证表单
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.formDataRate)
-          // 成功逻辑
-          this.$notify.success({
-            title: '成功',
-            message: '密码修改成功,请重新登录！'
+          // 设置当前模型ID
+          this.formDataRate.modelVersionId = this.currentModel.id
+          addModelRate(this.formDataRate).then(res => {
+            if (res.data.flag) {
+              // 成功逻辑
+              this.$notify.success({
+                title: '成功',
+                message: res.data.message
+              })
+              // 清空表单
+              this.formDataRate = {}
+              // 关闭新增窗口
+              this.dialogVisibleRate = false
+            } else {
+              this.$notify.error({
+                title: '错误',
+                message: res.data.message,
+              })
+            }
           })
         } else {
           // 失败逻辑
