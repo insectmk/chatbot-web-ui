@@ -39,6 +39,9 @@
         <el-button :disabled="sendBtnDisabled" type="primary" style="float: right;" @click="send">发送</el-button>
       </el-col>
     </el-row>
+
+    <!-- 回到顶部 -->
+    <el-backtop target=".main" :right="0" :bottom="80"></el-backtop>
   </el-main>
 </template>
 
