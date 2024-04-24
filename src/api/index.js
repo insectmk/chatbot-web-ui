@@ -3,6 +3,13 @@ import {getAction, deleteAction, putAction, postAction, getActionBinary} from '.
 import {put} from "axios";
 
 // **请求
+const isWho = (params) => getAction(apis.isWho, params)
+const editChatMessage = (params) => putAction(apis.editChatMessage, params)
+const getSessionNewestMsg = (params) => getAction(apis.getSessionNewestMsg, params)
+const addPartnerRate = (params) => postAction(apis.addPartnerRate, params)
+const addModelRate = (params) => postAction(apis.addModelRate, params)
+const editChatSession = (params) => putAction(apis.editChatSession, params)
+const getSessionModel = (params) => getAction(apis.getSessionModel, params)
 const findPartner = (params) => getAction(apis.findPartner, params)
 const editPartner = (params) => putAction(apis.editPartner, params)
 const deletePartner = (params) => deleteAction(apis.deletePartner, params)
@@ -40,6 +47,13 @@ const login = (params) => postAction(apis.login, params)
 
 // **暴露
 export {
+    isWho,
+    editChatMessage,
+    getSessionNewestMsg,
+    addPartnerRate,
+    addModelRate,
+    editChatSession,
+    getSessionModel,
     findPartner,
     editPartner,
     deletePartner,

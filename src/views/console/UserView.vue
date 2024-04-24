@@ -108,7 +108,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="密码" prop="password">
-              <el-input v-model="formData.password"/>
+              <el-input show-password v-model="formData.password"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -159,7 +159,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="密码" prop="password">
-              <el-input v-model="formData.password"/>
+              <el-input show-password v-model="formData.password"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -368,7 +368,7 @@ export default {
     },
     // 获取用户
     findPage() {
-      findUser(this.queryPageBean).then(res => {
+      return findUser(this.queryPageBean).then(res => {
         if (res.data.flag) {
           this.page = res.data.data
         } else {
@@ -381,14 +381,31 @@ export default {
     }
   },
   created() {
-    // 获取用户
-    this.findPage();
     // 获取图片上传地址
     this.userHeadUploadAddr = axios.defaults.baseURL + apis.uploadUserHead
     // 设置图片请求头部信息
     this.header = {
       token: localStorage.getItem("token")
     }
+
+    // 加载框
+    const loading = this.$loading({
+      lock: true,
+      text: '加载中……',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    });
+    Promise.all([
+      // 分页查询
+      this.findPage(),
+    ]).then(([args1,args2]) => {
+      loading.close();
+    }).catch(error => {
+      // 如果任何一个操作失败，则在这里处理错误
+      console.error(error);
+      // 关闭加载框
+      loading.close();
+    })
   },
 }
 </script>
