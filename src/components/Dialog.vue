@@ -19,6 +19,19 @@
           <template slot-scope="scope">
             <div :class="scope.row.role" v-html="marked(scope.row.content)">
             </div>
+            <div style="text-align: right; cursor: pointer" v-if="scope.row.role === 'assistant'">
+              <el-tooltip class="item" effect="dark" content="答得不错" placement="top">
+                <i v-if="true" class="fa fa-thumbs-o-up" style="margin-right: 20px;" @click="" aria-hidden="true"></i>
+                <i v-else class="fa fa-thumbs-up" style="margin-right: 20px;" aria-hidden="true"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="还不够好" placement="top">
+                <i v-if="true" class="fa fa-thumbs-o-down" style="margin-right: 20px;" aria-hidden="true"></i>
+                <i v-else class="fa fa-thumbs-down" style="margin-right: 20px;" aria-hidden="true"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="点击可复制" placement="top">
+                <i class="fa fa-clipboard" aria-hidden="true" @click="assistantMsgCopyClick(scope.row)"></i>
+              </el-tooltip>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -170,6 +183,15 @@ export default {
     sessionId: ''
   },
   methods: {
+    // 点击机器人回复框的复制图标
+    assistantMsgCopyClick(message) {
+      this.$copyText(message.content).then(event => {
+        this.$notify.success({
+          title: '成功',
+          message: '成功复制内容',
+        })
+      })
+    },
     // 点击反馈添加按钮
     addModelRateClick(formName) {
       // 验证表单
@@ -246,12 +268,12 @@ export default {
     },
     // 点击消息单元格事件
     cellClick(row, column, cell, event) {
-      this.$copyText(row.content).then(event => {
+      /*this.$copyText(row.content).then(event => {
         this.$notify.success({
           title: '成功',
           message: '成功复制内容',
         })
-      })
+      })*/
     },
     // 监测发送消息的长度
     messageToSendCheck() {
