@@ -13,20 +13,20 @@
           @cell-click="cellClick"
           :show-header="false">
         <el-table-column
-            prop="content"
+            prop="messageContent"
             label="聊天消息"
             style="width: 100%">
           <template slot-scope="scope">
-            <div :class="scope.row.role" v-html="marked(scope.row.content)">
+            <div :class="scope.row.senderType" v-html="marked(scope.row.messageContent)">
             </div>
-            <div style="text-align: right; cursor: pointer" v-if="scope.row.role === 'assistant'">
+            <div style="text-align: right; cursor: pointer" v-if="scope.row.senderType === 'assistant'">
               <el-tooltip class="item" effect="dark" content="答得不错" placement="top">
-                <i v-if="true" class="fa fa-thumbs-o-up" style="margin-right: 20px;" @click="" aria-hidden="true"></i>
-                <i v-else class="fa fa-thumbs-up" style="margin-right: 20px;" aria-hidden="true"></i>
+                <i v-if="scope.row.isLike" class="fa fa-thumbs-up" style="margin-right: 20px;" aria-hidden="true"></i>
+                <i v-else class="fa fa-thumbs-o-up" style="margin-right: 20px;" @click="" aria-hidden="true"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="还不够好" placement="top">
-                <i v-if="true" class="fa fa-thumbs-o-down" style="margin-right: 20px;" aria-hidden="true"></i>
-                <i v-else class="fa fa-thumbs-down" style="margin-right: 20px;" aria-hidden="true"></i>
+                <i v-if="scope.row.isNotLike" class="fa fa-thumbs-down" style="margin-right: 20px;" aria-hidden="true"></i>
+                <i v-else class="fa fa-thumbs-o-down" style="margin-right: 20px;" aria-hidden="true"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="点击可复制" placement="top">
                 <i class="fa fa-clipboard" aria-hidden="true" @click="assistantMsgCopyClick(scope.row)"></i>
@@ -185,7 +185,7 @@ export default {
   methods: {
     // 点击机器人回复框的复制图标
     assistantMsgCopyClick(message) {
-      this.$copyText(message.content).then(event => {
+      this.$copyText(message.messageContent).then(event => {
         this.$notify.success({
           title: '成功',
           message: '成功复制内容',
@@ -268,7 +268,7 @@ export default {
     },
     // 点击消息单元格事件
     cellClick(row, column, cell, event) {
-      /*this.$copyText(row.content).then(event => {
+      /*this.$copyText(row.messageContent).then(event => {
         this.$notify.success({
           title: '成功',
           message: '成功复制内容',
@@ -308,16 +308,16 @@ export default {
       this.sendBtnDisabled = true
       // 创建用户消息
       this.dialogs.push({
-        role: 'user',
-        content: this.messageToSend
+        senderType: 'user',
+        messageContent: this.messageToSend
       })
       // 对话接口地址
       let url = axios.defaults.baseURL + apis.sendMsgStream;
       const ctrl = new AbortController();
       // 创建机器人消息
       this.dialogs.push({
-        role: 'assistant',
-        content: ''
+        senderType: 'assistant',
+        messageContent: ''
       })
       // 发送对话
       fetchEventSource(url, {
@@ -339,7 +339,7 @@ export default {
           // 处理数据
           let result = JSON.parse(msg.data)
           response += result.content
-          this.dialogs[this.dialogs.length - 1].content = response
+          this.dialogs[this.dialogs.length - 1].messageContent = response
           lastAssistantElement.innerHTML = marked(response)
         },
         onclose: () => {
