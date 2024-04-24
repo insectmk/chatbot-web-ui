@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    getSessionNewestMsg: '/chatSession/newest', // 获取会话最新的机器人消息
     addPartnerRate: '/partnerRate', // 添加搭档评价
     addModelRate: '/modelRate', // 添加模型评价
     editChatSession: '/chatSession', // 更新会话

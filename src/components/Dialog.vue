@@ -19,18 +19,23 @@
           <template slot-scope="scope">
             <div :class="scope.row.senderType" v-html="marked(scope.row.messageContent)">
             </div>
-            <div style="text-align: right; cursor: pointer" v-if="scope.row.senderType === 'assistant'">
-              <el-tooltip class="item" effect="dark" content="答得不错" placement="top">
-                <i v-if="scope.row.isLike" class="fa fa-thumbs-up" style="margin-right: 20px;" aria-hidden="true"></i>
-                <i v-else class="fa fa-thumbs-o-up" style="margin-right: 20px;" @click="" aria-hidden="true"></i>
-              </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="还不够好" placement="top">
-                <i v-if="scope.row.isNotLike" class="fa fa-thumbs-down" style="margin-right: 20px;" aria-hidden="true"></i>
-                <i v-else class="fa fa-thumbs-o-down" style="margin-right: 20px;" aria-hidden="true"></i>
-              </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="点击可复制" placement="top">
-                <i class="fa fa-clipboard" aria-hidden="true" @click="assistantMsgCopyClick(scope.row)"></i>
-              </el-tooltip>
+            <div style="overflow: hidden;cursor: pointer;margin-top: 5px;" v-if="scope.row.senderType === 'assistant'" >
+              <div style="float: left;font-size: 11px;">
+                {{ `字数：${scope.row.wordCount}，Tokens：${scope.row.tokens}，模型：${scope.row.modelVersionName}` }}
+              </div>
+              <div style="text-align: right;">
+                <el-tooltip class="item" effect="dark" content="答得不错" placement="top">
+                  <i v-if="scope.row.isLike" class="fa fa-thumbs-up" style="margin-right: 20px;" aria-hidden="true"></i>
+                  <i v-else class="fa fa-thumbs-o-up" style="margin-right: 20px;" @click="" aria-hidden="true"></i>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="还不够好" placement="top">
+                  <i v-if="scope.row.isNotLike" class="fa fa-thumbs-down" style="margin-right: 20px;" aria-hidden="true"></i>
+                  <i v-else class="fa fa-thumbs-o-down" style="margin-right: 20px;" aria-hidden="true"></i>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="点击可复制" placement="top">
+                  <i class="fa fa-clipboard" aria-hidden="true" @click="assistantMsgCopyClick(scope.row)"></i>
+                </el-tooltip>
+              </div>
             </div>
           </template>
         </el-table-column>
@@ -118,7 +123,7 @@
 </template>
 
 <script>
-import {getHistoryMsg, getSessionModel, editChatSession, addModelRate} from '@/api'
+import {getHistoryMsg, getSessionModel, editChatSession, addModelRate, getSessionNewestMsg} from '@/api'
 import {apis} from '@/api/request'
 import {marked} from 'marked'
 import {markedHighlight} from "marked-highlight"
@@ -343,6 +348,12 @@ export default {
           lastAssistantElement.innerHTML = marked(response)
         },
         onclose: () => {
+          // 获取最新的机器人消息
+          getSessionNewestMsg({
+            sessionId: this.sessionId
+          }).then(res => {
+            this.$set(this.dialogs, this.dialogs.length - 1, res.data.data)
+          })
           // 清空输入框消息
           this.messageToSend = ''
           // 解禁发送按钮
