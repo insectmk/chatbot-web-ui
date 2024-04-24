@@ -4,7 +4,7 @@
     <el-header style="display: flex; font-size: 12px">
       <!-- 头部左侧系统名 -->
       <span style="margin-right: auto; font-size: 18px;">
-        <el-image :src="require('@/assets/img/logo.png')" class="user-avatar"/>
+        <el-image :src="require('@/assets/img/logo.jpg')" class="user-avatar"/>
         智能聊天机器人后台管理
       </span>
       <!-- 头部右侧用户功能下拉菜单 -->

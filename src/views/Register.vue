@@ -20,11 +20,11 @@
         </el-form-item>
 
         <el-form-item prop="captcha">
-          <el-col :span="18">
+          <el-col :span="16">
             <el-form-item prop=""></el-form-item>
             <el-input placeholder="请输入验证码" v-model="formData.captcha" maxlength="4" />
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-image
                 style="width: 100%;height: 100%;object-fit:cover;"
                 @click="flushCaptcha"
