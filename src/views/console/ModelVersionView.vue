@@ -397,7 +397,7 @@ export default {
     },
     // 分页查询
     findPage() {
-      findModel(this.queryPageBean).then(res => {
+      return findModel(this.queryPageBean).then(res => {
         if (res.data.flag) {
           this.page = res.data.data
           return res.data.data.records
@@ -422,8 +422,24 @@ export default {
     }
   },
   created() {
-    // 分页查询
-    this.findPage();
+    // 加载框
+    const loading = this.$loading({
+      lock: true,
+      text: '加载中……',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    });
+    Promise.all([
+      // 分页查询
+      this.findPage(),
+    ]).then(([args1,args2]) => {
+      loading.close();
+    }).catch(error => {
+      // 如果任何一个操作失败，则在这里处理错误
+      console.error(error);
+      // 关闭加载框
+      loading.close();
+    })
   },
 }
 </script>

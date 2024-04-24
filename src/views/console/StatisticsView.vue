@@ -65,12 +65,22 @@ export default {
     },
   },
   mounted() {
+    // 加载框
+    const loading = this.$loading({
+      lock: true,
+      text: '加载中……',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    });
     // 获取统计数据
     getModelUsageStatistic().then(res => {
       this.modelUsageStatisticData = res.data.data
     }).then(() => {
       // 初始化图表
       this.initChart()
+    }).then(() => {
+      // 关闭加载框
+      loading.close();
     })
   }
 }

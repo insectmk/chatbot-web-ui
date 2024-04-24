@@ -19,18 +19,22 @@
           <template slot-scope="scope">
             <div :class="scope.row.senderType" v-html="marked(scope.row.messageContent)">
             </div>
-            <div style="overflow: hidden;cursor: pointer;margin-top: 5px;" v-if="scope.row.senderType === 'assistant'" >
+            <div style="overflow: hidden;cursor: pointer;margin-top: 5px;" v-if="scope.row.senderType === 'assistant'">
               <div style="float: left;font-size: 11px;">
                 {{ `字数：${scope.row.wordCount}，Tokens：${scope.row.tokens}，模型：${scope.row.modelVersionName}` }}
               </div>
               <div style="text-align: right;">
                 <el-tooltip class="item" effect="dark" content="答得不错" placement="top">
-                  <i v-if="scope.row.isLike" class="fa fa-thumbs-up" style="margin-right: 20px;" aria-hidden="true"></i>
-                  <i v-else class="fa fa-thumbs-o-up" style="margin-right: 20px;" @click="" aria-hidden="true"></i>
+                  <i v-if="scope.row.isLike === 1" class="fa fa-thumbs-up" style="margin-right: 20px;"
+                     @click="messageIsLikeClick(scope.row,0,'取消点赞')" aria-hidden="true"></i>
+                  <i v-else class="fa fa-thumbs-o-up" style="margin-right: 20px;"
+                     @click="messageIsLikeClick(scope.row,1,'点赞')" aria-hidden="true"></i>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="还不够好" placement="top">
-                  <i v-if="scope.row.isNotLike" class="fa fa-thumbs-down" style="margin-right: 20px;" aria-hidden="true"></i>
-                  <i v-else class="fa fa-thumbs-o-down" style="margin-right: 20px;" aria-hidden="true"></i>
+                  <i v-if="scope.row.isLike === 2" class="fa fa-thumbs-down" style="margin-right: 20px;"
+                     @click="messageIsLikeClick(scope.row,0,'取消点踩')" aria-hidden="true"></i>
+                  <i v-else class="fa fa-thumbs-o-down" style="margin-right: 20px;"
+                     @click="messageIsLikeClick(scope.row,2,'点踩')" aria-hidden="true"></i>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="点击可复制" placement="top">
                   <i class="fa fa-clipboard" aria-hidden="true" @click="assistantMsgCopyClick(scope.row)"></i>
@@ -78,10 +82,12 @@
           effect="dark">
         离线
       </el-tag>
-      <el-dropdown split-button size="mini" type="primary" @click="handleClickModel" @command="handelClickModelDropdown">
+      <el-dropdown split-button size="mini" type="primary" @click="handleClickModel"
+                   @command="handelClickModelDropdown">
         {{ currentModel.name }}
         <el-dropdown-menu slot="dropdown">
-          <el-tooltip effect="dark" v-for="model in models" :key="model.id" :content="model.remark" placement="right-start">
+          <el-tooltip effect="dark" v-for="model in models" :key="model.id" :content="model.remark"
+                      placement="right-start">
             <el-dropdown-item :command="model">{{ model.name }}</el-dropdown-item>
           </el-tooltip>
         </el-dropdown-menu>
@@ -123,7 +129,14 @@
 </template>
 
 <script>
-import {getHistoryMsg, getSessionModel, editChatSession, addModelRate, getSessionNewestMsg} from '@/api'
+import {
+  getHistoryMsg,
+  getSessionModel,
+  editChatSession,
+  addModelRate,
+  getSessionNewestMsg,
+  editChatMessage
+} from '@/api'
 import {apis} from '@/api/request'
 import {marked} from 'marked'
 import {markedHighlight} from "marked-highlight"
@@ -156,7 +169,7 @@ export default {
       // 表单验证规则
       formRules: {
         rate: [
-          { required: true, message: '还没有打分哦~', trigger: 'blur' },
+          {required: true, message: '还没有打分哦~', trigger: 'blur'},
           {
             validator: (rule, value, callback) => {
               if (value === 0) {
@@ -169,7 +182,7 @@ export default {
           }
         ],
         comment: [
-          { required: true, message: '还没有写评价哦~', trigger: 'blur' },
+          {required: true, message: '还没有写评价哦~', trigger: 'blur'},
         ],
       },
       // 评分页面的显示
@@ -188,6 +201,23 @@ export default {
     sessionId: ''
   },
   methods: {
+    // 点击点赞按钮
+    messageIsLikeClick(message, code, msg) {
+      message.isLike = code
+      editChatMessage(message).then(res => {
+        if (res.data.flag) {
+          this.$notify.success({
+            title: '成功',
+            message: msg + '成功',
+          })
+        } else {
+          this.$notify.error({
+            title: '错误',
+            message: msg + '失败',
+          })
+        }
+      })
+    },
     // 点击机器人回复框的复制图标
     assistantMsgCopyClick(message) {
       this.$copyText(message.messageContent).then(event => {
@@ -247,7 +277,7 @@ export default {
       }).then(res => {
         if (res.data.flag) {
           // 切换当前模型
-          this.$set(this,'currentModel',model)
+          this.$set(this, 'currentModel', model)
         } else {
           this.$notify.error({
             title: '错误',
@@ -258,7 +288,7 @@ export default {
     },
     // 获取当前会话的模型信息
     getModel() {
-      getSessionModel({
+      return getSessionModel({
         sessionId: this.sessionId
       }).then(res => {
         // 更新当前会话模型信息
@@ -372,21 +402,11 @@ export default {
     },
     // 获取历史消息
     getHistoryMessages() {
-      // 弹出加载框
-      const loading = this.$loading({
-        lock: true,
-        text: '加载中...',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      });
       // 获取历史消息
-      getHistoryMsg({
+      return getHistoryMsg({
         sessionId: this.sessionId
       }).then(res => {
         this.dialogs = res.data.data
-      }).then(() => {
-        // 关闭加载框
-        loading.close()
       }).then(() => {
         // 滚动到消息发送框
         let mainDiv = document.getElementById('main')
@@ -396,19 +416,30 @@ export default {
   },
   watch: {
     // 当前模型变化刷新模型在线状态
-    'currentModel.apiHost': function(newVal, oldVal) {
+    'currentModel.apiHost': function (newVal, oldVal) {
       this.isUrlOnline(newVal)
     },
     // 会话变化刷新历史消息
     sessionId: function (newVal, oldVal) {
-      // 获取历史消息
-      this.getHistoryMessages()
-      // 获取当前会话的模型信息
-      this.getModel()
-      // 提示成功消息
-      this.$notify.success({
-        title: '成功',
-        message: '已成功切换会话！'
+      // 加载框
+      const loading = this.$loading({
+        lock: true,
+        text: '加载中……',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+      Promise.all([
+        // 获取历史信息
+        this.getHistoryMessages(),
+        // 获取当前会话的模型
+        this.getModel()
+      ]).then(([args1, args2]) => {
+        loading.close();
+      }).catch(error => {
+        // 如果任何一个操作失败，则在这里处理错误
+        console.error(error);
+        // 关闭加载框
+        loading.close();
       })
     }
   },
