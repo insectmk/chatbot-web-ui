@@ -69,6 +69,38 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+
+    <!-- 评分页面  -->
+    <el-dialog
+        title="评分与反馈"
+        :visible.sync="dialogVisibleRate"
+        width="30%">
+
+      <el-form :model="formDataRate"
+               :rules="formRules"
+               ref="addModelRate">
+        <el-form-item prop="rate">
+          <el-rate
+              v-model="formDataRate.rate"
+              :texts="['太一般了','还算可以','有点儿意思','我很喜欢','超出预期']"
+              show-text>
+          </el-rate>
+        </el-form-item>
+        <el-form-item prop="comment">
+          <el-input type="textarea"
+                    :autosize="{ minRows: 4, maxRows: 8}"
+                    v-model="formDataRate.comment"
+                    maxlength="200"
+                    show-word-limit
+                    placeholder="您的反馈意见（最多200字）"/>
+        </el-form-item>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleRate = false">取 消</el-button>
+        <el-button type="primary" @click="addModelRateClick('addModelRate')">确 定</el-button>
+      </span>
+    </el-dialog>
   </el-main>
 </template>
 
@@ -101,6 +133,30 @@ export default {
   },
   data() {
     return {
+      // 反馈数据
+      formDataRate: {},
+      // 表单验证规则
+      formRules: {
+        rate: [
+          { required: true, message: '还没有打分哦~', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              if (value === 0) {
+                callback(new Error('还没有打分哦~'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'change'
+          }
+        ],
+        comment: [
+          { required: true, message: '还没有写评价哦~', trigger: 'blur' },
+        ],
+      },
+      // 评分页面的显示
+      dialogVisibleRate: false,
+      // 当前模型
       currentModel: {},
       // 发送按钮禁用
       sendBtnDisabled: false,
@@ -114,6 +170,26 @@ export default {
     sessionId: ''
   },
   methods: {
+    // 点击反馈添加按钮
+    addModelRateClick(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          console.log(this.formDataRate)
+          // 成功逻辑
+          this.$notify.success({
+            title: '成功',
+            message: '密码修改成功,请重新登录！'
+          })
+        } else {
+          // 失败逻辑
+          this.$notify.error({
+            title: '错误',
+            message: '请按要求填写表单',
+          })
+        }
+      })
+    },
     // 判断url是否在线并更新模型在线状态
     isUrlOnline(url) {
       isUrlOnline((url + '/status').replace(/([^:])(\/\/+)/g, '$1/'), 'GET')
@@ -152,7 +228,7 @@ export default {
     },
     // 点击模型按钮
     handleClickModel() {
-      console.log(this.currentModel)
+      this.dialogVisibleRate = true
     },
     // 点击消息单元格事件
     cellClick(row, column, cell, event) {
