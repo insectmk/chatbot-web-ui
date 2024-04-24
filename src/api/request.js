@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    isWho: '/login/isWho', // 判断用户是谁
     editChatMessage: '/chatMessage', // 更新聊天消息
     getSessionNewestMsg: '/chatSession/newest', // 获取会话最新的机器人消息
     addPartnerRate: '/partnerRate', // 添加搭档评价

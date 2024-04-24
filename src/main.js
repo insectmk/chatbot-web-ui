@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import { isTokenEffective,isRoot } from '@/api'
+import { isWho } from '@/api'
 
 // 引入复制内容到剪切板功能
 import VueClipboard from 'vue-clipboard2'
@@ -31,26 +31,37 @@ Vue.config.productionTip = false
 //路由拦截，拦截全部路由，每次操作路由都是被拦截进⾏判断
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("token");
-  isTokenEffective({ token: token }).then((res) => {
+  isWho({ token: token }).then((res) => {
     //筛选需要传token的路由，匹配route⾥⾯需要登录的路径，如果匹配到就是true
     if (to.matched.some((record) => record.meta.requiresAuth)) {
       //根据token是否有效，判断是否需要调到登录⻚⾯
       if (res.data.flag) {
-        // 判断是否需要访问后台
-        if (to.path.indexOf('console') !== -1) {
-          // 访问后台的逻辑
-          isRoot({token: token}).then(resR => {
-            if (!resR.data.flag) {
-              ElementUI.Message({
-                type: 'error',
-                message: resR.data.message,
-              });
-              return next({ path: '/'})
-            }
-          })
+        if (res.data.data === 'root') {
+          // root直接放
+          next()
+        } else if (to.path.indexOf('console') === -1 &&  res.data.data === 'user') {
+          // 用户且非后台放行
+          next()
+        } else if (to.path.indexOf('console') !== -1 &&  res.data.data === 'user') {
+          // 普通用户进后台页面
+          ElementUI.Message({
+            type: 'error',
+            message: '您不是Root用户',
+          });
+          return next({ path: '/'})
+        } else {
+          // 其他一律不通过
+          ElementUI.Message({
+            type: 'error',
+            message: '请重新登录',
+          });
+          return next({ path: '/login'})
         }
-        next()
       } else {
+        ElementUI.Message({
+          type: 'error',
+          message: res.data.message,
+        });
         return next({ path: '/login'})
       }
     } else {
