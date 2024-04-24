@@ -286,6 +286,9 @@
                 :xl="5">
               <el-avatar :src="partner.head"></el-avatar>
               {{ partner.name }}
+              <span style="margin-left: auto;cursor: pointer;">
+                <i class="el-icon-edit" title="评价" @click="partnerRateClick(partner)"></i>
+              </span>
             </el-col>
           </el-tab-pane>
         </el-tabs>
@@ -356,12 +359,44 @@
         </span>
       </el-dialog>
 
+      <!-- 评分页面  -->
+      <el-dialog
+          title="评分与反馈"
+          :visible.sync="dialogVisiblePartnerRate"
+          width="30%">
+
+        <el-form :model="formDataPartnerRate"
+                 :rules="formRules"
+                 ref="addModelRate">
+          <el-form-item prop="rate">
+            <el-rate
+                v-model="formDataPartnerRate.rate"
+                :texts="['太一般了','还算可以','有点儿意思','我很喜欢','超出预期']"
+                show-text>
+            </el-rate>
+          </el-form-item>
+          <el-form-item prop="comment">
+            <el-input type="textarea"
+                      :autosize="{ minRows: 4, maxRows: 8}"
+                      v-model="formDataPartnerRate.comment"
+                      maxlength="200"
+                      show-word-limit
+                      placeholder="您的反馈意见（最多200字）"/>
+          </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisiblePartnerRate = false">取 消</el-button>
+        <el-button type="primary" @click="addPartnerRateClick('addModelRate')">确 定</el-button>
+      </span>
+      </el-dialog>
     </el-container>
   </el-container>
 </template>
 
 <script>
 import {
+  addPartnerRate,
   editPartner,
   deletePartner,
   addPartner,
@@ -386,6 +421,12 @@ export default {
   },
   data() {
     return {
+      // 搭档评价表单
+      formDataPartnerRate: {},
+      // 当前评价的搭档
+      currentRatePartner: {},
+      // 评价搭档页面的显示
+      dialogVisiblePartnerRate: false,
       // 编辑搭档页面的显示
       dialogVisiblePartnerEdit: false,
       // 搭档表单数据
@@ -406,6 +447,22 @@ export default {
       dialogVisibleAPI: false,
       // 表单验证规则
       formRules: {
+        rate: [
+          { required: true, message: '还没有打分哦~', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              if (value === 0) {
+                callback(new Error('还没有打分哦~'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'change'
+          }
+        ],
+        comment: [
+          { required: true, message: '还没有写评价哦~', trigger: 'blur' },
+        ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { pattern: password, message: '至少包含数字、字母和特殊字符，长度在6到24位之间', trigger: 'blur' }
@@ -469,7 +526,46 @@ export default {
     };
   },
   methods: {
-    // 更新搭档
+    // 点击反馈添加按钮
+    addPartnerRateClick(formName) {
+      // 验证表单
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 设置当前模型ID
+          this.formDataPartnerRate.partnerId = this.currentRatePartner.id
+          addPartnerRate(this.formDataPartnerRate).then(res => {
+            if (res.data.flag) {
+              // 成功逻辑
+              this.$notify.success({
+                title: '成功',
+                message: res.data.message
+              })
+              // 清空表单
+              this.formDataPartnerRate = {}
+              // 关闭新增窗口
+              this.dialogVisiblePartnerRate = false
+            } else {
+              this.$notify.error({
+                title: '错误',
+                message: res.data.message,
+              })
+            }
+          })
+        } else {
+          // 失败逻辑
+          this.$notify.error({
+            title: '错误',
+            message: '请按要求填写表单',
+          })
+        }
+      })
+    },
+    // 点击搭档评价按钮
+    partnerRateClick(partner) {
+      this.currentRatePartner = partner
+      this.dialogVisiblePartnerRate = true
+    },
+    // 更新搭档0
     editPartnerAct(formName) {
       // 验证表单
       this.$refs[formName].validate((valid) => {

@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    addPartnerRate: '/partnerRate', // 添加搭档评价
     addModelRate: '/modelRate', // 添加模型评价
     editChatSession: '/chatSession', // 更新会话
     getSessionModel: '/modelVersion/session', // 获取会话的模型

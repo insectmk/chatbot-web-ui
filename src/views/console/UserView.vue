@@ -108,7 +108,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="密码" prop="password">
-              <el-input v-model="formData.password"/>
+              <el-input show-password v-model="formData.password"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -159,7 +159,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="密码" prop="password">
-              <el-input v-model="formData.password"/>
+              <el-input show-password v-model="formData.password"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
