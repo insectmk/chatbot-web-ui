@@ -1,5 +1,5 @@
 <template>
-  <el-main id="main"  class="main">
+  <el-main id="main" class="main">
     <el-row class="container">
       <div v-if="Array.isArray(dialogs) && dialogs.length === 0" class="assistant">
         <h2>你好 我是智能聊天机器人</h2>
@@ -42,33 +42,66 @@
 
     <!-- 回到顶部 -->
     <el-backtop target=".main" :right="0" :bottom="80"></el-backtop>
+
+    <!-- 头部固定内容 -->
+    <div id="fixed-head">
+      <!-- 需要固定在顶部的div内容 -->
+      <el-tag
+          v-if="currentModel.isOnline"
+          type="success"
+          size="medium"
+          effect="dark">
+        在线
+      </el-tag>
+      <el-tag
+          v-else
+          type="danger"
+          size="medium"
+          effect="dark">
+        离线
+      </el-tag>
+      <el-dropdown split-button size="mini" type="primary" @click="handleClickModel" @command="handelClickModelDropdown">
+        {{ currentModel.name }}
+        <el-dropdown-menu slot="dropdown">
+          <el-tooltip effect="dark" v-for="model in models" :key="model.id" :content="model.remark" placement="right-start">
+            <el-dropdown-item :command="model">{{ model.name }}</el-dropdown-item>
+          </el-tooltip>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </div>
   </el-main>
 </template>
 
 <script>
-import {getHistoryMsg, sendMsg} from '@/api'
+import {getHistoryMsg, getSessionModel} from '@/api'
 import {apis} from '@/api/request'
 import {marked} from 'marked'
-import { markedHighlight } from "marked-highlight"
+import {markedHighlight} from "marked-highlight"
 import hljs from 'highlight.js'
 // 注意引入样式，你可以前往 node_module 下查看更多的样式主题
 import 'highlight.js/styles/base16/darcula.css'
 import axios from "axios";
-import { fetchEventSource } from '@microsoft/fetch-event-source'
-import {EventSourceMessage} from "@microsoft/fetch-event-source";
+import {fetchEventSource} from '@microsoft/fetch-event-source'
+import {isUrlOnline} from '@/util/URLUtil'
 
 // 高亮拓展
 marked.use(markedHighlight({
   langPrefix: 'hljs language-',
   highlight(code, lang) {
     const language = hljs.getLanguage(lang) ? lang : 'shell'
-    return hljs.highlight(code, { language }).value
+    return hljs.highlight(code, {language}).value
   }
 }))
 
 export default {
+  computed: {
+    models() {
+      return this.$store.state.models;
+    }
+  },
   data() {
     return {
+      currentModel: {},
       // 发送按钮禁用
       sendBtnDisabled: false,
       messageToSendMaxLength: 512,
@@ -81,6 +114,22 @@ export default {
     sessionId: ''
   },
   methods: {
+    // 点击顶部模型下拉菜单项
+    handelClickModelDropdown(model) {
+      console.log(model)
+    },
+    // 获取当前会话的模型信息
+    getModel() {
+      getSessionModel({
+        sessionId: this.sessionId
+      }).then(res => {
+        this.currentModel = res.data.data
+      })
+    },
+    // 点击模型按钮
+    handleClickModel() {
+      console.log(this.currentModel)
+    },
     // 点击消息单元格事件
     cellClick(row, column, cell, event) {
       this.$copyText(row.content).then(event => {
@@ -101,7 +150,14 @@ export default {
     },
     // 发送消息
     send() {
-      let response = ''
+      // 判断模型是否在线
+      if (!this.currentModel.isOnline) {
+        this.$notify.error({
+          title: '错误',
+          message: '当前模型不在线，请切换模型！'
+        })
+        return
+      }
       // 输入消息不能为空
       if (!this.messageToSend.trim()) {
         this.$notify.error({
@@ -110,6 +166,8 @@ export default {
         })
         return
       }
+      // 用于消息拼接
+      let response = ''
       // 禁用发送按钮
       this.sendBtnDisabled = true
       // 创建用户消息
@@ -145,7 +203,7 @@ export default {
           // 处理数据
           let result = JSON.parse(msg.data)
           response += result.content
-          this.dialogs[this.dialogs.length-1].content = response
+          this.dialogs[this.dialogs.length - 1].content = response
           lastAssistantElement.innerHTML = marked(response)
         },
         onclose: () => {
@@ -190,10 +248,19 @@ export default {
     }
   },
   watch: {
+    // 当前模型变化刷新模型在线状态
+    'currentModel.apiHost': function(newVal, oldVal) {
+      isUrlOnline((newVal + '/status').replace(/([^:])(\/\/+)/g, '$1/'), 'GET')
+          .then(flag => {
+            this.$set(this.currentModel, 'isOnline', flag)
+          })
+    },
     // 会话变化刷新历史消息
     sessionId: function (newVal, oldVal) {
       // 获取历史消息
       this.getHistoryMessages()
+      // 获取当前会话的模型信息
+      this.getModel()
       // 提示成功消息
       this.$notify.success({
         title: '成功',
@@ -202,13 +269,22 @@ export default {
     }
   },
   created() {
-    // 获取历史消息
-    this.getHistoryMessages()
+    // 获取模型信息
+    this.$store.dispatch('getModelVersionAll')
   },
 }
 </script>
 
 <style lang="less">
+// 头部置顶
+#fixed-head {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  /* 设置fixed-div的宽度、高度和其他样式 */
+}
+
 // 设置内容框大小，防止页面出现两个滚动条
 .main {
   height: calc(100vh - 60px);

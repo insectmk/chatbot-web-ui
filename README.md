@@ -40,6 +40,7 @@ $ npm run build
 - af-table-column：Element-UI表格自适应
 - echarts：画图
 - @microsoft/fetch-event-source：处理后端的流式接口
+- vuex@3：数据的共享
 
 ## 遇到的问题
 

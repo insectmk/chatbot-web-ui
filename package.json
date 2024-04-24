@@ -21,7 +21,8 @@
     "marked-highlight": "^2.1.1",
     "vue": "^2.6.14",
     "vue-clipboard2": "^0.3.3",
-    "vue-router": "^3.5.1"
+    "vue-router": "^3.5.1",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",

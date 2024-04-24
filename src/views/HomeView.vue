@@ -250,7 +250,8 @@
           title="我的搭档"
           :visible.sync="dialogVisiblePartner"
           width="50%">
-        <el-button type="primary" plain style="margin-bottom: 20px" @click="addPartnerClick">新增搭档</el-button>
+        <el-button type="primary" plain @click="addPartnerClick">新增搭档</el-button>
+        <el-divider></el-divider>
         <el-tabs v-model="partnerActiveName" >
           <el-tab-pane label="我的搭档" name="myPartner">
             <el-row>
