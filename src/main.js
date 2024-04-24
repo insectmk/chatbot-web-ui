@@ -23,6 +23,9 @@ Vue.component('Navbar', Navbar)
 // 引入Font-Awesome
 import 'font-awesome/css/font-awesome.min.css'
 
+// 引入vuex
+import store from './store/index'
+
 Vue.config.productionTip = false
 
 //路由拦截，拦截全部路由，每次操作路由都是被拦截进⾏判断
@@ -59,5 +62,6 @@ router.beforeEach((to, from, next) => {
 
 new Vue({
   router,
-  render: h => h(App)
+  render: h => h(App),
+  store
 }).$mount('#app')
