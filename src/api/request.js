@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    uploadDialogs: '/chatSession/upload', // 导入对话文件
     getModelRateStatistic: '/console/statistic/modelRate', // 获取模型评分数据
     isWho: '/login/isWho', // 判断用户是谁
     editChatMessage: '/chatMessage', // 更新聊天消息
