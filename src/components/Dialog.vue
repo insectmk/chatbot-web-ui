@@ -278,6 +278,8 @@ export default {
         if (res.data.flag) {
           // 切换当前模型
           this.$set(this, 'currentModel', model)
+          // 判断模型在线情况
+          this.isUrlOnline(this.currentModel.apiHost)
         } else {
           this.$notify.error({
             title: '错误',
