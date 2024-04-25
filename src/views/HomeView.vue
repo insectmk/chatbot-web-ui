@@ -53,6 +53,14 @@
             placement="right"
             width="130"
             trigger="hover"
+            content="从txt中导入对话">
+          <el-button plain slot="reference" type="info" style="width: 100%" size="small" @click="dialogImportClick">导入</el-button>
+        </el-popover>
+        <br/>
+        <el-popover
+            placement="right"
+            width="130"
+            trigger="hover"
             content="管理我的搭档">
           <el-button plain slot="reference" type="success" style="width: 100%" size="small" @click="managePartnerClick">搭档</el-button>
         </el-popover>
@@ -386,10 +394,33 @@
         </el-form>
 
         <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisiblePartnerRate = false">取 消</el-button>
-        <el-button type="primary" @click="addPartnerRateClick('addModelRate')">确 定</el-button>
-      </span>
+          <el-button @click="dialogVisiblePartnerRate = false">取 消</el-button>
+          <el-button type="primary" @click="addPartnerRateClick('addModelRate')">确 定</el-button>
+        </span>
       </el-dialog>
+
+      <!-- 图片上传抽屉 -->
+      <el-drawer
+          title="上传对话文本文件"
+          :visible.sync="drawerVisibleDialogImport"
+          direction="rtl"
+          :before-close="handleCloseDialogImportDrawer">
+        <div style="display: flex;justify-content: center;height: 100%;">
+          <el-upload
+              class="upload-demo"
+              drag
+              :action="dialogImportUploadAddr"
+              :headers="header"
+              :on-success="handleDialogImportSuccess"
+              :before-upload="beforeDialogImportUpload"
+              multiple>
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">只能上传 .txt 文件，且不超过2M</div>
+          </el-upload>
+        </div>
+      </el-drawer>
+
     </el-container>
   </el-container>
 </template>
@@ -412,8 +443,10 @@ import {
   addSession, deleteModel
 } from "@/api"
 import Dialog from "@/components/Dialog.vue"
-import {apiUrl, password} from "@/util/RegularUtil"
+import {password} from "@/util/RegularUtil"
 import {marked} from 'marked'
+import {apis} from "@/api/request"
+import axios from "axios"
 
 export default {
   components: {
@@ -421,6 +454,12 @@ export default {
   },
   data() {
     return {
+      // 对话文件上传地址
+      dialogImportUploadAddr: '',
+      // txt文件上传的头部信息
+      header: {},
+      // 对话上传抽屉的显示
+      drawerVisibleDialogImport: false,
       // 搭档评价表单
       formDataPartnerRate: {},
       // 当前评价的搭档
@@ -526,6 +565,48 @@ export default {
     };
   },
   methods: {
+    // 导入对话前的操作
+    beforeDialogImportUpload(file) {
+      console.log(file.type)
+      const isText = file.type === 'text/plain';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isText) {
+        this.$message.error('上传的对话只能是 .txt 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传对话大小不能超过 2MB!');
+      }
+      return isText && isLt2M;
+    },
+    // 导入对话完成后的操作
+    handleDialogImportSuccess(res, file) {
+      if (res.flag) {
+        // 切换当前会话到上传对话
+        this.$set(this, 'sessionId', res.data)
+        this.getSessions()
+        // 关闭抽屉
+        this.drawerVisibleDialogImport = false
+        this.$notify.success({
+          title: '成功',
+          message: res.message
+        })
+      } else {
+        this.$notify.error({
+          title: '错误',
+          message: res.message,
+        })
+      }
+    },
+    // 导入抽屉关闭时的操作
+    handleCloseDialogImportDrawer(done) {
+      done()
+    },
+    // 点击导入按钮
+    dialogImportClick() {
+      console.log('导入')
+      this.drawerVisibleDialogImport = true
+    },
     // 点击反馈添加按钮
     addPartnerRateClick(formName) {
       // 验证表单
@@ -850,7 +931,7 @@ export default {
     // 获取用户信息
     getUser() {
       // 获取登录用户信息
-      getUserInfo().then((res) => {
+      return getUserInfo().then((res) => {
         if (res.data.flag) {
           this.userInfo = res.data.data
         } else {
@@ -863,22 +944,49 @@ export default {
     },
     // 获取用户对话列表
     getSessions() {
-      getSessionAll().then((res) => {
+      return getSessionAll().then((res) => {
         this.sessions = res.data.data
         return res.data.data
       }).then((sessions) => {
         this.sessionId = sessions[0].id
       })
-    }
+    },
+    // 获取API提示
+    getApiTips() {
+      return getApiTips().then(res => {
+        this.apiTips = res.data.data
+      })
+    },
   },
   created() {
-    // 获取用户信息
-    this.getUser()
-    // 获取用户所有对话
-    this.getSessions()
-    // 获取API提示
-    getApiTips().then(res => {
-      this.apiTips = res.data.data
+    // 获取图片上传地址
+    this.dialogImportUploadAddr = axios.defaults.baseURL + apis.uploadDialogs
+    // 设置txt上传请求头部信息
+    this.header = {
+      token: localStorage.getItem("token")
+    }
+
+    // 加载框
+    const loading = this.$loading({
+      lock: true,
+      text: '加载中……',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    });
+    Promise.all([
+      // 获取用户信息
+      this.getUser(),
+      // 获取用户所有对话
+      this.getSessions(),
+      // 获取API提示
+      this.getApiTips(),
+    ]).then(([args1,args2]) => {
+      loading.close();
+    }).catch(error => {
+      // 如果任何一个操作失败，则在这里处理错误
+      console.error(error);
+      // 关闭加载框
+      loading.close();
     })
   },
 };

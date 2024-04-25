@@ -92,6 +92,7 @@
           </el-tooltip>
         </el-dropdown-menu>
       </el-dropdown>
+      <el-button size="mini" style="margin-right: 0" @click="dialogsExportClick">导出</el-button>
     </div>
 
     <!-- 评分页面  -->
@@ -150,9 +151,9 @@ import {isUrlOnline} from '@/util/URLUtil'
 // 高亮拓展
 marked.use(markedHighlight({
   langPrefix: 'hljs language-',
-  highlight(code, lang) {
-    const language = hljs.getLanguage(lang) ? lang : 'shell'
-    return hljs.highlight(code, {language}).value
+  highlight(code, lang, info) {
+    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+    return hljs.highlight(code, { language }).value;
   }
 }))
 
@@ -201,6 +202,29 @@ export default {
     sessionId: ''
   },
   methods: {
+    // 导出按钮被点击
+    dialogsExportClick() {
+      console.log('导出')
+      function formatDialog(dialog) {
+        return `${dialog.senderType}: ${dialog.messageContent.trim()}`
+      }
+
+      const content = this.dialogs.map(formatDialog).join('\n\n');
+
+      // 创建Blob对象
+      const blob = new Blob([content], { type: 'text/plain' });
+      // 创建URL
+      const url = URL.createObjectURL(blob);
+      // 创建a标签并模拟点击
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${this.sessionId}.txt` // 设置下载的文件名
+      document.body.appendChild(a);
+      a.click();
+      // 清理并释放URL对象
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    },
     // 点击点赞按钮
     messageIsLikeClick(message, code, msg) {
       message.isLike = code
