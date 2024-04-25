@@ -151,9 +151,9 @@ import {isUrlOnline} from '@/util/URLUtil'
 // 高亮拓展
 marked.use(markedHighlight({
   langPrefix: 'hljs language-',
-  highlight(code, lang) {
-    const language = hljs.getLanguage(lang) ? lang : 'shell'
-    return hljs.highlight(code, {language}).value
+  highlight(code, lang, info) {
+    const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+    return hljs.highlight(code, { language }).value;
   }
 }))
 
