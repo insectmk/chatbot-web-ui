@@ -1,5 +1,6 @@
 // 后端接口
 const apis = {
+    getModelRateStatistic: '/console/statistic/modelRate', // 获取模型评分数据
     isWho: '/login/isWho', // 判断用户是谁
     editChatMessage: '/chatMessage', // 更新聊天消息
     getSessionNewestMsg: '/chatSession/newest', // 获取会话最新的机器人消息
