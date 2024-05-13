@@ -99,6 +99,7 @@
     <el-dialog
         title="评分与反馈"
         :visible.sync="dialogVisibleRate"
+        :close-on-click-modal="false"
         width="30%">
 
       <el-form :model="formDataRate"

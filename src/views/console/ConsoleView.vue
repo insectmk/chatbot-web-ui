@@ -107,6 +107,7 @@
       <el-dialog
           title="修改密码"
           :visible.sync="dialogVisibleEdit"
+          :close-on-click-modal="false"
           width="30%">
 
         <el-form :model="passwordEdit"
@@ -130,6 +131,7 @@
       <el-dialog
           title="个人信息"
           :visible.sync="dialogVisibleUserInfo"
+          :close-on-click-modal="false"
           width="30%">
 
         <el-form label-width="auto"
@@ -181,6 +183,7 @@
       <el-dialog
           title="API使用说明"
           :visible.sync="dialogVisibleAPI"
+          :close-on-click-modal="false"
           width="50%">
         <div v-html="marked(apiTips)"></div>
         <span slot="footer" class="dialog-footer">

@@ -112,6 +112,7 @@
       <el-dialog
           title="修改密码"
           :visible.sync="dialogVisibleEdit"
+          :close-on-click-modal="false"
           width="30%">
 
         <el-form :model="passwordEdit"
@@ -135,6 +136,7 @@
       <el-dialog
           title="新建会话"
           :visible.sync="dialogVisibleAddSession"
+          :close-on-click-modal="false"
           width="30%">
 
         <el-form :model="formDataSession" :rules="formRules" ref="sessionAdd">
@@ -189,6 +191,7 @@
       <el-dialog
           title="个人信息"
           :visible.sync="dialogVisibleUserInfo"
+          :close-on-click-modal="false"
           width="30%">
 
         <el-form label-width="auto"
@@ -246,6 +249,7 @@
       <el-dialog
           title="API使用说明"
           :visible.sync="dialogVisibleAPI"
+          :close-on-click-modal="false"
           width="50%">
         <div v-html="marked(apiTips)"></div>
         <span slot="footer" class="dialog-footer">
@@ -257,6 +261,7 @@
       <el-dialog
           title="我的搭档"
           :visible.sync="dialogVisiblePartner"
+          :close-on-click-modal="false"
           width="50%">
         <el-button type="primary" plain @click="addPartnerClick">新增搭档</el-button>
         <el-divider></el-divider>
@@ -309,6 +314,7 @@
       <el-dialog
           title="新建搭档"
           :visible.sync="dialogVisiblePartnerAdd"
+          :close-on-click-modal="false"
           width="30%">
 
         <el-form :model="formDataPartner" :rules="formRules" ref="partnerAdd">
@@ -340,6 +346,7 @@
       <el-dialog
           :title="`编辑${formDataPartner.name}搭档`"
           :visible.sync="dialogVisiblePartnerEdit"
+          :close-on-click-modal="false"
           width="30%">
 
         <el-form :model="formDataPartner" :rules="formRules" ref="partnerEdit">
@@ -371,6 +378,7 @@
       <el-dialog
           title="评分与反馈"
           :visible.sync="dialogVisiblePartnerRate"
+          :close-on-click-modal="false"
           width="30%">
 
         <el-form :model="formDataPartnerRate"
