@@ -229,10 +229,10 @@ export default {
           { required: true, message: '请输入邮箱', trigger: 'blur' },
           { pattern: email, message: '邮箱格式不正确', trigger: 'blur' }
         ],
-        password: [
-          //{ required: true, message: '请输入密码', trigger: 'blur' },
+        /*password: [
+          { required: false, message: '请输入密码', trigger: 'blur' },
           { pattern: password, message: '至少包含数字、字母和特殊字符，长度在6到24位之间', trigger: 'blur' }
-        ],
+        ],*/
       },
       // 新增框的显示
       dialogFormVisible: false,
@@ -303,6 +303,7 @@ export default {
     // 打开编辑框
     openEdit(row) {
       this.formData = row
+      this.formData.password = ''
       this.dialogFormVisibleEdit = true
     },
     // 更新用户
