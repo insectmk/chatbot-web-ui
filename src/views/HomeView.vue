@@ -159,7 +159,7 @@
           <el-form-item prop="partnerId">
             <el-select style="width: 100%" v-model="formDataSession.partnerId" placeholder="选择搭档">
               <el-popover
-                  v-for="partner in [...new Set(partners, publicPartners)]"
+                  v-for="partner in [...partners, ...publicPartners]"
                   :key="partner.id"
                   placement="right"
                   :title="partner.name"
