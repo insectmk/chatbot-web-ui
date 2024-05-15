@@ -159,7 +159,7 @@
           <el-form-item prop="partnerId">
             <el-select style="width: 100%" v-model="formDataSession.partnerId" placeholder="选择搭档">
               <el-popover
-                  v-for="partner in [...partners, ...publicPartners]"
+                  v-for="partner in mergeAndDeduplicate(partners, publicPartners, 'id')"
                   :key="partner.id"
                   placement="right"
                   :title="partner.name"
@@ -452,6 +452,7 @@ import {
 } from "@/api"
 import Dialog from "@/components/Dialog.vue"
 import {password} from "@/util/RegularUtil"
+import {mergeAndDeduplicate} from "@/util/ObjectUtil"
 import {marked} from 'marked'
 import {apis} from "@/api/request"
 import axios from "axios"
@@ -573,6 +574,8 @@ export default {
     };
   },
   methods: {
+    // 合并两个对象数组并去重
+    mergeAndDeduplicate,
     // 导入对话前的操作
     beforeDialogImportUpload(file) {
       console.log(file.type)

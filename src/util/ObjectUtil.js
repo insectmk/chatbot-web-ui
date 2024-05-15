@@ -16,3 +16,22 @@ export function paramsToFormData(obj) {
     });
     return formData;
 }
+
+/**
+ * 合并两个对象数组并去重
+ * @param arr1
+ * @param arr2
+ * @param key
+ * @returns {any[]}
+ */
+export function mergeAndDeduplicate(arr1, arr2, key) {
+    let unique = new Map();
+
+    // 合并两个数组并添加到Map中，使用对象的key属性作为Map的键
+    [...arr1, ...arr2].forEach(item => {
+        unique.set(item[key], item);
+    });
+
+    // 从Map中提取值，得到去重后的数组
+    return Array.from(unique.values());
+}
