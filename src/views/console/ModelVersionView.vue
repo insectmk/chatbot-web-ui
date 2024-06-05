@@ -130,7 +130,9 @@
     </el-row>
 
     <!-- 新建页面 -->
-    <el-dialog title="添加模型" :visible.sync="dialogFormVisible">
+    <el-dialog title="添加模型"
+               :close-on-click-modal="false"
+               :visible.sync="dialogFormVisible">
       <el-form :model="formData" :rules="formRules" ref="addForm" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -192,7 +194,10 @@
     </el-dialog>
 
     <!-- 更新页面 -->
-    <el-dialog title="更新模型" :visible.sync="dialogFormVisibleEdit" @close='handleEditClose'>
+    <el-dialog title="更新模型"
+               :visible.sync="dialogFormVisibleEdit"
+               :close-on-click-modal="false"
+               @close='handleEditClose'>
       <el-form :model="formData" :rules="formRules" ref="editForm" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">

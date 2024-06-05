@@ -94,7 +94,9 @@
     </el-row>
 
     <!-- 新建用户的页面 -->
-    <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+    <el-dialog title="添加用户"
+               :close-on-click-modal="false"
+               :visible.sync="dialogFormVisible">
       <el-form :model="formData" :rules="formRules" ref="addFrom" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -145,7 +147,10 @@
     </el-dialog>
 
     <!-- 更新用户的页面 -->
-    <el-dialog title="更新用户" :visible.sync="dialogFormVisibleEdit" @close="handleEditClose">
+    <el-dialog title="更新用户"
+               :close-on-click-modal="false"
+               :visible.sync="dialogFormVisibleEdit"
+               @close="handleEditClose">
       <el-form :model="formData" :rules="formRules" ref="editForm" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">

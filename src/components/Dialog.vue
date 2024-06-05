@@ -51,7 +51,7 @@
       <el-col :span="24">
         <el-input
             type="textarea"
-            :rows="3"
+            :autosize="{ minRows: 4, maxRows: 20}"
             @input="messageToSendCheck"
             v-model="messageToSend"
             placeholder="请输入内容"
@@ -99,6 +99,7 @@
     <el-dialog
         title="评分与反馈"
         :visible.sync="dialogVisibleRate"
+        :close-on-click-modal="false"
         width="30%">
 
       <el-form :model="formDataRate"

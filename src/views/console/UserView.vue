@@ -98,7 +98,9 @@
     </el-row>
 
     <!-- 新建用户的页面 -->
-    <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+    <el-dialog title="添加用户"
+               :close-on-click-modal="false"
+               :visible.sync="dialogFormVisible">
       <el-form :model="formData" :rules="formRules" ref="addFrom" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -149,7 +151,10 @@
     </el-dialog>
 
     <!-- 更新用户的页面 -->
-    <el-dialog title="更新用户" :visible.sync="dialogFormVisibleEdit" @close="handleEditClose">
+    <el-dialog title="更新用户"
+               :visible.sync="dialogFormVisibleEdit"
+               :close-on-click-modal="false"
+               @close="handleEditClose">
       <el-form :model="formData" :rules="formRules" ref="editForm" label-position="top">
         <el-row :gutter="20">
           <el-col :span="12">
@@ -224,10 +229,10 @@ export default {
           { required: true, message: '请输入邮箱', trigger: 'blur' },
           { pattern: email, message: '邮箱格式不正确', trigger: 'blur' }
         ],
-        password: [
-          //{ required: true, message: '请输入密码', trigger: 'blur' },
+        /*password: [
+          { required: false, message: '请输入密码', trigger: 'blur' },
           { pattern: password, message: '至少包含数字、字母和特殊字符，长度在6到24位之间', trigger: 'blur' }
-        ],
+        ],*/
       },
       // 新增框的显示
       dialogFormVisible: false,
@@ -298,6 +303,7 @@ export default {
     // 打开编辑框
     openEdit(row) {
       this.formData = row
+      this.formData.password = ''
       this.dialogFormVisibleEdit = true
     },
     // 更新用户
